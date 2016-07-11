@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/closeTextView"
+            android:layout_width="16sp"
+            android:layout_height="16sp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/close_back"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="18dp"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                style="@style/AccountLayout"
+                android:layout_marginTop="50dp">
+
+                <ImageView
+                    android:layout_width="19dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/phone_icon"/>
+
+                <EditText
+                    android:id="@+id/phoneEditText"
+                    style="@style/RegisterEditText"
+                    android:hint="@string/phone"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp">
+                <Button
+                    android:id="@+id/codeButton"
+                    android:layout_width="120dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/introduce_btn_back"
+                    android:text="@string/send_verification_code"
+                    android:textSize="12sp"
+                    android:textColor="@android:color/black"
+                    android:gravity="center"
+                    android:enabled="false"/>
+
+                <EditText
+                    android:id="@+id/codeEditText"
+                    android:layout_marginLeft="5dp"
+                    android:paddingLeft="5dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:textSize="16sp"
+                    android:background="@drawable/code_edittext_back"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/AccountLayout">
+
+                <ImageView
+                    android:layout_width="19dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/account_icon"/>
+
+                <EditText
+                    android:id="@+id/nicknameEditText"
+                    style="@style/RegisterEditText"
+                    android:hint="@string/my_nickname"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/AccountLayout">
+
+                <ImageView
+                    android:layout_width="19dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/password_icon" />
+
+                <EditText
+                    android:id="@+id/passwordEditText"
+                    style="@style/RegisterEditText"
+                    android:hint="@string/my_password"
+                    android:password="true" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/AccountLayout">
+
+                <ImageView
+                    android:layout_width="19dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/password_icon"/>
+
+                <EditText
+                    android:id="@+id/reInputPasswordEditText"
+                    style="@style/RegisterEditText"
+                    android:hint="@string/re_input_password"
+                    android:password="true" />
+            </LinearLayout>
+
+            <Button android:id="@+id/registerButton"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:background="@drawable/introduce_btn_back"
+                android:text="@string/register"
+                android:textSize="16sp"
+                android:layout_marginTop="33dp"
+                android:textColor="@android:color/black"
+                android:enabled="false"/>
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

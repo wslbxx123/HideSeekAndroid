@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow_ffcc00">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_marginTop="181dp"
+            android:background="@android:color/white">
+
+            <LinearLayout
+                android:id="@+id/sexLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/login_edittext_back"
+                android:gravity="center_vertical"
+                android:layout_marginTop="51dp">
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:text="@string/sex"
+                    android:gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/sexTextView"
+                    android:layout_width="180dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/not_set"
+                    android:gravity="center_vertical"/>
+
+                <ImageView
+                    android:layout_width="5dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/right_arrow"
+                    android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/regionLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/login_edittext_back"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="40dp"
+                    android:layout_height="45dp"
+                    android:text="@string/region"
+                    android:gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/regionTextView"
+                    android:layout_width="180dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/not_set"
+                    android:gravity="center_vertical"/>
+
+                <ImageView
+                    android:layout_width="5dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/right_arrow"
+                    android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="130dp"
+                android:text="@string/match_my_role"
+                android:textSize="14sp"
+                android:background="@drawable/introduce_btn_back"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="126dp"
+            android:layout_centerHorizontal="true">
+
+            <LinearLayout
+                android:id="@+id/photoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <dlmj.hideseek.UI.View.CircleImageView
+                    android:id="@+id/photoCircleImageView"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"/>
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:background="@drawable/camera_back"
+                android:layout_alignRight="@id/photoLayout"
+                android:layout_alignBottom="@id/photoLayout"
+                android:layout_margin="5dp"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+</ScrollView>

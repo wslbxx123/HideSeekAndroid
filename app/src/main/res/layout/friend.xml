@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/titleLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@color/yellow_ffcc00">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/alliances_title"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/search_city_back"
+        android:drawableLeft="@drawable/search_icon"
+        android:drawablePadding="5dp"
+        android:layout_below="@id/titleLayout"
+        android:hint="@string/message_input_friend"
+        android:padding="10dip"
+        android:textColor="@color/gray_515151"
+        android:textSize="14sp">
+    </EditText>
+
+    <ListView
+        android:id="@+id/friendListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchEditText"
+        android:layout_marginTop="7dp"
+        android:cacheColorHint="@android:color/black"
+        android:divider="@android:color/black"
+        android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none" />
+
+    <ListView
+        android:id="@+id/resultListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/searchEditText"
+        android:layout_marginTop="7dp"
+        android:cacheColorHint="@android:color/black"
+        android:divider="@android:color/black"
+        android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/noResultTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchEditText"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/message_no_friend_found"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <dlmj.hideseek.UI.View.CustomLetterListView
+        android:id="@+id/letterListView"
+        android:layout_width="25dip"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/searchEditText"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="7dp"
+        view:letter_type="alpha"/>
+</RelativeLayout>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true" android:drawable="@drawable/call_out_selected" />
+    <item android:drawable="@drawable/call_out" />
+</selector><!-- From: file:/Users/apple/Documents/Project/Android/HideSeek/app/src/main/res/drawable/call_out_back.xml -->

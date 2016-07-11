@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/cityHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/recent_search_cities"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <dlmj.hideseek.UI.View.FrozenGridView
+        android:id="@+id/cityGridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="15dp"
+        android:horizontalSpacing="20dp"
+        android:verticalSpacing="10dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3">
+
+    </dlmj.hideseek.UI.View.FrozenGridView>
+</LinearLayout><!-- From: file:/Users/apple/Documents/Project/Android/HideSeek/app/src/main/res/layout/grid_city.xml -->

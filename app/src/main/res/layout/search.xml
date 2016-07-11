@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/cameraLayout">
+
+        <dlmj.hideseek.UI.View.CameraSurfaceView
+            android:id="@+id/cameraSurfaceView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/infoLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <com.amap.api.maps2d.MapView
+                android:id="@+id/mapView"
+                android:layout_width="0dp"
+                android:layout_height="157dp"
+                android:layout_weight="1"
+                android:clickable="true"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="3dp">
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_item_back"
+                    android:gravity="right"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:singleLine="false"
+                        android:text="@string/tip_title"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/distanceLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/search_layout_back"
+                    android:layout_marginTop="4dp">
+                    <ImageView
+                        android:layout_width="33dp"
+                        android:layout_height="46dp"
+                        android:src="@drawable/introduce_icon"
+                        android:scaleType="centerInside"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_marginLeft="5dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/destination_distance"
+                            android:singleLine="false"
+                            android:textColor="@color/black"/>
+
+                        <TextView
+                            android:id="@+id/distanceTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/red_f82a52"
+                            android:singleLine="false"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/search_item_back"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:padding="5dp">
+                    <Button
+                        android:id="@+id/navigateButton"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:text="@string/to_get_it"
+                        android:textSize="12sp"
+                        android:background="@drawable/introduce_btn_back"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/getButton"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/get"
+        android:background="@drawable/get_btn_back"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="130dp"/>
+
+    <ImageView
+        android:id="@+id/goalImageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"/>
+</RelativeLayout>

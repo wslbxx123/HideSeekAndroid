@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/get_btn_click"></item>
+    <item android:state_pressed="false" android:drawable="@drawable/get_btn"></item>
+</selector><!-- From: file:/Users/apple/Documents/Project/Android/HideSeek/app/src/main/res/drawable/get_btn_back.xml -->

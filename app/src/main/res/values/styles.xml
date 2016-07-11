@@ -1,0 +1,97 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="IntroduceButton">
+        <item name="android:layout_height">23dp</item>
+        <item name="android:layout_width">55dp</item>
+        <item name="android:background">@drawable/introduce_btn_back</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="AccountLayout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/login_edittext_back</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:paddingBottom">3dp</item>
+    </style>
+
+    <style name="CrossBarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:background">@drawable/cross_bar_back</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="LoginEditText">
+        <item name="android:layout_width">220dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColorHint">@color/gray_858583</item>
+    </style>
+
+    <style name="RegisterEditText">
+        <item name="android:layout_width">220dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColorHint">@color/gray_858583</item>
+    </style>
+
+    <style name="AnimationStyle" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
+    <style name="AlertDialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="MapDialog" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="LoadingDialog" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@drawable/loading_back</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="MessageDialog" parent="android:Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MessageAnimationStyle" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/message_dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/message_dialog_exit</item>
+    </style>
+
+    <style name="RegisterTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Widget_GifView">
+
+    </style>
+</resources>
