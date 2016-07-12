@@ -215,6 +215,12 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             }
         }
         mGoalImageView.setVisibility(View.INVISIBLE);
+
+        mDistance = AMapUtils.calculateLineDistance(
+                new LatLng(mStartLatLng.getLatitude(), mStartLatLng.getLongitude()),
+                new LatLng(mEndLatLng.getLatitude(), mEndLatLng.getLongitude()));
+        mDistanceTextView.setText(MathUtil.round(mDistance) + "m");
+        LogUtil.d(TAG, "distance: " + MathUtil.round(mDistance) + "m");
     }
 
     @Override
@@ -544,12 +550,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         }
 
         setGoalsOnMap(updateGoals);
-
-        mDistance = AMapUtils.calculateLineDistance(
-                new LatLng(mStartLatLng.getLatitude(), mStartLatLng.getLongitude()),
-                new LatLng(mEndLatLng.getLatitude(), mEndLatLng.getLongitude()));
-        mDistanceTextView.setText(MathUtil.round(mDistance) + "m");
-        LogUtil.d(TAG, "distance: " + MathUtil.round(mDistance) + "m");
 
         CheckIfGoalDisplayed();
         mNetworkHelper.closeLock();

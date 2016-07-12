@@ -11,7 +11,7 @@ public enum SharedPreferenceSettings {
     RACE_GROUP_RECORD_MIN_ID("raceGroupRecordMinId", (long)0),
     FRIEND_VERSION("friendVersion", (long)0),
     RECORD_VERSION("recordVersion", (long)0),
-    RECORD_MIN_ID("raceGroupRecordMinId", (long)0),
+    RECORD_MIN_ID("recordMinId", (long)0),
     SCORE_SUM("scoreSum", 0);
 
     private final String mId;

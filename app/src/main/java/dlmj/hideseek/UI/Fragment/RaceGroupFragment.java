@@ -132,17 +132,19 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                List<RaceGroup> raceGroupList = RaceGroupCache.getInstance(getActivity()).
-                        getMoreRaceGroup(10);
+                if(mRaceGroupList.size() >= 10) {
+                    List<RaceGroup> raceGroupList = RaceGroupCache.getInstance(getActivity()).
+                            getMoreRaceGroup(10);
 
-                if(raceGroupList.size() == 0) {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
-                    params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
-                    mGetRaceGroupNetworkHelper.sendPostRequest(UrlParams.GET_RACE_GROUP_URL, params);
-                } else {
-                    mRaceGroupList.addAll(raceGroupList);
-                    mRaceGroupAdapter.notifyDataSetChanged();
+                    if(raceGroupList.size() == 0) {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
+                        params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                        mGetRaceGroupNetworkHelper.sendPostRequest(UrlParams.GET_RACE_GROUP_URL, params);
+                    } else {
+                        mRaceGroupList.addAll(raceGroupList);
+                        mRaceGroupAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         });
