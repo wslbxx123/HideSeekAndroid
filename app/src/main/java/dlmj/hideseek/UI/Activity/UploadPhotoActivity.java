@@ -36,6 +36,7 @@ import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.View.CircleImageView;
 import dlmj.hideseek.UI.View.CustomSuperToast;
+import dlmj.hideseek.UI.View.LoadingDialog;
 
 /**
  * Created by Two on 5/4/16.
@@ -60,6 +61,7 @@ public class UploadPhotoActivity extends Activity {
     private Button mRegisterButton;
     private String mImagePath;
     private CustomSuperToast mToast;
+    private LoadingDialog mLoadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +128,7 @@ public class UploadPhotoActivity extends Activity {
         mRegionTextView = (TextView) findViewById(R.id.regionTextView);
         mRegisterButton = (Button) findViewById(R.id.registerButton);
         mToast = new CustomSuperToast(this);
+        mLoadingDialog = new LoadingDialog(this);
     }
 
     private void setListener() {
@@ -158,6 +161,10 @@ public class UploadPhotoActivity extends Activity {
 
                     UserCache.getInstance().setUser(userStr);
 
+                    if(mLoadingDialog.isShowing()) {
+                        mLoadingDialog.dismiss();
+                    }
+
                     if(code == CodeParams.SUCCESS) {
                         Intent intent = new Intent(UploadPhotoActivity.this, MatchRoleActivity.class);
                         startActivity(intent);
@@ -173,6 +180,10 @@ public class UploadPhotoActivity extends Activity {
         mErrorListener = new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if(mLoadingDialog.isShowing()) {
+                    mLoadingDialog.dismiss();
+                }
+
                 mToast.show(getString(R.string.error_connect_network_failed));
             }
         };
@@ -237,6 +248,9 @@ public class UploadPhotoActivity extends Activity {
                     file = new File(mImagePath);
                 }
 
+                if (!mLoadingDialog.isShowing()) {
+                    mLoadingDialog.show();
+                }
                 mMultipartRequest = new MultipartRequest(UrlParams.REGISTER_URL, mListener,
                         mErrorListener, "photo", file, map);
                 VolleyQueueController.getInstance(UploadPhotoActivity.this)
