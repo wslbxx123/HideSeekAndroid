@@ -71,7 +71,7 @@ public class RecordCache extends BaseCache<Record>{
         mVersion = mRecordTableManager.getVersion();
     }
 
-    public List<Record> saveRecords(String recordsStr) {
+    public void saveRecords(String recordsStr) {
         List<Record> list = new LinkedList<>();
         try {
             JSONObject jsonObject = new JSONObject(recordsStr);
@@ -98,6 +98,7 @@ public class RecordCache extends BaseCache<Record>{
                             record.getInt("score_sum"),
                             record.getLong("version")));
 
+                    mCurrentDate =  dateStr;
                     list.add(new Record(mCurrentDate, new LinkedList<>(mRecordItems)));
                     mRecordItems.clear();
                 }
@@ -134,8 +135,6 @@ public class RecordCache extends BaseCache<Record>{
             LogUtil.e(TAG, e.getMessage());
             e.printStackTrace();
         }
-
-        return mList;
     }
 
     public List<Record> getMoreRecords(int count) {
