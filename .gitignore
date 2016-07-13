@@ -5,3 +5,5 @@
 .DS_Store
 /build
 /app/build
+/resources/Volley/build
+/resources/PullToRefresh/build
