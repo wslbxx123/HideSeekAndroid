@@ -2,7 +2,6 @@ package dlmj.hideseek;
 
 import android.app.Application;
 
-import com.baidu.mapapi.SDKInitializer;
 import com.baidu.navisdk.adapter.BaiduNaviManager;
 
 import java.io.File;
@@ -19,6 +18,10 @@ public class HideSeekApplication extends Application {
     private static HideSeekApplication mInstance;
     private BaiduNaviManager.NaviInitListener mNavigationInitListener;
 
+    /**
+     * 获取应用程序实例(其实我是来测试的)
+     * @return HideSeekApplication
+     */
     public static HideSeekApplication getInstance() {
         if (mInstance == null) {
             LogUtil.w(TAG, "[HideSeekApplication] instance is null.");
