@@ -47,7 +47,7 @@ public class HideSeekApplication extends Application {
     }
 
     /**
-     * Initialize the directory of this project.
+     * Initialize the directory of this project.初始化
      * @return the boolean that indicates if initialize the directory successfully.
      */
     private boolean initDirs() {
