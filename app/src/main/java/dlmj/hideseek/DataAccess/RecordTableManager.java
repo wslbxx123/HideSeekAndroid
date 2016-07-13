@@ -127,6 +127,7 @@ public class RecordTableManager {
                         cursor.getLong(cursor.getColumnIndex("version"))
                 ));
 
+                currentDate = dateStr;
                 recordList.add(new Record(currentDate, new LinkedList<>(recordItems)));
                 recordItems.clear();
             }

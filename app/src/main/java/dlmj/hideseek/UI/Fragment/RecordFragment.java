@@ -98,7 +98,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
         mGetRecordNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
-                RaceGroupCache.getInstance(getActivity()).addRaceGroup(data.getResult());
+                RecordCache.getInstance(getActivity()).setRecords(data.getResult());
 
                 mRecordList.clear();
                 mRecordList.addAll(RecordCache.getInstance(getActivity()).getList());
