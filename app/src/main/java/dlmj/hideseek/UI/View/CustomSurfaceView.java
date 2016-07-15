@@ -60,11 +60,6 @@ public class CustomSurfaceView extends SurfaceView implements SurfaceHolder.Call
                 if(canvas != null) {
                     mHolder.unlockCanvasAndPost(canvas);
                 }
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
 

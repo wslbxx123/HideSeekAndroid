@@ -79,7 +79,7 @@ public class RecordCache extends BaseCache<Record>{
                     mRecordTableManager.getVersion();
             long recordMinId = jsonObject.getLong("record_min_id");
             String recordListStr = jsonObject.getString("scores");
-            mScoreSum = jsonObject.getInt("score_sum");
+            mScoreSum = jsonObject.has("score_sum") ? jsonObject.getInt("score_sum") : mScoreSum;
             JSONArray recordList = new JSONArray(recordListStr);
             String recordStr;
             mCurrentDate =  null;
@@ -140,6 +140,14 @@ public class RecordCache extends BaseCache<Record>{
     public List<Record> getMoreRecords(int count) {
         List<Record> recordList = mRecordTableManager.getMoreRecords(count, mVersion);
 
+        if(recordList.size() > 0) {
+            Record lastRecord = mList.get(mList.size() - 1);
+            Record firstRecord = recordList.get(0);
+            if(lastRecord.getDate().equals(firstRecord.getDate())) {
+                lastRecord.getRecordItems().addAll(firstRecord.getRecordItems());
+                recordList.remove(firstRecord);
+            }
+        }
         return recordList;
     }
 }

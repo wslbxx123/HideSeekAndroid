@@ -124,17 +124,19 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                List<Record> recordList = RecordCache.getInstance(getActivity()).
-                        getMoreRecords(10);
+                if(getRecordCount() >= 10) {
+                    List<Record> recordList = RecordCache.getInstance(getActivity()).
+                            getMoreRecords(10);
 
-                if(recordList.size() == 0) {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("version", RecordTableManager.getInstance(getActivity()).getVersion() + "");
-                    params.put("record_min_id", RecordTableManager.getInstance(getActivity()).getRecordMinId() + "");
-                    mGetRecordNetworkHelper.sendPostRequest(UrlParams.GET_RECORD_URL, params);
-                } else {
-                    mRecordList.addAll(recordList);
-                    mRecordAdapter.notifyDataSetChanged();
+                    if(recordList.size() == 0) {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("version", RecordTableManager.getInstance(getActivity()).getVersion() + "");
+                        params.put("record_min_id", RecordTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                        mGetRecordNetworkHelper.sendPostRequest(UrlParams.GET_RECORD_URL, params);
+                    } else {
+                        mRecordList.addAll(recordList);
+                        mRecordAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         });
@@ -155,5 +157,15 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
 
+    }
+
+    public int getRecordCount() {
+        int count = 0;
+
+        for(Record record : mRecordList) {
+            count += record.getRecordItems().size();
+        }
+
+        return count;
     }
 }

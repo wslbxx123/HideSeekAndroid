@@ -20,13 +20,15 @@ import dlmj.hideseek.R;
  * Created by Two on 7/13/16.
  */
 public class GameView extends CustomSurfaceView{
-    private static String TAG = "GameView";
-    private static int FLING_COUNT = 5;
+    private final static String TAG = "GameView";
+    private final static int FLING_COUNT = 5;
+    private final static int MONSTER_SLEEP_COUNT = 20;
     private Paint mPaint;
     private boolean mIfGoalDisplayed = false;
     private int height, width;
     private int x = 0;
     private int[] mBitmapIDList;
+    private int[] mSwordIDList;
     private int mIndex = 0;
     private int mWaitIndex = 0;
     private Bitmap mGoalBitmap;
@@ -34,6 +36,10 @@ public class GameView extends CustomSurfaceView{
     private boolean mFlingVisible = true;
     private boolean mIfGoalFling = false;
     private int mFlingIndex = 0;
+    private int mSleepIndex = 0;
+    private Bitmap mSwordBitmap;
+    private int mSwordIndex = 0;
+    private boolean mSwordIfDisplayed = false;
 
     public GameView(Context context) {
         this(context, null);
@@ -42,6 +48,16 @@ public class GameView extends CustomSurfaceView{
     public GameView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         mPaint = new Paint();
+        setSwordList();
+    }
+
+    public void setSwordList() {
+        TypedArray array = getResources().obtainTypedArray(R.array.sword);
+        mSwordIDList = new int[array.length()];
+        for(int i = 0; i < array.length(); i++) {
+            mSwordIDList[i] = array.getResourceId(i, 0);
+        }
+        array.recycle();
     }
 
     @Override
@@ -60,23 +76,39 @@ public class GameView extends CustomSurfaceView{
             drawGoal(canvas);
         }
 
-        if(mIfGoalFling) {
-            mFlingVisible = !mFlingVisible;
-            LogUtil.d(TAG, mFlingVisible ? "true":"false");
-            mFlingIndex++;
-
-            if(mFlingIndex > FLING_COUNT) {
-                mIfGoalFling = false;
-                mFlingVisible = true;
-                mFlingIndex = 0;
-            }
+        if(mSwordIfDisplayed) {
+            drawBlade(canvas);
         }
 
-        drawBlade(canvas);
+        if(mSleepIndex % 3 == 0 && mIfGoalFling) {
+            setGoalFling();
+        }
+
+        mSleepIndex++;
+
+        if(mSleepIndex >= MONSTER_SLEEP_COUNT) {
+            mSleepIndex = 0;
+        }
     }
 
     private void drawBlade(Canvas canvas) {
+        if(mSwordBitmap != null) {
+            mSwordBitmap.recycle();
+        }
 
+        if(mSwordIndex <= mSwordIDList.length - 1) {
+            mSwordBitmap = BitmapFactory.decodeResource(getResources(), mSwordIDList[mSwordIndex]);
+            canvas.drawBitmap(mSwordBitmap, (width - mSwordBitmap.getWidth()) / 2,
+                    (height - mSwordBitmap.getHeight()) / 2, mPaint);
+            mSwordIndex++;
+
+            if(mSwordIndex == mSwordIDList.length - 1) {
+                mIfGoalFling = true;
+            }
+        } else {
+            mSwordIfDisplayed = false;
+            mSwordIndex = 0;
+        }
     }
 
     private void drawGoal(Canvas canvas) {
@@ -98,17 +130,29 @@ public class GameView extends CustomSurfaceView{
                 mWaitIndex++;
             }
 
-            LogUtil.d(TAG, "Width: " + width + ", Height: " + height);
-            LogUtil.d(TAG, "x: " + (width - mGoalBitmap.getWidth()) / 2 + ", " +
-                    "y: " + (height - mGoalBitmap.getHeight()) / 2);
             canvas.drawBitmap(mGoalBitmap, (width - mGoalBitmap.getWidth()) / 2,
-                    (height - mGoalBitmap.getHeight()) / 2, mPaint);
-            mIndex++;
+                    height - mGoalBitmap.getHeight(), mPaint);
+
+            if(mSleepIndex == 0) {
+                mIndex++;
+            }
+        }
+    }
+
+    public void setGoalFling() {
+        mFlingVisible = !mFlingVisible;
+        mFlingIndex++;
+
+        if(mFlingIndex > FLING_COUNT) {
+            mIfGoalFling = false;
+            mFlingVisible = true;
+            mFlingIndex = 0;
         }
     }
 
     public void hitMonster() {
-        mIfGoalFling = true;
+        mSwordIfDisplayed = true;
+        mSwordIndex = 0;
     }
 
     public void setGoal(Goal goal) {

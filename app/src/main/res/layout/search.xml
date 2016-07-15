@@ -125,8 +125,8 @@
 
     <dlmj.hideseek.UI.View.GameView
         android:id="@+id/gameView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_marginBottom="250dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"/>
