@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
-import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -21,7 +19,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -68,6 +65,7 @@ import dlmj.hideseek.UI.Activity.NavigationActivity;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
 import dlmj.hideseek.UI.View.CustomSuperToast;
+import dlmj.hideseek.UI.View.GameView;
 
 /**
  * Created by Two on 4/29/16.
@@ -76,10 +74,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         CameraSurfaceView.OnCreateListener, LocationSource, AMapLocationListener,
         UIDataListener<Bean>, SensorEventListener, AMap.OnMapLoadedListener {
     private final String TAG = "Search Fragment";
-    private final long EXPLODE_DURATION = 600;
-    private final long HIT_MONSTER_DURATION = 450;
-    private final int MSG_GOAL_VISIBLE = 3;
-    private final int MSG_GOAL_INVISIBLE = 2;
     private float mPreviewRate = -1f;
     private CameraSurfaceView mSurfaceView = null;
     private MapView mMapView;
@@ -105,36 +99,14 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private Button mGetButton;
     private Hashtable<Long, Marker> mMarkerHashTable = new Hashtable<>();
     private LinearLayout mDistanceLayout;
-    private Animation mAnim;
-    private ImageView mGoalImageView;
     private boolean mIsExploding = false;
-    private Handler mHandler;
-    private boolean mIfHittingMonster = false;
     private CustomSuperToast mErrorSuperToast;
-    private boolean mIfGoalVisible = false;
-    private boolean mIfAnimFinished = false;
     private ErrorMessageFactory mErrorMessageFactory;
     private TextView mOverlayTextVew;
     private WindowManager mWindowManager;
     private OverlayThread mOverlayThread;
-    private Handler mUiHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_GOAL_VISIBLE:
-                    mGoalImageView.setVisibility(View.VISIBLE);
-                    mIfGoalVisible = true;
-                    break;
-                case MSG_GOAL_INVISIBLE:
-                    mGoalImageView.clearAnimation();
-                    mGoalImageView.setVisibility(View.INVISIBLE);
-                    mIfGoalVisible = false;
-                    break;
-                case OverlayThread.HIDE_OVERLAY:
-                    mOverlayTextVew.setVisibility(View.INVISIBLE);
-                    break;
-            }
-        }
-    };
+    private GameView mGameView;
+    private Handler mUiHandler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -185,8 +157,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         List<Goal> goals = GoalCache.getInstance().getList();
 
         setGoalsOnMap(goals);
-        mIfAnimFinished = false;
-
         List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
 
         if (sensors.size() > 0){
@@ -203,18 +173,10 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mEndGoal = GoalCache.getInstance().getSelectedGoal();
 
         if(mEndGoal != null) {
+            mGameView.setGoal(mEndGoal);
             mEndLatLng.setLatitude(mEndGoal.getLatitude());
             mEndLatLng.setLongitude(mEndGoal.getLongitude());
-
-            if(mEndGoal.getType() == Goal.GoalTypeEnum.bomb) {
-                mGoalImageView.setBackgroundResource(mEndGoal.getType().toDrawable());
-                mGoalImageView.setImageResource(0);
-            } else {
-                mGoalImageView.setImageResource(mEndGoal.getType().toDrawable());
-                mGoalImageView.setBackgroundResource(0);
-            }
         }
-        mGoalImageView.setVisibility(View.INVISIBLE);
 
         mDistance = AMapUtils.calculateLineDistance(
                 new LatLng(mStartLatLng.getLatitude(), mStartLatLng.getLongitude()),
@@ -275,7 +237,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mSensorManager =  (SensorManager) getActivity().
                 getSystemService(Context.SENSOR_SERVICE);
 
-        mAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.bling);
         mErrorSuperToast = new CustomSuperToast(getActivity());
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
     }
@@ -284,9 +245,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mSurfaceView = (CameraSurfaceView) view.findViewById(R.id.cameraSurfaceView);
         mSurfaceView.setOnCreateListener(this);
 
-        mGoalImageView = (ImageView) view.findViewById(R.id.goalImageView);
-        mGoalImageView.setImageResource(R.drawable.mushroom);
-
         mMapView = (MapView) view.findViewById(R.id.mapView);
         mMap = mMapView.getMap();
 
@@ -294,6 +252,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mDistanceTextView = (TextView) view.findViewById(R.id.distanceTextView);
         mGetButton = (Button) view.findViewById(R.id.getButton);
         mDistanceLayout = (LinearLayout) view.findViewById(R.id.distanceLayout);
+        mGameView = (GameView) view.findViewById(R.id.gameView);
     }
 
     private void setLayer(String layerName) {
@@ -370,36 +329,16 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             }
         });
 
-        mAnim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (mEndGoal.getType() == Goal.GoalTypeEnum.monster){
-                    mIfAnimFinished = true;
-                }
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
         mGetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LogUtil.d(TAG, "VISIBLE: " + mGoalImageView.getVisibility());
-                if(mIfGoalVisible) {
+                if(mGameView.getGoalDisplayed()) {
                     switch(mEndGoal.getType()) {
                         case mushroom:
                             if(GoalCache.getInstance().getHasSelectMushroom() && !mEndGoal.isEnabled()) {
                                 mErrorSuperToast.show(getActivity().getString(R.string.warning_not_enabled));
                             } else {
-                                mGoalImageView.setVisibility(View.INVISIBLE);
+                                mGameView.hideGoal();
 
                                 Map<String, String> params = new HashMap<>();
                                 params.put("goal_id", mEndGoal.getPkId() + "");
@@ -413,39 +352,18 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                             }
                             break;
                         case monster:
-                            startMonsterAnimation();
-                            mIfHittingMonster = true;
-                            mHandler = new Handler();
-                            mHandler.postDelayed(new Runnable() {
-                                public void run() {
-                                    LogUtil.d(TAG, "Animation of hitting monster finished");
-                                    mGoalImageView.setImageResource(mEndGoal.getType().toDrawable());
-                                    mGoalImageView.setBackgroundResource(0);
-
-                                    Map<String, String> params = new HashMap<>();
-                                    params.put("goal_id", mEndGoal.getPkId() + "");
-                                    User user = UserCache.getInstance().getUser();
-                                    params.put("account_role", user.getRole().getValue() + "");
-                                    mHitMonsterNetworkHelper.sendPostRequest(
-                                            UrlParams.HIT_MONSTER_URL, params);
-                                    mIfHittingMonster = false;
-                                }
-                            }, HIT_MONSTER_DURATION);
+                            mGameView.hitMonster();
+//                            Map<String, String> params = new HashMap<>();
+//                            params.put("goal_id", mEndGoal.getPkId() + "");
+//                            User user = UserCache.getInstance().getUser();
+//                            params.put("account_role", user.getRole().getValue() + "");
+//                            mHitMonsterNetworkHelper.sendPostRequest(
+//                                    UrlParams.HIT_MONSTER_URL, params);
                             break;
                     }
                 }
             }
         });
-    }
-
-    private void startMonsterAnimation() {
-        mGoalImageView.clearAnimation();
-        mGoalImageView.setImageResource(0);
-        mGoalImageView.setBackgroundResource(R.drawable.hit_monster);
-
-        AnimationDrawable animationDrawable = (AnimationDrawable)
-                mGoalImageView.getBackground();
-        animationDrawable.start();
     }
 
     private void setUpMap() {
@@ -611,53 +529,54 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                     mDistance < 20 && mEndGoal.getValid()) {
                 LogUtil.d(TAG, "Goal is displayed");
 
-                switch(mEndGoal.getType()) {
-                    case bomb:
-                        if(mGoalImageView.getBackground() instanceof AnimationDrawable &&
-                                !mIsExploding && mEndGoal.isEnabled()) {
-                            LogUtil.d(TAG, "Animation Start!");
-                            Message.obtain(mUiHandler, MSG_GOAL_VISIBLE).sendToTarget();
-                            AnimationDrawable animationDrawable = (AnimationDrawable)
-                                    mGoalImageView.getBackground();
-                            animationDrawable.start();
-                            mIsExploding = true;
-                            mGetButton.setEnabled(false);
+                mGameView.showGoal();
 
-                            mHandler = new Handler();
-                            mHandler.postDelayed(new Runnable() {
-                                public void run() {
-                                    LogUtil.d(TAG, "Animation finished");
-
-                                    Map<String, String> params = new HashMap<>();
-                                    params.put("goal_id", mEndGoal.getPkId() + "");
-                                    params.put("goal_type", mEndGoal.getType().getValue() + "");
-                                    mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
-                                    updateEndGoal();
-                                    mOverlayTextVew.setText(getString(R.string.minus_one_score));
-                                    mOverlayTextVew.setVisibility(View.VISIBLE);
-                                    mUiHandler.removeCallbacks(mOverlayThread);
-                                    mUiHandler.postDelayed(mOverlayThread, 1000);
-                                    mGetButton.setEnabled(true);
-                                    mIsExploding = false;
-                                }
-                            }, EXPLODE_DURATION);
-                        }
-                        break;
-                    case monster:
-                        if(!mIfAnimFinished && !mIfHittingMonster) {
-                            Message.obtain(mUiHandler, MSG_GOAL_VISIBLE).sendToTarget();
-                            mGoalImageView.startAnimation(mAnim);
-                        }
-                        break;
-                    case mushroom:
-                    default:
-                        Message.obtain(mUiHandler, MSG_GOAL_VISIBLE).sendToTarget();
-//                        mGoalImageView.startAnimation(mAnim);
-                }
+//                switch(mEndGoal.getType()) {
+//                    case bomb:
+//                        if(mGoalImageView.getBackground() instanceof AnimationDrawable &&
+//                                !mIsExploding && mEndGoal.isEnabled()) {
+//                            LogUtil.d(TAG, "Animation Start!");
+//                            mIfGoalVisible = true;
+//                            AnimationDrawable animationDrawable = (AnimationDrawable)
+//                                    mGoalImageView.getBackground();
+//                            animationDrawable.start();
+//                            mIsExploding = true;
+//                            mGetButton.setEnabled(false);
+//
+//                            mHandler = new Handler();
+//                            mHandler.postDelayed(new Runnable() {
+//                                public void run() {
+//                                    LogUtil.d(TAG, "Animation finished");
+//
+//                                    Map<String, String> params = new HashMap<>();
+//                                    params.put("goal_id", mEndGoal.getPkId() + "");
+//                                    params.put("goal_type", mEndGoal.getType().getValue() + "");
+//                                    mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
+//                                    updateEndGoal();
+//                                    mOverlayTextVew.setText(getString(R.string.minus_one_score));
+//                                    mOverlayTextVew.setVisibility(View.VISIBLE);
+//                                    mUiHandler.removeCallbacks(mOverlayThread);
+//                                    mUiHandler.postDelayed(mOverlayThread, 1000);
+//                                    mGetButton.setEnabled(true);
+//                                    mIsExploding = false;
+//                                }
+//                            }, EXPLODE_DURATION);
+//                        }
+//                        break;
+//                    case monster:
+//                        if(!mIfAnimFinished && !mIfHittingMonster) {
+//                            mIfGoalVisible = true;
+//                            mGoalImageView.startAnimation(mAnim);
+//                        }
+//                        break;
+//                    case mushroom:
+//                    default:
+//                        mIfGoalVisible = true;
+////                        mGoalImageView.startAnimation(mAnim);
+//                }
             } else if(!mIsExploding){
                 LogUtil.d(TAG, "Goal is hidden");
-                Message.obtain(mUiHandler, MSG_GOAL_INVISIBLE).sendToTarget();
-                mIfAnimFinished = false;
+                mGameView.hideGoal();
             }
         }
     }

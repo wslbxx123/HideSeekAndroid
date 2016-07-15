@@ -123,11 +123,11 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="130dp"/>
 
-    <ImageView
-        android:id="@+id/goalImageView"
+    <dlmj.hideseek.UI.View.GameView
+        android:id="@+id/gameView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginBottom="250dp"
         android:layout_centerHorizontal="true"
-        android:visibility="invisible"/>
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>
