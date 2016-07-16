@@ -31,6 +31,7 @@ import dlmj.hideseek.R;
 
 /**
  * Created by Two on 5/18/16.
+ * 导航
  */
 public class NavigationActivity extends Activity implements
         AMapNaviViewListener, AMapNaviListener {

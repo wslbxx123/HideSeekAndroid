@@ -68,7 +68,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <!--首页-->
         <activity
             android:name=".UI.Activity.IntroduceActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">

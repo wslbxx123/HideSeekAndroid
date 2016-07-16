@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HideSeek.iml" filepath="$PROJECT_DIR$/HideSeek.iml" />
       <module fileurl="file://$PROJECT_DIR$/HideSeekAndroid.iml" filepath="$PROJECT_DIR$/HideSeekAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/resources/PullToRefresh/PullToRefresh.iml" filepath="$PROJECT_DIR$/resources/PullToRefresh/PullToRefresh.iml" />
       <module fileurl="file://$PROJECT_DIR$/resources/Volley/Volley.iml" filepath="$PROJECT_DIR$/resources/Volley/Volley.iml" />
@@ -10,4 +9,3 @@
     </modules>
   </component>
 </project>
-

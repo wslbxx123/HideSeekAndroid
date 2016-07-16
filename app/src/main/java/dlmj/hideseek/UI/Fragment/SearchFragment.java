@@ -71,6 +71,7 @@ import dlmj.hideseek.UI.View.CustomSuperToast;
 
 /**
  * Created by Two on 4/29/16.
+ * 主页fragment
  */
 public class SearchFragment extends Fragment implements CameraInterface.CamOpenOverCallback,
         CameraSurfaceView.OnCreateListener, LocationSource, AMapLocationListener,
@@ -138,8 +139,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        initOverlay();
 
+        initOverlay();
         if(rootView == null) {
             rootView = inflater.inflate(R.layout.search, null);
             initData();
@@ -157,8 +158,10 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     }
 
     private void initOverlay() {
+        //获取xml布局文件
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         mOverlayTextVew = (TextView) inflater.inflate(R.layout.score_overlay, null);
+        //设置字体类型
         Typeface fontFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/score_font.ttf");
         mOverlayTextVew.setTypeface(fontFace);
         mOverlayTextVew.setVisibility(View.INVISIBLE);
@@ -198,7 +201,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         }
         setEndGoal();
     }
-
+    //设置目标
     private void setEndGoal() {
         mEndGoal = GoalCache.getInstance().getSelectedGoal();
 
@@ -271,7 +274,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mNetworkHelper = new NetworkHelper(getActivity());
         mGetGoalNetworkHelper = new NetworkHelper(getActivity());
         mHitMonsterNetworkHelper = new NetworkHelper(getActivity());
-
+        //传感器
         mSensorManager =  (SensorManager) getActivity().
                 getSystemService(Context.SENSOR_SERVICE);
 
@@ -550,7 +553,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         }
 
         setGoalsOnMap(updateGoals);
-
         CheckIfGoalDisplayed();
         mNetworkHelper.closeLock();
     }

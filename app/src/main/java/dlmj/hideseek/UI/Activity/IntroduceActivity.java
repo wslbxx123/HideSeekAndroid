@@ -14,7 +14,7 @@ import dlmj.hideseek.UI.Fragment.RaceGroupFragment;
 import dlmj.hideseek.UI.Fragment.ProfileFragment;
 import dlmj.hideseek.UI.Fragment.RecordFragment;
 import dlmj.hideseek.UI.Fragment.SearchFragment;
-
+//首页
 public class IntroduceActivity extends FragmentActivity{
     private final String TAG = "Introduce Activity";
     public static final int REGISTER_CODE = 300;
