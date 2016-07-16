@@ -71,7 +71,8 @@ import dlmj.hideseek.UI.View.GameView;
 public class SearchFragment extends Fragment implements CameraInterface.CamOpenOverCallback,
         CameraSurfaceView.OnCreateListener, LocationSource, AMapLocationListener,
         UIDataListener<Bean>, SensorEventListener, AMap.OnMapLoadedListener {
-    private final String TAG = "Search Fragment";
+    private final static int REFRESH_MAP_INTERVAL = 5000;
+    private final static String TAG = "Search Fragment";
     private float mPreviewRate = -1f;
     private CameraSurfaceView mSurfaceView = null;
     private MapView mMapView;
@@ -105,6 +106,14 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private OverlayThread mOverlayThread;
     private GameView mGameView;
     private Handler mUiHandler = new Handler();
+    private Handler mRefreshMapHandler = new Handler();
+    private boolean mLocationFlag = false;
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            refreshMap();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -123,6 +132,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         if (parent != null) {
             parent.removeView(rootView);
         }
+
+        mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
         return rootView;
     }
 
@@ -167,6 +178,33 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         setEndGoal();
     }
 
+    private void refreshMap() {
+        if(mLongitude == 0 || mLatitude == 0) {
+            return;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("latitude", mLatitude + "");
+        params.put("longitude", mLongitude + "");
+
+        mStartLatLng.setLatitude(mLatitude);
+        mStartLatLng.setLongitude(mLongitude);
+
+        String updateTime = GoalCache.getInstance().getUpdateTime();
+        LogUtil.d(TAG, updateTime);
+        if(updateTime != null && !updateTime.equals("null")) {
+            params.put("update_time", updateTime);
+        }
+
+        User user = UserCache.getInstance().getUser();
+        if(user != null) {
+            params.put("account_role", user.getRole().getValue() + "");
+            mNetworkHelper.sendPostRequest(UrlParams.REFRESH_MAP_URL, params);
+        } else {
+            mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_MAP_URL, params);
+        }
+    }
+
     private void setEndGoal() {
         mEndGoal = GoalCache.getInstance().getSelectedGoal();
 
@@ -186,6 +224,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     @Override
     public void onDestroyView() {
         mWindowManager.removeView(mOverlayTextVew);
+        mRefreshMapHandler.removeCallbacks(mRunnable);
 
         super.onDestroyView();
     }
@@ -382,29 +421,12 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                 mLatitude = aMapLocation.getLatitude();
                 mLongitude = aMapLocation.getLongitude();
 
+                if(!mLocationFlag) {
+                    refreshMap();
+                    mLocationFlag = true;
+                }
                 LogUtil.d(TAG, "Latitude: " + mLatitude +
                         ";Longitude: " + mLongitude);
-
-                Map<String, String> params = new HashMap<>();
-                params.put("latitude", mLatitude + "");
-                params.put("longitude", mLongitude + "");
-
-                mStartLatLng.setLatitude(mLatitude);
-                mStartLatLng.setLongitude(mLongitude);
-
-                String updateTime = GoalCache.getInstance().getUpdateTime();
-                LogUtil.d(TAG, updateTime);
-                if(updateTime != null && !updateTime.equals("null")) {
-                    params.put("update_time", updateTime);
-                }
-
-                User user = UserCache.getInstance().getUser();
-                if(user != null) {
-                    params.put("account_role", user.getRole().getValue() + "");
-                }
-
-                mNetworkHelper.sendPostRequest(UrlParams.REFRESH_MAP_URL, params);
-                mNetworkHelper.openLock();
 
             } else{
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ": " +
@@ -468,7 +490,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         setGoalsOnMap(updateGoals);
 
         CheckIfGoalDisplayed();
-        mNetworkHelper.closeLock();
     }
 
     @Override
