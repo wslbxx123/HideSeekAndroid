@@ -120,6 +120,11 @@
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
         </activity>
 
+        <activity
+            android:name=".UI.Activity.StoreActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
+        </activity>
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

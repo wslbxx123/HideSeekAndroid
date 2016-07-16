@@ -18,7 +18,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="color/white"
+        android:background="@color/white"
         android:layout_alignParentBottom="true">
 
         <LinearLayout
@@ -112,6 +112,27 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/monster_handbook"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="7dp"
+        android:layout_width="43dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/bomb_throw_selector"
+       />
+
+    <ImageView
+        android:id="@+id/bomb_throw"
+        android:layout_marginTop="7dp"
+        android:layout_below="@id/monster_handbook"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/monster_handbook_seclector"/>
 
     <Button
         android:id="@+id/getButton"

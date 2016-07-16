@@ -67,6 +67,7 @@ import dlmj.hideseek.UI.View.GameView;
 
 /**
  * Created by Two on 4/29/16.
+ * 主页fragment
  */
 public class SearchFragment extends Fragment implements CameraInterface.CamOpenOverCallback,
         CameraSurfaceView.OnCreateListener, LocationSource, AMapLocationListener,
@@ -116,6 +117,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         initOverlay();
 
         if(rootView == null) {
@@ -131,14 +133,14 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         if (parent != null) {
             parent.removeView(rootView);
         }
-
-        mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
         return rootView;
     }
 
     private void initOverlay() {
+        //获取xml布局文件
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         mOverlayTextVew = (TextView) inflater.inflate(R.layout.score_overlay, null);
+        //设置字体类型
         Typeface fontFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/score_font.ttf");
         mOverlayTextVew.setTypeface(fontFace);
         mOverlayTextVew.setVisibility(View.INVISIBLE);
@@ -270,7 +272,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mNetworkHelper = new NetworkHelper(getActivity());
         mGetGoalNetworkHelper = new NetworkHelper(getActivity());
         mHitMonsterNetworkHelper = new NetworkHelper(getActivity());
-
+        //传感器
         mSensorManager =  (SensorManager) getActivity().
                 getSystemService(Context.SENSOR_SERVICE);
 
