@@ -67,7 +67,6 @@ import dlmj.hideseek.UI.View.GameView;
 
 /**
  * Created by Two on 4/29/16.
- * 主页fragment
  */
 public class SearchFragment extends Fragment implements CameraInterface.CamOpenOverCallback,
         CameraSurfaceView.OnCreateListener, LocationSource, AMapLocationListener,
@@ -106,11 +105,19 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private OverlayThread mOverlayThread;
     private GameView mGameView;
     private Handler mUiHandler = new Handler();
+    private Handler mRefreshMapHandler = new Handler();
+    private boolean mLocationFlag = false;
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            refreshMap();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         initOverlay();
+
         if(rootView == null) {
             rootView = inflater.inflate(R.layout.search, null);
             initData();
@@ -124,14 +131,14 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         if (parent != null) {
             parent.removeView(rootView);
         }
+
+        mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
         return rootView;
     }
 
     private void initOverlay() {
-        //获取xml布局文件
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         mOverlayTextVew = (TextView) inflater.inflate(R.layout.score_overlay, null);
-        //设置字体类型
         Typeface fontFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/score_font.ttf");
         mOverlayTextVew.setTypeface(fontFace);
         mOverlayTextVew.setVisibility(View.INVISIBLE);
@@ -169,6 +176,34 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         }
         setEndGoal();
     }
+
+    private void refreshMap() {
+        if(mLongitude == 0 || mLatitude == 0) {
+            return;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("latitude", mLatitude + "");
+        params.put("longitude", mLongitude + "");
+
+        mStartLatLng.setLatitude(mLatitude);
+        mStartLatLng.setLongitude(mLongitude);
+
+        String updateTime = GoalCache.getInstance().getUpdateTime();
+        LogUtil.d(TAG, updateTime);
+        if(updateTime != null && !updateTime.equals("null")) {
+            params.put("update_time", updateTime);
+        }
+
+        User user = UserCache.getInstance().getUser();
+        if(user != null) {
+            params.put("account_role", user.getRole().getValue() + "");
+            mNetworkHelper.sendPostRequest(UrlParams.REFRESH_MAP_URL, params);
+        } else {
+            mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_MAP_URL, params);
+        }
+    }
+
     //设置目标
     private void setEndGoal() {
         mEndGoal = GoalCache.getInstance().getSelectedGoal();
@@ -189,6 +224,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     @Override
     public void onDestroyView() {
         mWindowManager.removeView(mOverlayTextVew);
+        mRefreshMapHandler.removeCallbacks(mRunnable);
 
         super.onDestroyView();
     }
@@ -234,7 +270,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mNetworkHelper = new NetworkHelper(getActivity());
         mGetGoalNetworkHelper = new NetworkHelper(getActivity());
         mHitMonsterNetworkHelper = new NetworkHelper(getActivity());
-        //传感器
+
         mSensorManager =  (SensorManager) getActivity().
                 getSystemService(Context.SENSOR_SERVICE);
 
@@ -385,6 +421,10 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                 mLatitude = aMapLocation.getLatitude();
                 mLongitude = aMapLocation.getLongitude();
 
+                if(!mLocationFlag) {
+                    refreshMap();
+                    mLocationFlag = true;
+                }
                 LogUtil.d(TAG, "Latitude: " + mLatitude +
                         ";Longitude: " + mLongitude);
 
@@ -469,6 +509,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         }
 
         setGoalsOnMap(updateGoals);
+
         CheckIfGoalDisplayed();
         mNetworkHelper.closeLock();
     }

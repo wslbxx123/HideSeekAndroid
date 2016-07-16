@@ -51,7 +51,7 @@ public class GoalCache extends BaseCache<Goal>{
 
     public void setGoals(String goalsStr, double latitude, double longitude) {
         mUpdateList.clear();
-        mList = from(goalsStr);
+        saveGoals(goalsStr);
         GoalComparator goalComparator = new GoalComparator(latitude, longitude);
 
         if(mList.size() > 0) {
@@ -66,7 +66,7 @@ public class GoalCache extends BaseCache<Goal>{
         mIfNeedClearMap = false;
     }
 
-    public List<Goal> from(String goalsStr) {
+    public void saveGoals(String goalsStr) {
         try {
             JSONObject jsonObject = new JSONObject(goalsStr);
             String goalListStr = jsonObject.getString("goals");
@@ -94,8 +94,6 @@ public class GoalCache extends BaseCache<Goal>{
             LogUtil.e(TAG, e.getMessage());
             e.printStackTrace();
         }
-
-        return mList;
     }
 
     public boolean getHasSelectMushroom() {
