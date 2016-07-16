@@ -82,7 +82,8 @@ public class GoalCache extends BaseCache<Goal>{
                         goal.getInt("orientation"),
                         goal.getInt("valid") == 1,
                         Goal.GoalTypeEnum.valueOf(goal.getInt("type")),
-                        goal.getInt("is_enabled") == 1);
+                        goal.getInt("is_enabled") == 1,
+                        goal.getString("show_type_name"));
                 mUpdateList.add(tempGoal);
                 if(tempGoal.getValid()) {
                     mList.add(tempGoal);

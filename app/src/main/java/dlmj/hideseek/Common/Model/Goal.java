@@ -1,5 +1,8 @@
 package dlmj.hideseek.Common.Model;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 import dlmj.hideseek.R;
 
 /**
@@ -14,9 +17,10 @@ public class Goal{
     private boolean mValid;
     private GoalTypeEnum mType;
     private boolean mIsEnabled;
+    private String mShowTypeName;
 
     public Goal(long pkId, double latitude, double longitude, int orientation, boolean valid,
-                GoalTypeEnum type, boolean isEnabled) {
+                GoalTypeEnum type, boolean isEnabled, String showTypeName) {
         this.mPkId = pkId;
         this.mLatitude = latitude;
         this.mLongitude = longitude;
@@ -24,6 +28,7 @@ public class Goal{
         this.mValid = valid;
         this.mType = type;
         this.mIsEnabled = isEnabled;
+        this.mShowTypeName = showTypeName;
     }
 
     public long getPkId() {
@@ -64,6 +69,10 @@ public class Goal{
 
     public boolean isEnabled() {
         return mIsEnabled;
+    }
+
+    public String getShowTypeName() {
+        return mShowTypeName;
     }
 
     public enum GoalTypeEnum {
