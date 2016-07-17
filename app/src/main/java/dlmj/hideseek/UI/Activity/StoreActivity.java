@@ -13,7 +13,7 @@ import dlmj.hideseek.UI.Fragment.ShopFragment;
 /**
  * 创建者     ZPL
  * 创建时间   2016/7/16 15:55
- * 描述	      ${TODO}
+ * 描述	     商店页
  * <p/>
  * 更新者     $Author$
  * 更新时间   $Date$

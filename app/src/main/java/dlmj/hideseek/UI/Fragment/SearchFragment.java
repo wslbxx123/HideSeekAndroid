@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,6 +61,7 @@ import dlmj.hideseek.Hardware.CameraInterface;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.MapActivity;
 import dlmj.hideseek.UI.Activity.NavigationActivity;
+import dlmj.hideseek.UI.Activity.StoreActivity;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
 import dlmj.hideseek.UI.View.CustomSuperToast;
@@ -114,6 +116,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             refreshMap();
         }
     };
+    private ImageView mMonsterHandbook;
+    private ImageView mBombThrow;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -292,6 +296,9 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mGetButton = (Button) view.findViewById(R.id.getButton);
         mDistanceLayout = (LinearLayout) view.findViewById(R.id.distanceLayout);
         mGameView = (GameView) view.findViewById(R.id.gameView);
+
+        mMonsterHandbook = (ImageView) view.findViewById(R.id.monster_handbook);
+        mBombThrow = (ImageView)view.findViewById(R.id.bomb_throw);
     }
 
     private void setLayer(String layerName) {
@@ -304,7 +311,20 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
-
+        mMonsterHandbook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), StoreActivity.class);
+                startActivity(intent);
+            }
+        });
+        mBombThrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), StoreActivity.class);
+                startActivity(intent);
+            }
+        });
         UIDataListener<Bean> getGoalUIDataListener = new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {

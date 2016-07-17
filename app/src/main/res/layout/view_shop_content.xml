@@ -14,36 +14,52 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:gravity="center"
-        android:layout_height="wrap_content">
+        android:layout_height="100dp"
+        >
         <ImageView
             android:layout_width="match_parent"
             android:src="@drawable/hsbomb"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
+        android:layout_marginTop="1dp"
         android:paddingLeft="5dp"
         android:layout_height="18dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/score"/>
         <TextView
+            android:layout_marginLeft="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FF0000"
+            android:textSize="12sp"
             android:text="32"/>
+        <ImageView
+            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/people_num"/>
         <TextView
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FF0000"
+            android:textSize="13sp"
             android:text="15865人购买"/>
     </LinearLayout>
     <TextView
         android:paddingLeft="5dp"
+        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
         android:layout_height="46dp"
         android:textSize="13sp"
-        android:text="放在指定位置,当怪兽出现可触发爆炸,造成大范围严重伤害"/>
+        android:text="放在指定位置,当怪兽出现可触发爆炸,造成大范围严重伤害."/>
     <Button
+        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:background="@color/yellow_ffcc00"

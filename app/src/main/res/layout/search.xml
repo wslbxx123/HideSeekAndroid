@@ -114,7 +114,8 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/monster_handbook"
+
+        android:id="@+id/bomb_throw"
         android:layout_marginTop="10dp"
         android:layout_marginRight="7dp"
         android:layout_width="43dp"
@@ -125,9 +126,9 @@
        />
 
     <ImageView
-        android:id="@+id/bomb_throw"
+        android:id="@+id/monster_handbook"
         android:layout_marginTop="7dp"
-        android:layout_below="@id/monster_handbook"
+        android:layout_below="@id/bomb_throw"
         android:layout_marginRight="10dp"
         android:layout_width="40dp"
         android:layout_height="40dp"
