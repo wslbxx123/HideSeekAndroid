@@ -14,7 +14,7 @@
     <string name="my_password">My Password </string>
     <string name="re_input_password">Re-input Password</string>
     <string name="to_get_it">Get it</string>
-    <string name="destination_distance">Destination \nDistance</string>
+    <string name="destination_distance">Goal Distance</string>
     <string name="me">Me</string>
     <string name="record">Record</string>
     <string name="record_title">Record</string>

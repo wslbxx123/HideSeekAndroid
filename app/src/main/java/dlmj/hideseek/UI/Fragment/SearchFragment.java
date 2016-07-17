@@ -214,6 +214,10 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             mEndLatLng.setLongitude(mEndGoal.getLongitude());
         }
 
+        refreshDistance();
+    }
+
+    public void refreshDistance() {
         mDistance = AMapUtils.calculateLineDistance(
                 new LatLng(mStartLatLng.getLatitude(), mStartLatLng.getLongitude()),
                 new LatLng(mEndLatLng.getLatitude(), mEndLatLng.getLongitude()));
@@ -427,6 +431,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                 }
                 LogUtil.d(TAG, "Latitude: " + mLatitude +
                         ";Longitude: " + mLongitude);
+
+                refreshDistance();
 
             } else{
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ": " +
