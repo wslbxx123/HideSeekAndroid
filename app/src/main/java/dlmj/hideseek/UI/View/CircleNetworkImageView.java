@@ -9,8 +9,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -120,7 +118,6 @@ public class CircleNetworkImageView extends NetworkImageView {
                 }
                 break;
         }
-
     }
 
     private Bitmap createCircleImage(Bitmap source, int min) {

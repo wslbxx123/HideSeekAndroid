@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <!--摄像头-->
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -18,7 +18,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@android:color/white"
+        android:background="@color/white"
         android:layout_alignParentBottom="true">
 
         <LinearLayout
@@ -112,6 +112,28 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
+
+    <ImageView
+
+        android:id="@+id/bomb_throw"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="7dp"
+        android:layout_width="43dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/bomb_throw_selector"
+       />
+
+    <ImageView
+        android:id="@+id/monster_handbook"
+        android:layout_marginTop="7dp"
+        android:layout_below="@id/bomb_throw"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/monster_handbook_seclector"/>
 
     <Button
         android:id="@+id/getButton"

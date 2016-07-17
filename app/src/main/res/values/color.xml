@@ -21,6 +21,7 @@
     <color name="yellow_d6a66b">#d6a66b</color>
     <color name="yellow_efcf94">#efcf94</color>
     <color name="white_transparent">#60ffffff</color>
+    <color name="white">#ffffff</color>
     <color name="gray_transparent">#737d7d7d</color>
     <color name="blue_1689ac">#1689ac</color>
 </resources>

@@ -114,13 +114,11 @@ public class NetworkHelper implements Response.Listener<JSONObject>,
                 e.printStackTrace();
             }
         }
-
         return null;
     }
 
     protected void disposeResponse(JSONObject response) {
         Bean bean = null;
-
         if (response != null) {
             try {
                 String result = response.getString("result");

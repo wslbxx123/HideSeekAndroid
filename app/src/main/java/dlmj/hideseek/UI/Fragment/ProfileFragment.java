@@ -49,6 +49,7 @@ import dlmj.hideseek.UI.View.LoadingDialog;
 
 /**
  * Created by Two on 4/30/16.
+ * Me
  */
 public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     private static String TAG = "ProfileFragment";
@@ -187,10 +188,12 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
             @Override
             public void onClick(View view) {
                 if(UserCache.getInstance().ifLogin()) {
+                    //个人信息
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MyProfileActivity.class);
                     startActivity(intent);
                 } else {
+                    //登录注册
                     View loginView = LayoutInflater.from(getActivity()).inflate(R.layout.login, null);
                     mLoginDialog.setContentView(loginView);
                     mLoginDialog.show();
@@ -252,6 +255,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     };
 
     private View.OnClickListener mOnRegisterClickListener = new View.OnClickListener() {
+        //注册
         @Override
         public void onClick(View view) {
             View registerView = LayoutInflater.from(getActivity()).inflate(R.layout.register, null);
@@ -471,6 +475,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     }
 
     private void setUserInfo() {
+        //判断是否登录
         if(UserCache.getInstance().ifLogin()) {
             mNotLoginTextView.setVisibility(View.GONE);
             mUserInfoLayout.setVisibility(View.VISIBLE);

@@ -13,8 +13,15 @@
             <option value="$PROJECT_DIR$/resources/Volley" />
           </set>
         </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/resources/PullToRefresh" />
+            <option value="$PROJECT_DIR$/resources/Volley" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>
 </project>
-

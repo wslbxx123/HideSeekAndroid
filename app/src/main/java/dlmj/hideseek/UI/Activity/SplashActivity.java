@@ -27,6 +27,7 @@ public class SplashActivity extends Activity {
     private void findView() {
     }
 
+    //第一次启动动画
     private void goToIntroduce(long interval) {
         if (interval < 0)
             interval = 0;
