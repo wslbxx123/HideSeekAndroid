@@ -55,7 +55,6 @@ import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.DisplayUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
-import dlmj.hideseek.Common.Util.MathUtil;
 import dlmj.hideseek.Hardware.CameraInterface;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.MapActivity;
@@ -98,7 +97,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private Button mGetButton;
     private Hashtable<Long, Marker> mMarkerHashTable = new Hashtable<>();
     private LinearLayout mDistanceLayout;
-    private boolean mIsExploding = false;
     private CustomSuperToast mErrorSuperToast;
     private ErrorMessageFactory mErrorMessageFactory;
     private TextView mOverlayTextVew;
@@ -112,6 +110,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         @Override
         public void run() {
             refreshMap();
+            mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
         }
     };
 
@@ -251,8 +250,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mDistance = AMapUtils.calculateLineDistance(
                 new LatLng(mStartLatLng.getLatitude(), mStartLatLng.getLongitude()),
                 new LatLng(mEndLatLng.getLatitude(), mEndLatLng.getLongitude()));
-        mDistanceTextView.setText(MathUtil.round(mDistance) + "m");
-        LogUtil.d(TAG, "distance: " + MathUtil.round(mDistance) + "m");
+        mDistanceTextView.setText((int)mDistance + "m");
+        LogUtil.d(TAG, "distance: " + (int)mDistance + "m");
     }
 
     public void openCamera() {
@@ -310,12 +309,25 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         UIDataListener<Bean> getGoalUIDataListener = new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
+                if(mEndGoal.getType() == Goal.GoalTypeEnum.bomb) {
+                    mOverlayTextVew.setText(getString(R.string.minus_one_score));
+                } else {
+                    mOverlayTextVew.setText(getString(R.string.add_one_score));
+                }
+
+                mOverlayTextVew.setVisibility(View.VISIBLE);
+                mUiHandler.removeCallbacks(mOverlayThread);
+                mUiHandler.postDelayed(mOverlayThread, 1000);
+                updateEndGoal();
                 LogUtil.d(TAG, data.getMessage());
             }
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
+                String message = mErrorMessageFactory.get(errorCode);
+                mErrorSuperToast.show(message);
 
+                mGameView.goalContinue();
             }
         };
 
@@ -385,11 +397,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                                 params.put("goal_id", mEndGoal.getPkId() + "");
                                 params.put("goal_type", mEndGoal.getType().getValue() + "");
                                 mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
-                                updateEndGoal();
-                                mOverlayTextVew.setText(getString(R.string.add_one_score));
-                                mOverlayTextVew.setVisibility(View.VISIBLE);
-                                mUiHandler.removeCallbacks(mOverlayThread);
-                                mUiHandler.postDelayed(mOverlayThread, 1000);
                             }
                             break;
                         case monster:
@@ -556,50 +563,13 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
                 mGameView.showGoal();
 
-//                switch(mEndGoal.getType()) {
-//                    case bomb:
-//                        if(mGoalImageView.getBackground() instanceof AnimationDrawable &&
-//                                !mIsExploding && mEndGoal.isEnabled()) {
-//                            LogUtil.d(TAG, "Animation Start!");
-//                            mIfGoalVisible = true;
-//                            AnimationDrawable animationDrawable = (AnimationDrawable)
-//                                    mGoalImageView.getBackground();
-//                            animationDrawable.start();
-//                            mIsExploding = true;
-//                            mGetButton.setEnabled(false);
-//
-//                            mHandler = new Handler();
-//                            mHandler.postDelayed(new Runnable() {
-//                                public void run() {
-//                                    LogUtil.d(TAG, "Animation finished");
-//
-//                                    Map<String, String> params = new HashMap<>();
-//                                    params.put("goal_id", mEndGoal.getPkId() + "");
-//                                    params.put("goal_type", mEndGoal.getType().getValue() + "");
-//                                    mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
-//                                    updateEndGoal();
-//                                    mOverlayTextVew.setText(getString(R.string.minus_one_score));
-//                                    mOverlayTextVew.setVisibility(View.VISIBLE);
-//                                    mUiHandler.removeCallbacks(mOverlayThread);
-//                                    mUiHandler.postDelayed(mOverlayThread, 1000);
-//                                    mGetButton.setEnabled(true);
-//                                    mIsExploding = false;
-//                                }
-//                            }, EXPLODE_DURATION);
-//                        }
-//                        break;
-//                    case monster:
-//                        if(!mIfAnimFinished && !mIfHittingMonster) {
-//                            mIfGoalVisible = true;
-//                            mGoalImageView.startAnimation(mAnim);
-//                        }
-//                        break;
-//                    case mushroom:
-//                    default:
-//                        mIfGoalVisible = true;
-////                        mGoalImageView.startAnimation(mAnim);
-//                }
-            } else if(!mIsExploding){
+                if(mEndGoal.getType() == Goal.GoalTypeEnum.bomb) {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("goal_id", mEndGoal.getPkId() + "");
+                    params.put("goal_type", mEndGoal.getType().getValue() + "");
+                    mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
+                }
+            } else {
                 LogUtil.d(TAG, "Goal is hidden");
                 mGameView.hideGoal();
             }

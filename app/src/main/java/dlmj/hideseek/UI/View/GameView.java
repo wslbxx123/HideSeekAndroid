@@ -23,8 +23,10 @@ public class GameView extends CustomSurfaceView{
     private final static String TAG = "GameView";
     private final static int FLING_COUNT = 5;
     private final static int MONSTER_SLEEP_COUNT = 20;
+    private final static int BOMB_SLEEP_COUNT = 15;
     private Paint mPaint;
     private boolean mIfGoalDisplayed = false;
+    private boolean mIfGoalPaused = false;
     private int height, width;
     private int x = 0;
     private int[] mBitmapIDList;
@@ -40,6 +42,7 @@ public class GameView extends CustomSurfaceView{
     private Bitmap mSwordBitmap;
     private int mSwordIndex = 0;
     private boolean mSwordIfDisplayed = false;
+    private int mSleepCount = 0;
 
     public GameView(Context context) {
         this(context, null);
@@ -60,6 +63,10 @@ public class GameView extends CustomSurfaceView{
         array.recycle();
     }
 
+    public void goalContinue() {
+        mIfGoalPaused = false;
+    }
+
     @Override
     protected void myDraw(Canvas canvas) {
         super.myDraw(canvas);
@@ -72,7 +79,7 @@ public class GameView extends CustomSurfaceView{
         width = canvas.getWidth();
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-        if(mIfGoalDisplayed && mFlingVisible) {
+        if(mIfGoalDisplayed && mFlingVisible && !mIfGoalPaused) {
             drawGoal(canvas);
         }
 
@@ -86,7 +93,7 @@ public class GameView extends CustomSurfaceView{
 
         mSleepIndex++;
 
-        if(mSleepIndex >= MONSTER_SLEEP_COUNT) {
+        if(mSleepIndex >= mSleepCount) {
             mSleepIndex = 0;
         }
     }
@@ -117,7 +124,7 @@ public class GameView extends CustomSurfaceView{
                 mGoalBitmap.recycle();
             }
 
-            if(mWaitIndex > mWaitingCount) {
+            if(mWaitIndex > mWaitingCount && mWaitingCount != -1) {
                 mIndex = 0;
                 mWaitIndex = 0;
             }
@@ -125,6 +132,9 @@ public class GameView extends CustomSurfaceView{
             if(mIndex <= mBitmapIDList.length - 1) {
                 mGoalBitmap = BitmapFactory.decodeResource(getResources(), mBitmapIDList[mIndex]);
             } else {
+                if(mWaitingCount == -1) {
+                    mIfGoalPaused = true;
+                }
                 mGoalBitmap = BitmapFactory.decodeResource(getResources(),
                         mBitmapIDList[mBitmapIDList.length - 1]);
                 mWaitIndex++;
@@ -161,6 +171,8 @@ public class GameView extends CustomSurfaceView{
             switch(goal.getType()) {
                 case bomb:
                     array = getResources().obtainTypedArray(R.array.bomb);
+                    mWaitingCount = -1;
+                    mSleepCount = BOMB_SLEEP_COUNT;
                     break;
                 case monster:
                     Field field = R.array.class.getField(goal.getShowTypeName());
@@ -168,15 +180,18 @@ public class GameView extends CustomSurfaceView{
                     array = getResources().obtainTypedArray(arrayId);
 
                     mWaitingCount = 0;
+                    mSleepCount = MONSTER_SLEEP_COUNT;
                     break;
                 case mushroom:
                 default:
                     array = getResources().obtainTypedArray(R.array.mushroom);
 
                     mWaitingCount = 20;
+                    mSleepCount = 0;
                     break;
             }
 
+            mIfGoalPaused = false;
             mBitmapIDList = new int[array.length()];
             for(int i = 0; i < array.length(); i++) {
                 mBitmapIDList[i] = array.getResourceId(i, 0);

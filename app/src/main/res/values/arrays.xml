@@ -22,6 +22,10 @@
 
     <string-array name="bomb">
         <item>@drawable/bomb</item>
+        <item>@drawable/bomb_a</item>
+        <item>@drawable/bomb_b</item>
+        <item>@drawable/bomb_c</item>
+        <item>@drawable/bomb_d</item>
     </string-array>
 
     <string-array name="egg">
