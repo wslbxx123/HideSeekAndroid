@@ -52,17 +52,8 @@ public class GoalCache extends BaseCache<Goal>{
     public void setGoals(String goalsStr, double latitude, double longitude) {
         mUpdateList.clear();
         saveGoals(goalsStr);
-        GoalComparator goalComparator = new GoalComparator(latitude, longitude);
 
-        if(mList.size() > 0) {
-            do{
-                mClosestGoal =  Collections.min(mList, goalComparator);
-
-                if(!mClosestGoal.getValid()) {
-                    removeItem(mClosestGoal);
-                }
-            } while(!mClosestGoal.getValid() && mList.size() != 0);
-        }
+        refreshClosestGoal(latitude, longitude);
         mIfNeedClearMap = false;
     }
 

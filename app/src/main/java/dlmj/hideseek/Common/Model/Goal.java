@@ -1,10 +1,5 @@
 package dlmj.hideseek.Common.Model;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-
-import dlmj.hideseek.R;
-
 /**
  * Created by Two on 5/17/16.
  */
