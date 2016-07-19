@@ -97,19 +97,6 @@ public class Goal{
             }
         }
 
-        public int toDrawable() {
-            switch(this) {
-                case mushroom:
-                    return R.drawable.mushroom;
-                case monster:
-                    return R.drawable.monster;
-                case bomb:
-                    return R.drawable.explode;
-                default:
-                    return 0;
-            }
-        }
-
         public int getValue() {
             return value;
         }
