@@ -440,7 +440,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                         ";Longitude: " + mLongitude);
 
                 refreshDistance();
-
+                checkIfGoalDisplayed();
             } else{
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ": " +
                         aMapLocation.getErrorInfo();
@@ -501,8 +501,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         }
 
         setGoalsOnMap(updateGoals);
-
-        CheckIfGoalDisplayed();
     }
 
     @Override
@@ -553,7 +551,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
     }
 
-    private void CheckIfGoalDisplayed() {
+    private void checkIfGoalDisplayed() {
         if(mEndGoal != null) {
             LogUtil.d(TAG, "End Goal: Latitude=" + mEndGoal.getLatitude() + ", " +
                     "Longitude=" + mEndGoal.getLongitude());
@@ -595,7 +593,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mOrientation = (((int)x + 45) / 90 * 90) % 360;
         LogUtil.d("TAG", "Orientation: " + mOrientation);
 
-        CheckIfGoalDisplayed();
+        checkIfGoalDisplayed();
     }
 
     @Override
