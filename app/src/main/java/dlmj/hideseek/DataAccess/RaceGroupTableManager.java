@@ -96,7 +96,6 @@ public class RaceGroupTableManager {
                     mSQLiteDatabase.insert("race_group", null, contentValues);
                 }
             }
-
             mSQLiteDatabase.setTransactionSuccessful();
             mSQLiteDatabase.endTransaction();
         }

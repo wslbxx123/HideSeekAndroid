@@ -14,4 +14,7 @@ public class UrlParams {
     public static String GET_RACE_GROUP_URL = "http://120.25.252.252/index.php/home/friend/getRaceGroup";
     public static String GET_FRIEND_URL = "http://120.25.252.252/index.php/home/friend/getFriend";
     public static String GET_RECORD_URL = "http://120.25.252.252/index.php/home/record/getRecords";
+    public static String GET_PRODUCTS_URL ="http://120.25.252.252/index.php/home/store/getProducts";
+    public static String REFRESH_PRODUCTS_URL ="http://120.25.252.252/index.php/home/store/refreshProducts";
+
 }
