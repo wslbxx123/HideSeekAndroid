@@ -6,3 +6,4 @@
 /resources/Volley/build
 /resources/PullToRefresh/build
 /.idea
+*.iml

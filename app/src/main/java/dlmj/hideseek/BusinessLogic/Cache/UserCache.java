@@ -64,6 +64,8 @@ public class UserCache {
         try {
             JSONObject userInfo = new JSONObject(userInfoStr);
             User user = new User(
+                    userInfo.getInt("bomb_num"),
+                    userInfo.getString("has_guide"),
                     userInfo.getLong("pk_id"),
                     userInfo.getString("phone"),
                     userInfo.getString("session_id"),

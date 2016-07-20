@@ -25,8 +25,10 @@ public class User implements Serializable{
     private RoleEnum mRole;
     private long mVersion;
     private String mPinyin;
+    public int bomb_num;
+    public String has_guide;
 
-    public User(long pkId, String phone,
+    public User(int bomb_num,String has_guide,long pkId, String phone,
                 String sessionId, String nickname,
                 String registerDate, RoleEnum role,
                 long version, String pinyin) throws ParseException {
@@ -38,6 +40,8 @@ public class User implements Serializable{
         mRole = role;
         mVersion = version;
         mPinyin = pinyin;
+        this.bomb_num = bomb_num;
+        this.has_guide = has_guide;
     }
 
     public User(long pkId, String nickname, String photoUrl, SexEnum sex, String region,

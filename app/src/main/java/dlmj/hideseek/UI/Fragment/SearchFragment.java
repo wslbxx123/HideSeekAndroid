@@ -17,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -59,6 +61,7 @@ import dlmj.hideseek.Hardware.CameraInterface;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.MapActivity;
 import dlmj.hideseek.UI.Activity.NavigationActivity;
+import dlmj.hideseek.UI.Activity.StoreActivity;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
 import dlmj.hideseek.UI.View.CustomSuperToast;
@@ -69,7 +72,7 @@ import dlmj.hideseek.UI.View.GameView;
  */
 public class SearchFragment extends Fragment implements CameraInterface.CamOpenOverCallback,
         CameraSurfaceView.OnCreateListener, LocationSource, AMapLocationListener,
-        UIDataListener<Bean>, SensorEventListener, AMap.OnMapLoadedListener {
+        UIDataListener<Bean>, SensorEventListener, AMap.OnMapLoadedListener, View.OnClickListener {
     private final static int REFRESH_MAP_INTERVAL = 5000;
     private final static String TAG = "Search Fragment";
     private float mPreviewRate = -1f;
@@ -113,6 +116,9 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
         }
     };
+    private RelativeLayout mBombThrow;
+    private ImageView mMonster;
+    private TextView mBombNum;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -175,6 +181,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             mOrientation = -1;
         }
         setEndGoal();
+        setBomb();
     }
 
     private void refreshMap() {
@@ -293,6 +300,24 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mGetButton = (Button) view.findViewById(R.id.getButton);
         mDistanceLayout = (LinearLayout) view.findViewById(R.id.distanceLayout);
         mGameView = (GameView) view.findViewById(R.id.gameView);
+
+        //右上角图标
+        mBombThrow = (RelativeLayout) view.findViewById(R.id.bomb_throw);
+        mMonster = (ImageView) view.findViewById(R.id.monster_handbook);
+        mBombNum = (TextView) view.findViewById(R.id.bomb_num);
+        //用户未登录不显示
+        setBomb();
+    }
+
+    private void setBomb() {
+        if (!UserCache.getInstance().ifLogin()) {
+            mBombThrow.setVisibility(View.GONE);
+            mMonster.setVisibility(View.GONE);
+        } else {
+            mBombThrow.setVisibility(View.VISIBLE);
+            mMonster.setVisibility(View.VISIBLE);
+            mBombNum.setText("x"+UserCache.getInstance().getUser().bomb_num);
+        }
     }
 
     private void setLayer(String layerName) {
@@ -305,6 +330,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
+        mBombThrow.setOnClickListener(this);
+        mMonster.setOnClickListener(this);
 
         UIDataListener<Bean> getGoalUIDataListener = new UIDataListener<Bean>() {
             @Override
@@ -600,5 +627,23 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bomb_throw:
+                //跳转到商店
+                forActivity();
+                break;
+            case R.id.monster_handbook:
+                forActivity();
+                break;
+        }
+    }
+
+    private void forActivity() {
+        Intent intent = new Intent(getActivity(), StoreActivity.class);
+        startActivity(intent);
     }
 }
