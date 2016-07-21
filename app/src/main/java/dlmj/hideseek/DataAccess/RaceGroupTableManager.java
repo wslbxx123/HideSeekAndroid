@@ -179,11 +179,11 @@ public class RaceGroupTableManager {
         return recordMinId;
     }
 
-    public List<RaceGroup> getMoreRaceGroup(int count, long version, boolean afterLoaded) {
+    public List<RaceGroup> getMoreRaceGroup(int count, long version) {
         Cursor cursor = mSQLiteDatabase.query("race_group", null, "version<=? and record_id<?",
                 new String[]{version + "", mRecordMinId + ""}, null, null, "record_id desc", count + "");
         List<RaceGroup> raceGroupList = new LinkedList<>();
-        if(cursor.getCount() == count || afterLoaded) {
+        if(cursor.getCount() == count) {
             while (cursor.moveToNext()) {
                 raceGroupList.add(new RaceGroup(cursor.getLong(cursor.getColumnIndex("record_id")),
                         cursor.getString(cursor.getColumnIndex("nickname")),
@@ -196,10 +196,6 @@ public class RaceGroupTableManager {
                                 cursor.getLong(cursor.getColumnIndex("version")))
                 ));
             }
-        }
-
-        if(raceGroupList.size() > 0) {
-            mRecordMinId = raceGroupList.get(raceGroupList.size() - 1).getRecordId();
         }
 
         cursor.close();

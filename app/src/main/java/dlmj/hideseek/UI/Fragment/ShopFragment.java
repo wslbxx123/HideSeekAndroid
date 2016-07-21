@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import dlmj.hideseek.BusinessLogic.Cache.ShopCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
@@ -68,10 +69,13 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
         initView();
         initData();
         initListener();
-
-        //        if(UserCache.getInstance().ifLogin()) {
-        //        mPTRGridView.setRefreshing(true);
-        //        }
+        String data = ShopCache.getDataFromLocal(UrlParams.GET_PRODUCTS_URL);
+        //使用本地缓存
+        if (data!=null) {
+            setData(data);
+        } else {
+           mPTRGridView.setRefreshing(true);
+        }
         return mView;
     }
 
@@ -80,14 +84,10 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
         mGetShopNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
+                //保存缓存
                 String result = data.getResult();
-                Gson gson = new Gson();
-                Shop shop = gson.fromJson(result, Shop.class);
-                mProductsEntity = shop.products;
-                mShopAdapter = new ShopAdapter(getContext(), mProductsEntity);
-                mGridView.setAdapter(mShopAdapter);
-                Message.obtain(mUiHandler, MSG_REFRESH_LIST).sendToTarget();
-                mPTRGridView.onRefreshComplete();
+                ShopCache.saveCache(result,UrlParams.GET_PRODUCTS_URL);
+                setData(result);
             }
 
             @Override
@@ -99,15 +99,17 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
         mPTRGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                Map<String, String> params = new HashMap<>();
-                params.put("version", 1 + "");
-                params.put("product_min_id", 10 + "");
-                mGetShopNetworkHelper.sendPostRequestWithoutSid(UrlParams.GET_PRODUCTS_URL, params);
+                    //下拉刷新
+                    Map<String, String> params = new HashMap<>();
+                    params.put("version", 1 + "");
+                    params.put("product_min_id", 10 + "");
+                    mGetShopNetworkHelper.sendPostRequestWithoutSid(UrlParams.GET_PRODUCTS_URL, params);
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
                 if (mProductsEntity.size() > 10) {
+                    //上拉加载
                     Map<String, String> params = new HashMap<>();
                     params.put("version", 0 + "");
                     params.put("product_min_id", 0 + "");
@@ -116,6 +118,16 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
                 mPTRGridView.onRefreshComplete();
             }
         });
+    }
+
+    private void setData(String result) {
+        Gson gson = new Gson();
+        Shop shop = gson.fromJson(result, Shop.class);
+        mProductsEntity = shop.products;
+        mShopAdapter = new ShopAdapter(getContext(), mProductsEntity);
+        mGridView.setAdapter(mShopAdapter);
+        Message.obtain(mUiHandler, MSG_REFRESH_LIST).sendToTarget();
+        mPTRGridView.onRefreshComplete();
     }
 
     private void initData() {
@@ -127,7 +139,6 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
         startLabels.setReleaseLabel("");
         ILoadingLayout endLabels = mPTRGridView.getLoadingLayoutProxy(false, true);
         endLabels.setLoadingDrawable(null);
-
         mGridView = mPTRGridView.getRefreshableView();
 
         TextView tv = new TextView(getActivity());
@@ -157,7 +168,6 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
         mShopAdapter = new ShopAdapter(getContext(), mProductsEntity);
         mGridView.setAdapter(mShopAdapter);
         Message.obtain(mUiHandler, MSG_REFRESH_LIST).sendToTarget();
-        //mPTRGridView.onRefreshComplete();
     }
 
     @Override
