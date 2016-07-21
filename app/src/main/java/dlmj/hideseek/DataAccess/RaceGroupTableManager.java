@@ -197,7 +197,6 @@ public class RaceGroupTableManager {
                 ));
             }
         }
-
         cursor.close();
         return raceGroupList;
     }

@@ -9,6 +9,7 @@ import java.io.File;
 import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.DatabaseManager;
+import dlmj.hideseek.Util.UiUtil;
 
 /**
  * Created by Two on 4/2/16.
@@ -19,7 +20,7 @@ public class HideSeekApplication extends Application {
     private BaiduNaviManager.NaviInitListener mNavigationInitListener;
 
     /**
-     * 获取应用程序实例(其实我是来测试的)
+     * 获取应用程序实例
      * @return HideSeekApplication
      */
     public static HideSeekApplication getInstance() {
@@ -34,6 +35,7 @@ public class HideSeekApplication extends Application {
         super.onCreate();
         mInstance = this;
         init();
+        UiUtil.init(this);
     }
 
     @Override

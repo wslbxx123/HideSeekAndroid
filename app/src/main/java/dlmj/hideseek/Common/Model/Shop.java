@@ -30,7 +30,6 @@ public class Shop {
          * introduction : 可获得怪兽信息，并包含拿下怪兽的规则
          * version : 1
          */
-
         public List<ProductsEntity> products;
 
         public static class ProductsEntity {
@@ -43,4 +42,3 @@ public class Shop {
             public String version;
         }
     }
-
