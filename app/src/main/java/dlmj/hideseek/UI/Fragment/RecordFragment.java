@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,8 +34,9 @@ import dlmj.hideseek.UI.Adapter.RecordAdapter;
 /**
  * Created by Two on 4/29/16.
  */
-public class RecordFragment extends Fragment implements UIDataListener<Bean> {
+public class RecordFragment extends Fragment implements UIDataListener<Bean>, ListView.OnScrollListener {
     private static String TAG = "RecordFragment";
+    private static final int VISIBLE_REFRESH_COUNT = 3;
     private PullToRefreshListView mRecordListView;
     private RecordAdapter mRecordAdapter;
     private NetworkHelper mNetworkHelper;
@@ -41,6 +44,8 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
     private List<Record> mRecordList = new LinkedList<>();
     private View rootView;
     private NetworkHelper mGetRecordNetworkHelper;
+    private boolean mIsLoading = false;
+    private View mLoadMoreView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,16 +84,15 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
     private void findView(View view) {
         mRecordListView = (PullToRefreshListView) view.findViewById(R.id.recordListView);
         mRecordListView.setAdapter(mRecordAdapter);
-        mRecordListView.setMode(PullToRefreshBase.Mode.BOTH);
+        mRecordListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
         ILoadingLayout startLabels = mRecordListView.getLoadingLayoutProxy(true, false);
         startLabels.setPullLabel("");
         startLabels.setRefreshingLabel("");
         startLabels.setReleaseLabel("");
 
-        ILoadingLayout endLabels = mRecordListView.getLoadingLayoutProxy(false, true);
-        endLabels.setLoadingDrawable(null);
         mScoreTextView = (TextView) view.findViewById(R.id.scoreTextView);
+        mLoadMoreView = LayoutInflater.from(getActivity()).inflate(R.layout.load_more_footer, null);
     }
 
     private void setListener() {
@@ -97,13 +101,15 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
         mGetRecordNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
-                RecordCache.getInstance(getActivity()).setRecords(data.getResult());
+                LogUtil.d(TAG, data.getResult());
+                RecordCache.getInstance(getActivity()).addRecords(data.getResult());
 
                 mRecordList.clear();
                 mRecordList.addAll(RecordCache.getInstance(getActivity()).getList());
                 mRecordAdapter.notifyDataSetChanged();
 
-                mRecordListView.onRefreshComplete();
+                mIsLoading = false;
+                mRecordListView.getRefreshableView().removeFooterView(mLoadMoreView);
             }
 
             @Override
@@ -124,22 +130,11 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                if(getRecordCount() >= 10) {
-                    List<Record> recordList = RecordCache.getInstance(getActivity()).
-                            getMoreRecords(10);
 
-                    if(recordList.size() == 0) {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("version", RecordTableManager.getInstance(getActivity()).getVersion() + "");
-                        params.put("record_min_id", RecordTableManager.getInstance(getActivity()).getRecordMinId() + "");
-                        mGetRecordNetworkHelper.sendPostRequest(UrlParams.GET_RECORD_URL, params);
-                    } else {
-                        mRecordList.addAll(recordList);
-                        mRecordAdapter.notifyDataSetChanged();
-                    }
-                }
             }
         });
+
+        mRecordListView.setOnScrollListener(this);
     }
 
     @Override
@@ -156,7 +151,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
-
+        LogUtil.d(TAG, errorMessage);
     }
 
     public int getRecordCount() {
@@ -167,5 +162,38 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean> {
         }
 
         return count;
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount,
+                         int totalItemCount) {
+        if(totalItemCount - visibleItemCount - firstVisibleItem <= VISIBLE_REFRESH_COUNT
+                && !mIsLoading) {
+            if(getRecordCount() >= 10) {
+                mIsLoading = true;
+                mRecordListView.getRefreshableView().addFooterView(mLoadMoreView);
+                boolean hasData = RecordCache.getInstance(getActivity()).
+                        getMoreRecords(10, false);
+
+                if(!hasData) {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("version", RecordTableManager.getInstance(getActivity()).getVersion() + "");
+                    params.put("record_min_id", RecordTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                    mGetRecordNetworkHelper.sendPostRequest(UrlParams.GET_RECORD_URL, params);
+                } else {
+                    mRecordList.clear();
+                    mRecordList.addAll(RecordCache.getInstance(getActivity()).getList());
+                    mRecordAdapter.notifyDataSetChanged();
+
+                    mIsLoading = false;
+                    mRecordListView.getRefreshableView().removeFooterView(mLoadMoreView);
+                }
+            }
+        }
     }
 }

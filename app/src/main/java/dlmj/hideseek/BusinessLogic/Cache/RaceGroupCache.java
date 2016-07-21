@@ -48,8 +48,8 @@ public class RaceGroupCache extends BaseCache<RaceGroup>{
         return mList;
     }
 
-    public List<RaceGroup> getMoreRaceGroup(int count) {
-        List<RaceGroup> raceGroupList = mRaceGroupTableManager.getMoreRaceGroup(count, mVersion);
+    public List<RaceGroup> getMoreRaceGroup(int count, boolean hasLoaded) {
+        List<RaceGroup> raceGroupList = mRaceGroupTableManager.getMoreRaceGroup(count, mVersion, hasLoaded);
 
         return raceGroupList;
     }
@@ -98,6 +98,6 @@ public class RaceGroupCache extends BaseCache<RaceGroup>{
     public void addRaceGroup(String raceGroupStr) {
         saveRaceGroup(raceGroupStr);
 
-        mList.addAll(getMoreRaceGroup(10));
+        mList.addAll(getMoreRaceGroup(10, true));
     }
 }

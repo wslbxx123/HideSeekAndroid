@@ -157,6 +157,12 @@ public class RecordTableManager {
             currentDate = dateStr;
         }
 
+        if(recordList.size() > 0) {
+            List<RecordItem> tempRecordItems = recordList.get(recordList.size() - 1).getRecordItems();
+            mRecordMinId = tempRecordItems.get(tempRecordItems.size() - 1).getRecordId();
+        }
+
+        cursor.close();
         return recordList;
     }
 
@@ -201,12 +207,17 @@ public class RecordTableManager {
         return recordMinId;
     }
 
-    public List<Record> getMoreRecords(int count, long version) {
+    public List<Record> getMoreRecords(int count, long version, boolean afterLoaded) {
         Cursor cursor = mSQLiteDatabase.query("record", null, "version<=? and record_id<?",
                 new String[]{version + "", mRecordMinId + ""}, null, null, "record_id desc", count + "");
         List<Record> recordList = new LinkedList<>();
-        if(cursor.getCount() == count) {
+        if(cursor.getCount() == count || afterLoaded) {
             recordList = getRecordList(cursor);
+        }
+
+        if(recordList.size() > 0) {
+            List<RecordItem> tempRecordItems = recordList.get(recordList.size() - 1).getRecordItems();
+            mRecordMinId = tempRecordItems.get(tempRecordItems.size() - 1).getRecordId();
         }
 
         cursor.close();

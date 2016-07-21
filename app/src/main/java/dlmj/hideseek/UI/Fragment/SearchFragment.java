@@ -617,7 +617,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     public void onSensorChanged(SensorEvent sensorEvent) {
         float x = sensorEvent.values[0];
 
-        LogUtil.d("TAG", "HAHAX: " + x);
         mOrientation = (((int)x + 45) / 90 * 90) % 360;
         LogUtil.d("TAG", "Orientation: " + mOrientation);
 

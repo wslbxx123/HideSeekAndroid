@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.handmark.pulltorefresh.library.ILoadingLayout;
@@ -33,15 +34,18 @@ import dlmj.hideseek.UI.Adapter.RaceGroupAdapter;
 /**
  * Created by Two on 5/14/16.
  */
-public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> {
+public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>, ListView.OnScrollListener {
     private final static String TAG = "RaceGroupFragment";
     private final static int MSG_REFRESH_LIST = 1;
+    private static final int VISIBLE_REFRESH_COUNT = 3;
     private View rootView;
     private PullToRefreshListView mRaceGroupListView;
     private RaceGroupAdapter mRaceGroupAdapter;
     private List<RaceGroup> mRaceGroupList = new LinkedList<>();
     private NetworkHelper mNetworkHelper;
     private NetworkHelper mGetRaceGroupNetworkHelper;
+    private boolean mIsLoading = false;
+    private View mLoadMoreView;
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -88,15 +92,14 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
     private void findView(View view) {
         mRaceGroupListView = (PullToRefreshListView) view.findViewById(R.id.raceGroupListView);
         mRaceGroupListView.setAdapter(mRaceGroupAdapter);
-        mRaceGroupListView.setMode(PullToRefreshBase.Mode.BOTH);
+        mRaceGroupListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
         ILoadingLayout startLabels = mRaceGroupListView.getLoadingLayoutProxy(true, false);
         startLabels.setPullLabel("");
         startLabels.setRefreshingLabel("");
         startLabels.setReleaseLabel("");
 
-        ILoadingLayout endLabels = mRaceGroupListView.getLoadingLayoutProxy(false, true);
-        endLabels.setLoadingDrawable(null);
+        mLoadMoreView = LayoutInflater.from(getActivity()).inflate(R.layout.load_more_footer, null);
     }
 
     private void setListener() {
@@ -112,7 +115,8 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
                 mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
                 mRaceGroupAdapter.notifyDataSetChanged();
 
-                mRaceGroupListView.onRefreshComplete();
+                mIsLoading = false;
+                mRaceGroupListView.getRefreshableView().removeFooterView(mLoadMoreView);
             }
 
             @Override
@@ -133,29 +137,11 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                if(mRaceGroupList.size() >= 10) {
-                    List<RaceGroup> raceGroupList = RaceGroupCache.getInstance(getActivity()).
-                            getMoreRaceGroup(10);
 
-                    if(raceGroupList.size() == 0) {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
-                        params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
-                        mGetRaceGroupNetworkHelper.sendPostRequest(UrlParams.GET_RACE_GROUP_URL, params);
-                    } else {
-                        mRaceGroupList.addAll(raceGroupList);
-                        mRaceGroupAdapter.notifyDataSetChanged();
-
-                        mRaceGroupListView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mRaceGroupListView.onRefreshComplete();
-                            }
-                        }, 1000);
-                    }
-                }
             }
         });
+
+        mRaceGroupListView.setOnScrollListener(this);
     }
 
     @Override
@@ -172,5 +158,37 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
         LogUtil.d(TAG, errorMessage);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {
+
+    }
+
+    @Override
+    public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount,
+                         int totalItemCount) {
+        if(totalItemCount - visibleItemCount - firstVisibleItem <= VISIBLE_REFRESH_COUNT
+                && !mIsLoading) {
+            if(mRaceGroupList.size() >= 10) {
+                mIsLoading = true;
+                mRaceGroupListView.getRefreshableView().addFooterView(mLoadMoreView);
+                List<RaceGroup> raceGroupList = RaceGroupCache.getInstance(getActivity()).
+                        getMoreRaceGroup(10, false);
+
+                if(raceGroupList.size() == 0) {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
+                    params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                    mGetRaceGroupNetworkHelper.sendPostRequest(UrlParams.GET_RACE_GROUP_URL, params);
+                } else {
+                    mRaceGroupList.addAll(raceGroupList);
+                    mRaceGroupAdapter.notifyDataSetChanged();
+
+                    mIsLoading = false;
+                    mRaceGroupListView.getRefreshableView().removeFooterView(mLoadMoreView);
+                }
+            }
+        }
     }
 }

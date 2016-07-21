@@ -137,8 +137,8 @@ public class RecordCache extends BaseCache<Record>{
         }
     }
 
-    public List<Record> getMoreRecords(int count) {
-        List<Record> recordList = mRecordTableManager.getMoreRecords(count, mVersion);
+    public boolean getMoreRecords(int count, boolean hasLoaded) {
+        List<Record> recordList = mRecordTableManager.getMoreRecords(count, mVersion, hasLoaded);
 
         if(recordList.size() > 0) {
             Record lastRecord = mList.get(mList.size() - 1);
@@ -147,7 +147,15 @@ public class RecordCache extends BaseCache<Record>{
                 lastRecord.getRecordItems().addAll(firstRecord.getRecordItems());
                 recordList.remove(firstRecord);
             }
+            mList.addAll(recordList);
+            return true;
         }
-        return recordList;
+        return false;
+    }
+
+    public void addRecords(String recordStr) {
+        saveRecords(recordStr);
+
+        getMoreRecords(10, true);
     }
 }
