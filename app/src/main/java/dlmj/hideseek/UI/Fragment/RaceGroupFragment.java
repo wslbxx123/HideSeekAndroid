@@ -105,6 +105,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
         mGetRaceGroupNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
+                LogUtil.d(TAG, data.getResult());
                 RaceGroupCache.getInstance(getActivity()).addRaceGroup(data.getResult());
 
                 mRaceGroupList.clear();
@@ -144,6 +145,13 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
                     } else {
                         mRaceGroupList.addAll(raceGroupList);
                         mRaceGroupAdapter.notifyDataSetChanged();
+
+                        mRaceGroupListView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mRaceGroupListView.onRefreshComplete();
+                            }
+                        }, 1000);
                     }
                 }
             }
@@ -163,5 +171,6 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean> 
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
+        LogUtil.d(TAG, errorMessage);
     }
 }
