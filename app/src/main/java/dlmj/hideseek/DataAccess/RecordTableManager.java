@@ -11,7 +11,6 @@ import java.util.List;
 
 import dlmj.hideseek.Common.Model.Goal;
 import dlmj.hideseek.Common.Model.Record;
-import dlmj.hideseek.Common.Model.RecordItem;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 
