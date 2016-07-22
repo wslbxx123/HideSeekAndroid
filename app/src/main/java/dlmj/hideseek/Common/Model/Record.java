@@ -14,8 +14,6 @@ public class Record {
     private long mVersion;
     private String mDate;
 
-    private List<RecordItem> mRecordItems;
-
     public Record(long recordId, String time, Goal.GoalTypeEnum goalType, int score,
                   int scoreSum, long version, String date) {
         mRecordId = recordId;
