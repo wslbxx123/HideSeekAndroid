@@ -3,18 +3,58 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="18dp">
-    <TextView
-        android:id="@+id/dateTextView"
+    android:paddingTop="8dp">
+    <LinearLayout
+        android:id="@+id/dateLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"/>
+        android:layout_height="25dp"
+        android:gravity="center_vertical"
+        android:background="@color/gray_f1f0f0">
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginLeft="18dp"/>
+    </LinearLayout>
 
-    <ListView
-        android:id="@+id/recordItemListView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:dividerHeight="10dp"
-        android:divider="@android:color/white">
-    </ListView>
+        android:layout_height="match_parent"
+        android:background="@drawable/code_edittext_back"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp">
+        <TextView
+            android:id="@+id/timeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
+            android:textSize="14sp"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/scoreTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="34dp"/>
+
+        <ImageView
+            android:id="@+id/searchTypeImageView"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/scoreTextView"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+    <!--<ListView-->
+        <!--android:id="@+id/recordItemListView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:dividerHeight="10dp"-->
+        <!--android:divider="@android:color/white">-->
+    <!--</ListView>-->
 </LinearLayout>

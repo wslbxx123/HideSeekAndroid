@@ -173,16 +173,17 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
             if(mRaceGroupList.size() >= 10) {
                 mIsLoading = true;
                 mRaceGroupListView.getRefreshableView().addFooterView(mLoadMoreView);
-                List<RaceGroup> raceGroupList = RaceGroupCache.getInstance(getActivity()).
+                boolean hasData = RaceGroupCache.getInstance(getActivity()).
                         getMoreRaceGroup(10, false);
 
-                if(raceGroupList.size() == 0) {
+                if(!hasData) {
                     Map<String, String> params = new HashMap<>();
                     params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
                     params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
                     mGetRaceGroupNetworkHelper.sendPostRequest(UrlParams.GET_RACE_GROUP_URL, params);
                 } else {
-                    mRaceGroupList.addAll(raceGroupList);
+                    mRaceGroupList.clear();
+                    mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
                     mRaceGroupAdapter.notifyDataSetChanged();
 
                     mIsLoading = false;

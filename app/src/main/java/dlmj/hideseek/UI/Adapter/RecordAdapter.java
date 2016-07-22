@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -52,37 +53,48 @@ public class RecordAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.record_info, null, false);
             viewHolder = new ViewHolder();
             viewHolder.mDateTextView = (TextView) convertView.findViewById(R.id.dateTextView);
-            viewHolder.mRecordItemListView = (ListView) convertView.findViewById(R.id.recordItemListView);
+            viewHolder.mTimeTextView = (TextView) convertView.findViewById(R.id.timeTextView);
+            viewHolder.mSearchTypeImageView = (ImageView) convertView.findViewById(R.id.searchTypeImageView);
+            viewHolder.mScoreTextView = (TextView) convertView.findViewById(R.id.scoreTextView);
+            viewHolder.mDateLayout = (LinearLayout) convertView.findViewById(R.id.dateLayout);
             convertView.setTag(viewHolder);
         } else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
         Record record = (Record)getItem(position);
-        RecordItemAdapter recordItemAdapter = new RecordItemAdapter(mContext, record.getRecordItems());
         viewHolder.mDateTextView.setText(record.getDate());
-        viewHolder.mRecordItemListView.setAdapter(recordItemAdapter);
+        viewHolder.mTimeTextView.setText(record.getTime());
+        viewHolder.mScoreTextView.setText(record.getScore() + "");
 
-        int totalHeight = 0;
-        for(int i = 0; i < recordItemAdapter.getCount(); i++) {
-            View listItem = recordItemAdapter.getView(i, null, viewHolder.mRecordItemListView);
-            if(listItem != null) {
-                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
-            }
+        if(position == 0 || !((Record)getItem(position - 1)).getDate().equals(record.getDate())) {
+            viewHolder.mDateLayout.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mDateLayout.setVisibility(View.GONE);
         }
 
-        ViewGroup.LayoutParams params = viewHolder.mRecordItemListView.getLayoutParams();
-        params.height = totalHeight + (viewHolder.mRecordItemListView.getDividerHeight() *
-                (recordItemAdapter.getCount() - 1));
-        ((ViewGroup.MarginLayoutParams)params).setMargins(0, 10, 0, 10);
-        viewHolder.mRecordItemListView.setLayoutParams(params);
+        switch (record.getGoalType()) {
+            case bomb:
+                viewHolder.mSearchTypeImageView.setImageResource(R.drawable.bomb);
+                break;
+            case mushroom:
+                viewHolder.mSearchTypeImageView.setImageResource(R.drawable.mushroom);
+                break;
+            case monster:
+                viewHolder.mSearchTypeImageView.setImageResource(R.drawable.monster);
+                break;
+            default:
+                break;
+        }
 
         return convertView;
     }
 
     class ViewHolder{
         TextView mDateTextView;
-        ListView mRecordItemListView;
+        TextView mTimeTextView;
+        ImageView mSearchTypeImageView;
+        TextView mScoreTextView;
+        LinearLayout mDateLayout;
     }
 }

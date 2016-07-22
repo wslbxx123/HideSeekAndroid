@@ -61,21 +61,19 @@ public class RecordTableManager {
         synchronized (RecordTableManager.class) {
             mSQLiteDatabase.beginTransaction();
             for(Record record : recordList){
-                for(RecordItem recordItem : record.getRecordItems()) {
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put("date_str", record.getDate());
-                    contentValues.put("time", recordItem.getTime());
-                    contentValues.put("goal_type", recordItem.getGoalType().getValue());
-                    contentValues.put("score", recordItem.getScore());
-                    contentValues.put("score_sum", recordItem.getScoreSum());
-                    contentValues.put("version", recordItem.getVersion());
-                    String[] args = { String.valueOf(recordItem.getRecordId()) };
-                    int count = mSQLiteDatabase.update("record", contentValues, "record_id=?", args);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("date_str", record.getDate());
+                contentValues.put("time", record.getTime());
+                contentValues.put("goal_type", record.getGoalType().getValue());
+                contentValues.put("score", record.getScore());
+                contentValues.put("score_sum", record.getScoreSum());
+                contentValues.put("version", record.getVersion());
+                String[] args = { String.valueOf(record.getRecordId()) };
+                int count = mSQLiteDatabase.update("record", contentValues, "record_id=?", args);
 
-                    if(count == 0) {
-                        contentValues.put("record_id", recordItem.getRecordId());
-                        mSQLiteDatabase.insert("record", null, contentValues);
-                    }
+                if(count == 0) {
+                    contentValues.put("record_id", record.getRecordId());
+                    mSQLiteDatabase.insert("record", null, contentValues);
                 }
             }
 
@@ -111,55 +109,21 @@ public class RecordTableManager {
 
     private List<Record> getRecordList(Cursor cursor) {
         List<Record> recordList = new LinkedList<>();
-        List<RecordItem> recordItems = new LinkedList<>();
-        String currentDate = null;
 
         while (cursor.moveToNext()) {
-            String dateStr = cursor.getString(cursor.getColumnIndex("date_str"));
-
-            if(cursor.isLast()) {
-                recordItems.add(new RecordItem(
-                        cursor.getLong(cursor.getColumnIndex("record_id")),
-                        cursor.getString(cursor.getColumnIndex("time")),
-                        Goal.GoalTypeEnum.valueOf(cursor.getInt(cursor.getColumnIndex("goal_type"))),
-                        cursor.getInt(cursor.getColumnIndex("score")),
-                        cursor.getInt(cursor.getColumnIndex("score_sum")),
-                        cursor.getLong(cursor.getColumnIndex("version"))
-                ));
-
-                currentDate = dateStr;
-                recordList.add(new Record(currentDate, new LinkedList<>(recordItems)));
-                recordItems.clear();
-            }
-            else if(currentDate != null && !dateStr.equals(currentDate)) {
-                recordList.add(new Record(currentDate, new LinkedList<>(recordItems)));
-                recordItems.clear();
-
-                recordItems.add(new RecordItem(
-                        cursor.getLong(cursor.getColumnIndex("record_id")),
-                        cursor.getString(cursor.getColumnIndex("time")),
-                        Goal.GoalTypeEnum.valueOf(cursor.getInt(cursor.getColumnIndex("goal_type"))),
-                        cursor.getInt(cursor.getColumnIndex("score")),
-                        cursor.getInt(cursor.getColumnIndex("score_sum")),
-                        cursor.getLong(cursor.getColumnIndex("version"))
-                ));
-            } else {
-                recordItems.add(new RecordItem(
-                        cursor.getLong(cursor.getColumnIndex("record_id")),
-                        cursor.getString(cursor.getColumnIndex("time")),
-                        Goal.GoalTypeEnum.valueOf(cursor.getInt(cursor.getColumnIndex("goal_type"))),
-                        cursor.getInt(cursor.getColumnIndex("score")),
-                        cursor.getInt(cursor.getColumnIndex("score_sum")),
-                        cursor.getLong(cursor.getColumnIndex("version"))
-                ));
-            }
-
-            currentDate = dateStr;
+            recordList.add(new Record(
+                    cursor.getLong(cursor.getColumnIndex("record_id")),
+                    cursor.getString(cursor.getColumnIndex("time")),
+                    Goal.GoalTypeEnum.valueOf(cursor.getInt(cursor.getColumnIndex("goal_type"))),
+                    cursor.getInt(cursor.getColumnIndex("score")),
+                    cursor.getInt(cursor.getColumnIndex("score_sum")),
+                    cursor.getLong(cursor.getColumnIndex("version")),
+                    cursor.getString(cursor.getColumnIndex("date_str"))
+            ));
         }
 
         if(recordList.size() > 0) {
-            List<RecordItem> tempRecordItems = recordList.get(recordList.size() - 1).getRecordItems();
-            mRecordMinId = tempRecordItems.get(tempRecordItems.size() - 1).getRecordId();
+            mRecordMinId = recordList.get(recordList.size() - 1).getRecordId();
         }
 
         cursor.close();
@@ -216,8 +180,7 @@ public class RecordTableManager {
         }
 
         if(recordList.size() > 0) {
-            List<RecordItem> tempRecordItems = recordList.get(recordList.size() - 1).getRecordItems();
-            mRecordMinId = tempRecordItems.get(tempRecordItems.size() - 1).getRecordId();
+            mRecordMinId = recordList.get(recordList.size() - 1).getRecordId();
         }
 
         cursor.close();

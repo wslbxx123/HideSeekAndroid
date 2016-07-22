@@ -154,16 +154,6 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
         LogUtil.d(TAG, errorMessage);
     }
 
-    public int getRecordCount() {
-        int count = 0;
-
-        for(Record record : mRecordList) {
-            count += record.getRecordItems().size();
-        }
-
-        return count;
-    }
-
     @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
 
@@ -174,7 +164,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
                          int totalItemCount) {
         if(totalItemCount - visibleItemCount - firstVisibleItem <= VISIBLE_REFRESH_COUNT
                 && !mIsLoading) {
-            if(getRecordCount() >= 10) {
+            if(mRecordList.size() >= 10) {
                 mIsLoading = true;
                 mRecordListView.getRefreshableView().addFooterView(mLoadMoreView);
                 boolean hasData = RecordCache.getInstance(getActivity()).

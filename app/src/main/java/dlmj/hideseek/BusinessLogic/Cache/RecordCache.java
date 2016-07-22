@@ -15,7 +15,6 @@ import java.util.List;
 
 import dlmj.hideseek.Common.Model.Goal;
 import dlmj.hideseek.Common.Model.Record;
-import dlmj.hideseek.Common.Model.RecordItem;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.RecordTableManager;
 
@@ -27,8 +26,6 @@ public class RecordCache extends BaseCache<Record>{
     private static RecordCache mInstance;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm");
-    private String mCurrentDate;
-    private List<RecordItem> mRecordItems = new LinkedList<>();
     private int mScoreSum = 0;
     private RecordTableManager mRecordTableManager;
     private long mVersion = 0;
@@ -82,49 +79,18 @@ public class RecordCache extends BaseCache<Record>{
             mScoreSum = jsonObject.has("score_sum") ? jsonObject.getInt("score_sum") : mScoreSum;
             JSONArray recordList = new JSONArray(recordListStr);
             String recordStr;
-            mCurrentDate =  null;
             for (int i = 0; i < recordList.length(); i++) {
                 recordStr = recordList.getString(i);
                 JSONObject record = new JSONObject(recordStr);
                 Date date = mDateFormat.parse(record.getString("time"));
-                String dateStr = DateFormat.getDateInstance(DateFormat.DEFAULT).format(date);
 
-                if (i == recordList.length() - 1) {
-                    mRecordItems.add(new RecordItem(
-                            record.getLong("pk_id"),
-                            mTimeFormat.format(date),
-                            Goal.GoalTypeEnum.valueOf(record.getInt("goal_type")),
-                            record.getInt("score"),
-                            record.getInt("score_sum"),
-                            record.getLong("version")));
-
-                    mCurrentDate =  dateStr;
-                    list.add(new Record(mCurrentDate, new LinkedList<>(mRecordItems)));
-                    mRecordItems.clear();
-                }
-                else if ((mCurrentDate != null && !dateStr.equals(mCurrentDate)))
-                {
-                    list.add(new Record(mCurrentDate, new LinkedList<>(mRecordItems)));
-                    mRecordItems.clear();
-
-                    mRecordItems.add(new RecordItem(
-                            record.getLong("pk_id"),
-                            mTimeFormat.format(date),
-                            Goal.GoalTypeEnum.valueOf(record.getInt("goal_type")),
-                            record.getInt("score"),
-                            record.getInt("score_sum"),
-                            record.getLong("version")));
-                } else {
-                    mRecordItems.add(new RecordItem(
-                            record.getLong("pk_id"),
-                            mTimeFormat.format(date),
-                            Goal.GoalTypeEnum.valueOf(record.getInt("goal_type")),
-                            record.getInt("score"),
-                            record.getInt("score_sum"),
-                            record.getLong("version")));
-                }
-
-                mCurrentDate = dateStr;
+                list.add(new Record(record.getLong("pk_id"),
+                        mTimeFormat.format(date),
+                        Goal.GoalTypeEnum.valueOf(record.getInt("goal_type")),
+                        record.getInt("score"),
+                        record.getInt("score_sum"),
+                        record.getLong("version"),
+                        DateFormat.getDateInstance(DateFormat.DEFAULT).format(date)));
             }
 
             mRecordTableManager.updateRecord(mScoreSum, recordMinId, version, list);
@@ -140,17 +106,8 @@ public class RecordCache extends BaseCache<Record>{
     public boolean getMoreRecords(int count, boolean hasLoaded) {
         List<Record> recordList = mRecordTableManager.getMoreRecords(count, mVersion, hasLoaded);
 
-        if(recordList.size() > 0) {
-            Record lastRecord = mList.get(mList.size() - 1);
-            Record firstRecord = recordList.get(0);
-            if(lastRecord.getDate().equals(firstRecord.getDate())) {
-                lastRecord.getRecordItems().addAll(firstRecord.getRecordItems());
-                recordList.remove(firstRecord);
-            }
-            mList.addAll(recordList);
-            return true;
-        }
-        return false;
+        mList.addAll(recordList);
+        return recordList.size() > 0;
     }
 
     public void addRecords(String recordStr) {
