@@ -42,6 +42,11 @@ public class PullToRefreshGridView extends PullToRefreshAdapterViewBase<GridView
 	public PullToRefreshGridView(Context context, Mode mode, AnimationStyle style) {
 		super(context, mode, style);
 	}
+	//实现自动刷新
+	@Override
+	protected void onRefreshing(boolean doScroll) {
+		super.onRefreshing(false);
+	}
 
 	@Override
 	public final Orientation getPullToRefreshScrollDirection() {
@@ -98,5 +103,6 @@ public class PullToRefreshGridView extends PullToRefreshAdapterViewBase<GridView
 
 			return returnValue;
 		}
+
 	}
 }

@@ -32,10 +32,10 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/dollar"/>
+            android:src="@drawable/score"/>
         <TextView
             android:id="@+id/price"
-            android:layout_marginLeft="3dp"
+            android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#D30B06"
@@ -48,7 +48,7 @@
             android:src="@drawable/people_num"/>
         <TextView
             android:id="@+id/purchase_count"
-            android:layout_marginLeft="3dp"
+            android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#D30B06"
@@ -72,6 +72,6 @@
         android:layout_height="24dp"
         android:background="@color/yellow_ffcc00"
         android:textSize="13sp"
-        android:text="购买"
+        android:text="兑换"
         />
 </LinearLayout>
