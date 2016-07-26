@@ -15,10 +15,11 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="18dp"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true">
 
             <LinearLayout
                 style="@style/AccountLayout"
@@ -39,12 +40,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp">
+                android:layout_marginTop="20dp">
                 <Button
                     android:id="@+id/codeButton"
-                    android:layout_width="120dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:background="@drawable/introduce_btn_back"
                     android:text="@string/send_verification_code"
@@ -110,7 +109,7 @@
 
             <Button android:id="@+id/registerButton"
                 android:layout_width="match_parent"
-                android:layout_height="41dp"
+                android:layout_height="40dp"
                 android:background="@drawable/introduce_btn_back"
                 android:text="@string/register"
                 android:textSize="16sp"

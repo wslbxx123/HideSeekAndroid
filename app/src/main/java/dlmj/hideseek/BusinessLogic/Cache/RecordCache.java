@@ -45,10 +45,6 @@ public class RecordCache extends BaseCache<Record>{
     }
 
     public int getScoreSum() {
-        if(mScoreSum > 0) {
-            return mScoreSum;
-        }
-
         return mRecordTableManager.getScoreSum();
     }
 
