@@ -79,7 +79,6 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
         if(UserCache.getInstance().ifLogin()) {
             mRaceGroupListView.setRefreshing(true);
         }
-
         return rootView;
     }
 

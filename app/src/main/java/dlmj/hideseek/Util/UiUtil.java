@@ -45,11 +45,6 @@ public class UiUtil {
         mHandler.removeCallbacks(task);
     }
 
-    //获取string数组
-    public static String[] getStringArray(int resId) {
-       return mContext.getResources().getStringArray(resId);
-    }
-
     public static String getPackName() {
         return mContext.getPackageName();
     }

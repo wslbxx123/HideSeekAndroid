@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.ILoadingLayout;
@@ -26,38 +27,37 @@ import dlmj.hideseek.BusinessLogic.Cache.ShopRewardCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
-import dlmj.hideseek.Common.Model.Shop;
+import dlmj.hideseek.Common.Model.Reward;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.R;
-import dlmj.hideseek.UI.Adapter.ShopAdapter;
+import dlmj.hideseek.UI.Adapter.RewardAdapter;
 
 /**
  * 创建者     ZPL
- * 创建时间   2016/7/16 20:20
- * 描述	     商城详情页
+ * 创建时间   2016/7/16 20:22
+ * 描述	      ${TODO}
  * <p/>
  * 更新者     $Author$
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class ShopFragment extends Fragment implements UIDataListener<Bean> {
-
+public class RewardFragment extends Fragment implements UIDataListener<Bean> {
     private static final int MSG_REFRESH_LIST = 1;
     private PullToRefreshGridView mPTRGridView;
     private View mView;
     private NetworkHelper mNetworkHelper;
-    private NetworkHelper mGetShopNetworkHelper;
-    private List<Shop.ProductsEntity> mProductsEntity = new LinkedList<>();
+    private NetworkHelper mGetRewardNetworkHelper;
+    private List<Reward.RewardEntity> mRewardEntity = new LinkedList<>();
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_REFRESH_LIST:
-                    mShopAdapter.notifyDataSetChanged();
+                    mRewardAdapter.notifyDataSetChanged();
                     break;
             }
         }
     };
-    private ShopAdapter mShopAdapter;
+    private RewardAdapter mRewardAdapter;
     private GridView mGridView;
 
     @Nullable
@@ -69,52 +69,51 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
         initView();
         initData();
         initListener();
-        String data = ShopRewardCache.getDataFromLocal(UrlParams.GET_PRODUCTS_URL);
+        String data = ShopRewardCache.getDataFromLocal(UrlParams.GET_REWARD_URL);
         //使用本地缓存
         if (data!=null) {
             setData(data);
         } else {
-            //自动刷新
-           mPTRGridView.setRefreshing(true);
+            mPTRGridView.setRefreshing(true);
         }
         return mView;
     }
 
     private void initListener() {
         mNetworkHelper.setUiDataListener(this);
-        mGetShopNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
+        mGetRewardNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
                 //保存缓存
                 String result = data.getResult();
-                ShopRewardCache.saveCache(result,UrlParams.GET_PRODUCTS_URL);
+                ShopRewardCache.saveCache(result,UrlParams.GET_REWARD_URL);
                 setData(result);
             }
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
-
+                Toast.makeText(getContext(),"网络连接失败",Toast.LENGTH_SHORT).show();
             }
         });
 
         mPTRGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<GridView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
-                    //下拉刷新
-                    Map<String, String> params = new HashMap<>();
-                    params.put("version", 1 + "");
-                    params.put("product_min_id", 10 + "");
-                    mGetShopNetworkHelper.sendPostRequestWithoutSid(UrlParams.GET_PRODUCTS_URL, params);
+                //下拉刷新
+                Map<String, String> params = new HashMap<>();
+                params.put("version", 1 + "");
+                params.put("reward_min_id", 10 + "");
+                mGetRewardNetworkHelper.sendPostRequestWithoutSid(UrlParams.GET_REWARD_URL, params);
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
-                if (mProductsEntity.size() > 10) {
+                if (mRewardEntity.size() > 10) {
                     //上拉加载
                     Map<String, String> params = new HashMap<>();
                     params.put("version", 0 + "");
-                    params.put("product_min_id", 0 + "");
-                    mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_PRODUCTS_URL, params);
+                    params.put("reward_min_id", 0 + "");
+                    mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_REWARD_URL, params);
                 }
                 mPTRGridView.onRefreshComplete();
             }
@@ -123,10 +122,10 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
 
     private void setData(String result) {
         Gson gson = new Gson();
-        Shop shop = gson.fromJson(result, Shop.class);
-        mProductsEntity = shop.products;
-        mShopAdapter = new ShopAdapter(getContext(), mProductsEntity);
-        mGridView.setAdapter(mShopAdapter);
+        Reward reward = gson.fromJson(result, Reward.class);
+        mRewardEntity = reward.reward;
+        mRewardAdapter = new RewardAdapter(getContext(), mRewardEntity);
+        mGridView.setAdapter(mRewardAdapter);
         Message.obtain(mUiHandler, MSG_REFRESH_LIST).sendToTarget();
         mPTRGridView.onRefreshComplete();
     }
@@ -148,31 +147,30 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
         //当界面为空的时候显示的视图
         mPTRGridView.setEmptyView(tv);
 
-        mShopAdapter = new ShopAdapter(getContext(), mProductsEntity);
-        mGridView.setAdapter(mShopAdapter);
+        mRewardAdapter = new RewardAdapter(getContext(), mRewardEntity);
+        mGridView.setAdapter(mRewardAdapter);
     }
 
     private void initView() {
         mPTRGridView = (PullToRefreshGridView) mView.findViewById(R.id.pullToRefreshGridView);
         mNetworkHelper = new NetworkHelper(getActivity());
-        mGetShopNetworkHelper = new NetworkHelper(getActivity());
+        mGetRewardNetworkHelper = new NetworkHelper(getActivity());
     }
 
     @Override
     public void onDataChanged(Bean data) {
         String result = data.getResult();
         Gson gson = new Gson();
-        Shop shop = gson.fromJson(result, Shop.class);
-        //mProductsEntity = shop.products;
-        List productsEntity = shop.products;
-        mProductsEntity.addAll(productsEntity);
-        mShopAdapter = new ShopAdapter(getContext(), mProductsEntity);
-        mGridView.setAdapter(mShopAdapter);
+        Reward reward = gson.fromJson(result, Reward.class);
+        List rewardEntity = reward.reward;
+        mRewardEntity.addAll(rewardEntity);
+        mRewardAdapter = new RewardAdapter(getContext(), mRewardEntity);
+        mGridView.setAdapter(mRewardAdapter);
         Message.obtain(mUiHandler, MSG_REFRESH_LIST).sendToTarget();
     }
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
-
+        Toast.makeText(getContext(),"网络连接失败",Toast.LENGTH_SHORT).show();
     }
 }

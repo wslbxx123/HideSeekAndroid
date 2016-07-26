@@ -1,7 +1,5 @@
 package dlmj.hideseek.BusinessLogic.Cache;
 
-import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -23,22 +21,8 @@ import dlmj.hideseek.Util.UiUtil;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class ShopCache  {
-    private static final String TAG = "ShopCache";
-    private static ShopCache mInstance;
-
-    public ShopCache(Context context) {
-        super();
-    }
-
-    public static ShopCache getInstance(Context context){
-        synchronized (ShopCache.class){
-            if(mInstance == null){
-                mInstance = new ShopCache(context);
-            }
-        }
-        return mInstance;
-    }
+public class ShopRewardCache {
+    private static final String TAG = "ShopRewardCache";
 
     public static void saveCache(String json,String url) {
         //TODO:保存缓存
@@ -64,14 +48,15 @@ public class ShopCache  {
 
     public static File getCacheFile(String url) {
         //dir filename
-        File dir = null;
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-            //has sdcard
-            dir = new File(Environment.getExternalStorageDirectory(), "Android/data/" + UiUtil.getPackName() + "/json");
-        }else{
-            //rom
-            dir = new File(UiUtil.getCacheDir(),"json");
-        }
+        File dir = new File(UiUtil.getCacheDir(),"json");
+//        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+//            //has sdcard
+//            dir=new File(UiUtil.getCacheDir(),"/json");
+//            //dir = new File(Environment.getExternalStorageDirectory(), "Android/data/" + UiUtil.getPackName() + "/json");
+//        }else{
+//            //rom
+//            dir = new File(UiUtil.getCacheDir(),"json");
+//        }
         if(!dir.exists()){
             dir.mkdirs();
         }
@@ -89,8 +74,8 @@ public class ShopCache  {
         try {
             reader = new BufferedReader(new FileReader(cache));
             String time = reader.readLine();
-            //方便演示，使用20秒
-            if(System.currentTimeMillis() - Long.parseLong(time) > 200 * 1000){
+            //使用200分钟
+            if(System.currentTimeMillis() - Long.parseLong(time) > 12000 * 1000){
                 //cache is outdate
                 Log.e(TAG,"缓存过期啦");
                 return null;
@@ -110,5 +95,4 @@ public class ShopCache  {
         }
         return null;
     }
-
 }

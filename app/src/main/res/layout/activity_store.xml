@@ -47,12 +47,13 @@
             />
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
         android:layout_width="match_parent"
-        android:layout_marginLeft="23dp"
-        android:layout_marginRight="23dp"
         android:layout_height="match_parent">
 
-    </FrameLayout>
+    </android.support.v4.view.ViewPager>
 </LinearLayout>
