@@ -28,6 +28,7 @@ public class RewardAdapter extends BaseAdapter {
     private Context mContext;
     private List<Reward.RewardEntity> mList;
     private ImageLoader mImageLoader;
+
     public RewardAdapter(Context context, List<Reward.RewardEntity> list) {
         this.mContext = context;
         this.mList = list;
@@ -57,7 +58,7 @@ public class RewardAdapter extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = View.inflate(mContext, R.layout.view_shop_content,null);
+            convertView = View.inflate(mContext, R.layout.view_reward_content,null);
             holder.product_name = (TextView) convertView.findViewById(R.id.product_name);
             holder.product_image_url = (NetworkImageView) convertView.findViewById(R.id.product_image_url);
             holder.price=(TextView) convertView.findViewById(R.id.price);
