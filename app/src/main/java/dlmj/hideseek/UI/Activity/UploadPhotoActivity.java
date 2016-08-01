@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
-import dlmj.hideseek.BusinessLogic.Network.MultipartRequest;
+import dlmj.hideseek.BusinessLogic.Network.MultiPartJsonRequest;
 import dlmj.hideseek.BusinessLogic.Network.VolleyQueueController;
 import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.CodeParams;
@@ -53,7 +53,7 @@ public class UploadPhotoActivity extends Activity {
     private final int CHOOSE_REGION = 200;
     private CircleImageView mPhotoCircleNetworkImageView;
     private LinearLayout mPhotoLayout;
-    private MultipartRequest mMultiPartRequest;
+    private MultiPartJsonRequest mMultiPartRequest;
     private Response.Listener<String> mListener;
     private Response.ErrorListener mErrorListener;
     private String mPhone;
@@ -276,7 +276,7 @@ public class UploadPhotoActivity extends Activity {
                     if (!mLoadingDialog.isShowing()) {
                         mLoadingDialog.show();
                     }
-                    mMultiPartRequest = new MultipartRequest(UrlParams.REGISTER_URL, mListener,
+                    mMultiPartRequest = new MultiPartJsonRequest(UrlParams.REGISTER_URL, mListener,
                             mErrorListener, "photo", file, map);
                     VolleyQueueController.getInstance(UploadPhotoActivity.this)
                             .getRequestQueue().add(mMultiPartRequest);

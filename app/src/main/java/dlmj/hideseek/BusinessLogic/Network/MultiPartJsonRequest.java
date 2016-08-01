@@ -33,7 +33,7 @@ import dlmj.hideseek.Common.Util.LogUtil;
 /**
  * Created by Two on 5/9/16.
  */
-public class MultipartRequest extends Request<String> {
+public class MultiPartJsonRequest extends Request<String> {
     private static String TAG = "MultiPartRequest";
     private MultipartEntity entity = new MultipartEntity();
 
@@ -53,9 +53,9 @@ public class MultipartRequest extends Request<String> {
      * @param file
      * @param params
      */
-    public MultipartRequest(String url, Response.Listener<String> listener,
-                            Response.ErrorListener errorListener, String filePartName,
-                            File file, Map<String, String> params){
+    public MultiPartJsonRequest(String url, Response.Listener<String> listener,
+                                Response.ErrorListener errorListener, String filePartName,
+                                File file, Map<String, String> params){
         super(Method.POST, url, errorListener);
         mFileParts = new ArrayList<>();
         if(file != null && file.exists()){
@@ -79,9 +79,9 @@ public class MultipartRequest extends Request<String> {
      * @param files
      * @param params
      */
-    public MultipartRequest(String url, Response.Listener<String> listener,
-                            Response.ErrorListener errorListener,
-                            String filePartName, List<File> files, Map<String, String> params) {
+    public MultiPartJsonRequest(String url, Response.Listener<String> listener,
+                                Response.ErrorListener errorListener,
+                                String filePartName, List<File> files, Map<String, String> params) {
         super(Method.POST, url, errorListener);
         mFilePartName = filePartName;
         mListener = listener;
