@@ -39,6 +39,24 @@ public class BaseInfoUtil {
         return sdCardDir + File.separator + APP_FOLDER_NAME;
     }
 
+    public static String getSdCardImageDir(Context context) {
+        String dirPath = getProjectDir(context) + File.separator + BaseInfoUtil.APP_IMAGE_NAME;
+        File file = new File(dirPath);
+
+        if (!file.exists()) {
+            try {
+                boolean isCreate = file.mkdir();
+                LogUtil.d(TAG, dirPath + "has created. " + isCreate);
+                File noMedia = new File(dirPath  + File.separator + ".nomedia" );
+                noMedia.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return dirPath;
+    }
+
     public static String getImageDir(Context context) {
         String dirPath = context.getExternalCacheDir() + File.separator + BaseInfoUtil.APP_IMAGE_NAME;
         File file = new File(dirPath);
@@ -57,8 +75,8 @@ public class BaseInfoUtil {
         return dirPath;
     }
 
-    public static String getImagePath(Context context, String fileName) {
-        String dirPath = getImageDir(context);
+    public static String getImagePath(Context context, String fileName, boolean isSdCard) {
+        String dirPath = isSdCard? getSdCardImageDir(context) : getImageDir(context);
 
         String path = dirPath + File.separator + fileName + "_" + new Date().getTime() + ".jpg";
         LogUtil.d(TAG, path);

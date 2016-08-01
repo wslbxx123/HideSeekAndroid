@@ -209,9 +209,9 @@ public class PersonListAdapter extends BaseAdapter implements AMapLocationListen
                     if(mRegion.indexOf("市") == mRegion.length() - 1) {
                         mRegion = mRegion.substring(0, mRegion.length() - 1);
                     }
-                    mLocationProcess = LocationProcessEnum.located;
                     LogUtil.d(TAG, mRegion);
                 }
+                mLocationProcess = LocationProcessEnum.located;
             }
             else{
                 String errText = "定位失败，" + aMapLocation.getErrorCode() + ": " +

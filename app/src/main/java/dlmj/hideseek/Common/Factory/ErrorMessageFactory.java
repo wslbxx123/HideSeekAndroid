@@ -19,6 +19,8 @@ public class ErrorMessageFactory {
         switch(errorCode){
             case CodeParams.ERROR_VOLLEY_CODE:
                 return mResources.getString(R.string.error_connect_network_failed);
+            case CodeParams.ERROR_RESPONSE_FORMAT:
+                return mResources.getString(R.string.error_response_format);
             case CodeParams.ERROR_LOGIN_FAILED:
                 return mResources.getString(R.string.error_login_failed);
             case CodeParams.ERROR_GOAL_DISAPPEAR:

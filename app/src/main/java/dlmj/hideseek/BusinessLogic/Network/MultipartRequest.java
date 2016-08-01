@@ -6,12 +6,15 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -24,13 +27,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dlmj.hideseek.Common.Params.CodeParams;
+import dlmj.hideseek.Common.Util.LogUtil;
+
 /**
  * Created by Two on 5/9/16.
  */
 public class MultipartRequest extends Request<String> {
+    private static String TAG = "MultiPartRequest";
     private MultipartEntity entity = new MultipartEntity();
 
-    private  Response.Listener<String> mListener;
+    private Response.Listener<String> mListener;
+    private Response.ErrorListener mErrorListener;
 
     private List<File> mFileParts;
     private String mFilePartName;
@@ -45,20 +53,21 @@ public class MultipartRequest extends Request<String> {
      * @param file
      * @param params
      */
-    public MultipartRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener,
-                            String filePartName, File file, Map<String, String> params){
+    public MultipartRequest(String url, Response.Listener<String> listener,
+                            Response.ErrorListener errorListener, String filePartName,
+                            File file, Map<String, String> params){
         super(Method.POST, url, errorListener);
-        mFileParts = new ArrayList<File>();
+        mFileParts = new ArrayList<>();
         if(file != null && file.exists()){
             mFileParts.add(file);
         }else{
-            VolleyLog.e("MultipartRequest---file not found");
+            VolleyLog.e("MultiPartRequest---file not found");
         }
         mFilePartName = filePartName;
         mListener = listener;
+        mErrorListener = errorListener;
         mParams = params;
-        buildMultipartEntity();
-
+        buildMultiPartEntity();
     }
 
     /**
@@ -70,14 +79,16 @@ public class MultipartRequest extends Request<String> {
      * @param files
      * @param params
      */
-    public MultipartRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener
-            , String filePartName, List<File> files, Map<String, String> params) {
+    public MultipartRequest(String url, Response.Listener<String> listener,
+                            Response.ErrorListener errorListener,
+                            String filePartName, List<File> files, Map<String, String> params) {
         super(Method.POST, url, errorListener);
         mFilePartName = filePartName;
         mListener = listener;
+        mErrorListener = errorListener;
         mFileParts = files;
         mParams = params;
-        buildMultipartEntity();
+        buildMultiPartEntity();
     }
 
 
@@ -97,7 +108,21 @@ public class MultipartRequest extends Request<String> {
 
     @Override
     protected void deliverResponse(String response) {
-        mListener.onResponse(response);
+        JSONObject result = null;
+        try {
+            LogUtil.d(TAG, response);
+            result = new JSONObject(response);
+            int code = result.getInt("code");
+
+            if (code == CodeParams.SUCCESS) {
+                mListener.onResponse(response);
+            } else {
+                mErrorListener.onErrorResponse(new VolleyError(response));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -105,7 +130,7 @@ public class MultipartRequest extends Request<String> {
         Map<String, String> headers = super.getHeaders();
 
         if (headers == null || headers.equals(Collections.emptyMap())) {
-            headers = new HashMap<String, String>();
+            headers = new HashMap<>();
         }
         return headers;
     }
@@ -126,7 +151,7 @@ public class MultipartRequest extends Request<String> {
         return bos.toByteArray();
     }
 
-    private void buildMultipartEntity() {
+    private void buildMultiPartEntity() {
         if (mFileParts != null && mFileParts.size() > 0) {
             for (File file : mFileParts) {
                 entity.addPart(mFilePartName, new FileBody(file));

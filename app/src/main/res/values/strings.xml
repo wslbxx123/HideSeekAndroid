@@ -81,6 +81,7 @@
     <string name="error_login_failed">Phone or password error</string>
     <string name="error_password_not_same">Two passwords are not the same</string>
     <string name="error_connect_network_failed">Failed to connect the network</string>
+    <string name="error_response_format">The format of response is wrong</string>
     <string name="error_location_failed">Failed to locate</string>
     <string name="error_goal_disappear">The Goal has disappeared</string>
 

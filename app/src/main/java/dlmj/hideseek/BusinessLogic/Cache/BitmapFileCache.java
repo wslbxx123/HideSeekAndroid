@@ -37,7 +37,7 @@ public class BitmapFileCache {
     public Bitmap getBitmap(String url) {
         try {
             String fileName = url.substring(url.lastIndexOf("/") + 1);
-            String imagePath = BaseInfoUtil.getImagePath(mContext, fileName);
+            String imagePath = BaseInfoUtil.getImagePath(mContext, fileName, false);
             FileInputStream fileInputStream = new FileInputStream(imagePath);
 
             return BitmapFactory.decodeStream(fileInputStream);
@@ -51,7 +51,7 @@ public class BitmapFileCache {
     public void putBitmap(String url, Bitmap bitmap) {
         try {
             String fileName = url.substring(url.lastIndexOf("/") + 1);
-            String imagePath = BaseInfoUtil.getImagePath(mContext, fileName);
+            String imagePath = BaseInfoUtil.getImagePath(mContext, fileName, false);
 
             File file = new File(imagePath);
 

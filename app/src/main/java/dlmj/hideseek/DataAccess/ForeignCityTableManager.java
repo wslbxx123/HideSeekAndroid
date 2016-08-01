@@ -32,7 +32,7 @@ public class ForeignCityTableManager {
     }
 
     public List<ForeignCity> getAllCities(){
-        Cursor cursor = mSQLiteDatabase.rawQuery("SELECT * FROM foreign_city", null);
+        Cursor cursor = mSQLiteDatabase.rawQuery("SELECT * FROM foreign_city order by name", null);
         List<ForeignCity> cities = new LinkedList<>();
         while (cursor.moveToNext()) {
             cities.add(new ForeignCity(

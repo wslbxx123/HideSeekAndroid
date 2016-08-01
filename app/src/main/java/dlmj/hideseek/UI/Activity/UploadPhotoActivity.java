@@ -5,7 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,6 +24,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +53,7 @@ public class UploadPhotoActivity extends Activity {
     private final int CHOOSE_REGION = 200;
     private CircleImageView mPhotoCircleNetworkImageView;
     private LinearLayout mPhotoLayout;
-    private MultipartRequest mMultipartRequest;
+    private MultipartRequest mMultiPartRequest;
     private Response.Listener<String> mListener;
     private Response.ErrorListener mErrorListener;
     private String mPhone;
@@ -59,7 +64,7 @@ public class UploadPhotoActivity extends Activity {
     private LinearLayout mRegionLayout;
     private TextView mRegionTextView;
     private Button mRegisterButton;
-    private String mImagePath;
+    private Uri mImageUri;
     private CustomSuperToast mToast;
     private LoadingDialog mLoadingDialog;
 
@@ -85,7 +90,7 @@ public class UploadPhotoActivity extends Activity {
         if(resultCode == RESULT_OK) {
             switch(requestCode) {
                 case CROP_REQUEST_CODE:
-                    cropImage((Bitmap)data.getParcelableExtra("data"));
+                    cropImage();
                     break;
                 case CHOOSE_REGION:
                     String region = data.getStringExtra(IntentExtraParam.REGION_NAME);
@@ -96,14 +101,18 @@ public class UploadPhotoActivity extends Activity {
         }
     }
 
-    private void cropImage(Bitmap bitmap) {
+    private void cropImage() {
         FileOutputStream fileOutputStream = null;
         try {
-            mImagePath = BaseInfoUtil.getImagePath(UploadPhotoActivity.this, FILE_NAME);
-            LogUtil.d(TAG, mImagePath);
-            fileOutputStream = new FileOutputStream(mImagePath);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-            mPhotoCircleNetworkImageView.setImageBitmap(bitmap);
+            if(mImageUri != null){
+                LogUtil.d(TAG, mImageUri.toString());
+                Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver()
+                        .openInputStream(mImageUri));
+                mPhotoCircleNetworkImageView.setImageBitmap(bitmap);
+            }
+//            fileOutputStream = new FileOutputStream(mImagePath);
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+//            mPhotoCircleNetworkImageView.setImageBitmap(bitmap);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally{
@@ -115,6 +124,17 @@ public class UploadPhotoActivity extends Activity {
                 }
             }
         }
+    }
+
+    private Bitmap decodeUriAsBitmap(Uri uri){
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return bitmap;
     }
 
     private void findView() {
@@ -140,11 +160,15 @@ public class UploadPhotoActivity extends Activity {
                 intent.putExtra("crop", "true");
                 intent.putExtra("aspectX", 1);
                 intent.putExtra("aspectY", 1);
-                intent.putExtra("outputX", 200);
-                intent.putExtra("outputY", 200);
+                intent.putExtra("outputX", 500);
+                intent.putExtra("outputY", 500);
                 intent.putExtra("scale", true);
-                intent.putExtra("return-data", true);
+                intent.putExtra("return-data", false);
                 intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+                String imagePath = BaseInfoUtil.getImagePath(UploadPhotoActivity.this, FILE_NAME, true);
+                File imageFile = new File(imagePath);
+                mImageUri = Uri.fromFile(imageFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
                 intent.putExtra("noFaceDetection", false);
                 startActivityForResult(intent, CROP_REQUEST_CODE);
             }
@@ -218,43 +242,48 @@ public class UploadPhotoActivity extends Activity {
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String sexStr = mSexTextView.getText().toString();
-                String region = mRegionTextView.getText().toString();
-                User.SexEnum sex = User.SexEnum.notSet;
+                try {
+                    String sexStr = mSexTextView.getText().toString();
+                    String region = mRegionTextView.getText().toString();
+                    User.SexEnum sex = User.SexEnum.notSet;
 
-                Map<String, String> map = new HashMap<>();
-                map.put("phone", mPhone);
-                map.put("nickname", mNickname);
-                map.put("password", mPassword);
+                    Map<String, String> map = new HashMap<>();
+                    map.put("phone", mPhone);
+                    map.put("nickname", mNickname);
+                    map.put("password", mPassword);
 
-                map.put("role", (int)(Math.random() * 5) + "");
+                    map.put("role", (int) (Math.random() * 5) + "");
 
-                if(sexStr.equals(getString(R.string.female))) {
-                    sex = User.SexEnum.female;
-                } else if(sexStr.equals(getString(R.string.male))) {
-                    sex = User.SexEnum.male;
-                } else if(sexStr.equals(getString(R.string.secret))) {
-                    sex = User.SexEnum.secret;
+                    if (sexStr.equals(getString(R.string.female))) {
+                        sex = User.SexEnum.female;
+                    } else if (sexStr.equals(getString(R.string.male))) {
+                        sex = User.SexEnum.male;
+                    } else if (sexStr.equals(getString(R.string.secret))) {
+                        sex = User.SexEnum.secret;
+                    }
+
+                    map.put("sex", sex.getValue() + "");
+
+                    if (!region.equals(getString(R.string.not_set))) {
+                        map.put("region", region);
+                    }
+
+                    File file = null;
+                    if (mImageUri != null) {
+                        file = new File(new URI(mImageUri.toString()));
+                    }
+
+                    if (!mLoadingDialog.isShowing()) {
+                        mLoadingDialog.show();
+                    }
+                    mMultiPartRequest = new MultipartRequest(UrlParams.REGISTER_URL, mListener,
+                            mErrorListener, "photo", file, map);
+                    VolleyQueueController.getInstance(UploadPhotoActivity.this)
+                            .getRequestQueue().add(mMultiPartRequest);
                 }
-
-                map.put("sex", sex.getValue() + "");
-
-                if(!region.equals(getString(R.string.not_set))) {
-                    map.put("region", region);
+                catch (URISyntaxException e) {
+                    e.printStackTrace();
                 }
-
-                File file = null;
-                if(mImagePath != null) {
-                    file = new File(mImagePath);
-                }
-
-                if (!mLoadingDialog.isShowing()) {
-                    mLoadingDialog.show();
-                }
-                mMultipartRequest = new MultipartRequest(UrlParams.REGISTER_URL, mListener,
-                        mErrorListener, "photo", file, map);
-                VolleyQueueController.getInstance(UploadPhotoActivity.this)
-                        .getRequestQueue().add(mMultipartRequest);
             }
         });
     }
