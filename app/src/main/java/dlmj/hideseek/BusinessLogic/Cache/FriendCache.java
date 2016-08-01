@@ -9,14 +9,10 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 
-import dlmj.hideseek.Common.Model.Goal;
-import dlmj.hideseek.Common.Model.RaceGroup;
-import dlmj.hideseek.Common.Model.RecordItem;
 import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.PinYinUtil;
 import dlmj.hideseek.DataAccess.FriendTableManager;
-import dlmj.hideseek.DataAccess.RaceGroupTableManager;
 
 /**
  * Created by Two on 6/6/16.
@@ -68,6 +64,7 @@ public class FriendCache extends BaseCache<User>{
                             friend.getLong("pk_id"),
                             friend.getString("nickname"),
                             friend.getString("photo_url"),
+                            friend.getString("small_photo_url"),
                             User.SexEnum.valueOf(friend.getInt("sex")),
                             friend.getString("region"),
                             User.RoleEnum.valueOf(friend.getInt("role")),

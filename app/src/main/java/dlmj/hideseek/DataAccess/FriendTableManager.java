@@ -6,17 +6,11 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import dlmj.hideseek.Common.Model.ForeignCity;
-import dlmj.hideseek.Common.Model.Goal;
-import dlmj.hideseek.Common.Model.RaceGroup;
-import dlmj.hideseek.Common.Model.RecordItem;
 import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
-import dlmj.hideseek.Common.Util.PinYinUtil;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 
 /**
@@ -43,6 +37,7 @@ public class FriendTableManager {
                 "account_id bigint, " +
                 "nickname varchar, " +
                 "photo_url varchar, " +
+                "small_photo_url varchar, " +
                 "sex int, " +
                 "region varchar, " +
                 "role int, " +
@@ -61,6 +56,7 @@ public class FriendTableManager {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("nickname", user.getNickname());
                 contentValues.put("photo_url", user.getPhotoUrl());
+                contentValues.put("small_photo_url", user.getSmallPhotoUrl());
                 contentValues.put("sex", user.getSex().getValue());
                 contentValues.put("region", user.getRegion());
                 contentValues.put("role", user.getRole().getValue());
@@ -90,6 +86,7 @@ public class FriendTableManager {
             friendList.add(new User(cursor.getLong(cursor.getColumnIndex("account_id")),
                     cursor.getString(cursor.getColumnIndex("nickname")),
                     cursor.getString(cursor.getColumnIndex("photo_url")),
+                    cursor.getString(cursor.getColumnIndex("small_photo_url")),
                     User.SexEnum.valueOf(cursor.getInt(cursor.getColumnIndex("sex"))),
                     cursor.getString(cursor.getColumnIndex("region")),
                     User.RoleEnum.valueOf(cursor.getInt(cursor.getColumnIndex("role"))),
@@ -116,6 +113,7 @@ public class FriendTableManager {
             friendList.add(new User(cursor.getLong(cursor.getColumnIndex("account_id")),
                     cursor.getString(cursor.getColumnIndex("nickname")),
                     cursor.getString(cursor.getColumnIndex("photo_url")),
+                    cursor.getString(cursor.getColumnIndex("small_photo_url")),
                     User.SexEnum.valueOf(cursor.getInt(cursor.getColumnIndex("sex"))),
                     cursor.getString(cursor.getColumnIndex("region")),
                     User.RoleEnum.valueOf(cursor.getInt(cursor.getColumnIndex("role"))),

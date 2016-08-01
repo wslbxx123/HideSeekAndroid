@@ -480,7 +480,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
             mNotLoginTextView.setVisibility(View.GONE);
             mUserInfoLayout.setVisibility(View.VISIBLE);
             User user = UserCache.getInstance().getUser();
-            mPhotoCircleNetworkImageView.setImageUrl(user.getPhotoUrl(), mImageLoader);
+            mPhotoCircleNetworkImageView.setImageUrl(user.getSmallPhotoUrl(), mImageLoader);
             mNicknameTextView.setText(user.getNickname());
             String date = DateFormat.getDateInstance(DateFormat.DEFAULT).format(user.getRegisterDate());
             mDateTextView.setText(date + " " + getString(R.string.join));

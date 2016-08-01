@@ -80,6 +80,10 @@ public class UserCache {
                 user.setPhotoUrl(userInfo.getString("photo_url"));
             }
 
+            if(userInfo.has("small_photo_url")) {
+                user.setSmallPhotoUrl(userInfo.getString("small_photo_url"));
+            }
+
             if(userInfo.has("sex")) {
                 user.setSex(User.SexEnum.valueOf(userInfo.getInt("sex")));
             }

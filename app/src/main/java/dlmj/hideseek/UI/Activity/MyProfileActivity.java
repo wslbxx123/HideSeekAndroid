@@ -42,7 +42,7 @@ public class MyProfileActivity extends Activity{
     private void findView() {
         mPhotoCircleNetworkImageView = (CircleNetworkImageView) findViewById(R.id.photoCircleImageView);
         mPhotoCircleNetworkImageView.setDefaultImageResId(R.drawable.default_photo);
-        mPhotoCircleNetworkImageView.setImageUrl(mUser.getPhotoUrl(), mImageLoader);
+        mPhotoCircleNetworkImageView.setImageUrl(mUser.getSmallPhotoUrl(), mImageLoader);
         mNicknameTextView = (TextView) findViewById(R.id.nicknameTextView);
         mNicknameTextView.setText(mUser.getNickname());
         mPhoneTextView = (TextView) findViewById(R.id.phoneTextView);

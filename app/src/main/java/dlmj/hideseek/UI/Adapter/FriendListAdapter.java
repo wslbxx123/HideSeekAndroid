@@ -68,7 +68,7 @@ public class FriendListAdapter extends BaseAdapter{
         }
 
         User user = (User)getItem(position);
-        viewHolder.mFriendImageView.setImageUrl(user.getPhotoUrl(), mImageLoader);
+        viewHolder.mFriendImageView.setImageUrl(user.getSmallPhotoUrl(), mImageLoader);
         viewHolder.mFriendNameTextView.setText(user.getNickname());
         String currentStr = PinYinUtil.getAlpha(user.getPinyin());
         String previewStr = (position - 1) >= 0 ? PinYinUtil.getAlpha(mFriendList

@@ -18,6 +18,7 @@ public class User implements Serializable{
     private String mSessionId;
     private String mNickname;
     private String mPhotoUrl;
+    private String mSmallPhotoUrl;
     private Date mRegisterDate;
     private SexEnum mSex;
     private String mRegion;
@@ -44,11 +45,12 @@ public class User implements Serializable{
         this.has_guide = has_guide;
     }
 
-    public User(long pkId, String nickname, String photoUrl, SexEnum sex, String region,
-                RoleEnum role, long version, String pinyin) {
+    public User(long pkId, String nickname, String photoUrl, String smallPhotoUrl, SexEnum sex,
+                String region, RoleEnum role, long version, String pinyin) {
         mPKId = pkId;
         mNickname = nickname;
         mPhotoUrl = photoUrl;
+        mSmallPhotoUrl = smallPhotoUrl;
         mSex = sex;
         mRegion = region;
         mRole = role;
@@ -74,6 +76,14 @@ public class User implements Serializable{
 
     public void setPhotoUrl(String photoUrl) {
         mPhotoUrl = photoUrl;
+    }
+
+    public String getSmallPhotoUrl(){
+        return mSmallPhotoUrl;
+    }
+
+    public void setSmallPhotoUrl(String smallPhotoUrl) {
+        mSmallPhotoUrl = smallPhotoUrl;
     }
 
     public String getNickname() {

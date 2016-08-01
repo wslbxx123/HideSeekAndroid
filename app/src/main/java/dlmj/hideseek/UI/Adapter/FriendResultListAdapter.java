@@ -67,7 +67,7 @@ public class FriendResultListAdapter extends BaseAdapter{
         }
 
         User user = (User)getItem(position);
-        viewHolder.mFriendImageView.setImageUrl(user.getPhotoUrl(), mImageLoader);
+        viewHolder.mFriendImageView.setImageUrl(user.getSmallPhotoUrl(), mImageLoader);
         viewHolder.mFriendNameTextView.setText(user.getNickname());
         viewHolder.mRoleImageView.setImageResource(user.getRoleImageDrawableId());
 
