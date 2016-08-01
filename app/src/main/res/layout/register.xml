@@ -43,7 +43,7 @@
                 android:layout_marginTop="20dp">
                 <Button
                     android:id="@+id/codeButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:layout_height="35dp"
                     android:background="@drawable/introduce_btn_back"
                     android:text="@string/send_verification_code"

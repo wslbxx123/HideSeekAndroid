@@ -22,8 +22,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -102,7 +100,6 @@ public class UploadPhotoActivity extends Activity {
     }
 
     private void cropImage() {
-        FileOutputStream fileOutputStream = null;
         try {
             if(mImageUri != null){
                 LogUtil.d(TAG, mImageUri.toString());
@@ -110,19 +107,9 @@ public class UploadPhotoActivity extends Activity {
                         .openInputStream(mImageUri));
                 mPhotoCircleNetworkImageView.setImageBitmap(bitmap);
             }
-//            fileOutputStream = new FileOutputStream(mImagePath);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
-//            mPhotoCircleNetworkImageView.setImageBitmap(bitmap);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } finally{
-            if(null != fileOutputStream){
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
