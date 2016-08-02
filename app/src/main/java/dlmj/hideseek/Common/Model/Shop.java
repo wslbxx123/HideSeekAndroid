@@ -40,5 +40,6 @@ public class Shop {
             public String purchase_count;
             public String introduction;
             public String version;
+            public int max_count;
         }
     }

@@ -40,6 +40,7 @@ import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.FriendActivity;
 import dlmj.hideseek.UI.Activity.IntroduceActivity;
+import dlmj.hideseek.UI.Activity.MyOrderActivity;
 import dlmj.hideseek.UI.Activity.MyProfileActivity;
 import dlmj.hideseek.UI.Activity.SettingActivity;
 import dlmj.hideseek.UI.Activity.UploadPhotoActivity;
@@ -87,6 +88,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     private LinearLayout mFriendLayout;
     private ImageView mRoleImageView;
     private LoadingDialog mLoadingDialog;
+    private LinearLayout mMyOrder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -142,7 +144,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
         mRoleImageView = (ImageView) view.findViewById(R.id.roleImageView);
         mFriendLayout = (LinearLayout) view.findViewById(R.id.friendLayout);
         mLoadingDialog = new LoadingDialog(getActivity());
-
+        mMyOrder = (LinearLayout) view.findViewById(R.id.myOrder);
         setUserInfo();
 
         Window window = mLoginDialog.getWindow();
@@ -151,6 +153,14 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
 
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
+        mMyOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //订单详情页
+                Intent intent = new Intent(getActivity(),MyOrderActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mRecordNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override

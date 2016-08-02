@@ -24,7 +24,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="10dp"
-        android:background="@android:color/white">
+        android:background="@color/white">
         <dlmj.hideseek.UI.View.CircleNetworkImageView
             android:id="@+id/photoCircleImageView"
             android:layout_width="60dp"
@@ -99,7 +99,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
-            android:background="@android:color/white">
+            android:background="@color/white">
             <TextView
                 android:id="@+id/friendTextView"
                 android:layout_width="wrap_content"
@@ -122,7 +122,7 @@
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_marginLeft="1dp"
-            android:background="@android:color/white">
+            android:background="@color/white">
             <TextView
                 android:id="@+id/scoreTextView"
                 android:layout_width="wrap_content"
@@ -157,6 +157,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/myOrder"
         style="@style/CrossBarLayout"
         android:layout_marginTop="12dp">
         <ImageView

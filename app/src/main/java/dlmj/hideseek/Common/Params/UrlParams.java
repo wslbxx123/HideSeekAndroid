@@ -18,5 +18,8 @@ public class UrlParams {
     public static String REFRESH_PRODUCTS_URL ="http://www.hideseek.cn/index.php/home/store/refreshProducts";
     public static String GET_REWARD_URL ="http://www.hideseek.cn/index.php/home/store/getReward";
     public static String REFRESH_REWARD_URL ="http://www.hideseek.cn/index.php/home/store/refreshReward";
-    
+    public static String CREATE_ORDER_URL ="http://www.hideseek.cn/index.php/home/store/createOrder";
+    public static String PURCHASE_URL ="http://www.hideseek.cn/index.php/home/store/purchase";
+    public static String GET_ORDERS_URL ="http://www.hideseek.cn/index.php/home/store/getOrders";
+
 }
