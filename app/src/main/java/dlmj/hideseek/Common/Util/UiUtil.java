@@ -1,4 +1,4 @@
-package dlmj.hideseek.Util;
+package dlmj.hideseek.Common.Util;
 
 import android.content.Context;
 import android.os.Handler;

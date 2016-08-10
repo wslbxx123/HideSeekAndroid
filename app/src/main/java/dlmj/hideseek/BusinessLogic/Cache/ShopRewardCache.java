@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import dlmj.hideseek.Util.MD5Utils;
-import dlmj.hideseek.Util.UiUtil;
+import dlmj.hideseek.Common.Util.UiUtil;
 
 /**
  * 创建者     ZPL

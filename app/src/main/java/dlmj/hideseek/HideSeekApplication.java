@@ -9,7 +9,7 @@ import java.io.File;
 import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.DatabaseManager;
-import dlmj.hideseek.Util.UiUtil;
+import dlmj.hideseek.Common.Util.UiUtil;
 
 /**
  * Created by Two on 4/2/16.
