@@ -91,4 +91,6 @@
     <string name="message_get_bomb">不幸引爆1枚炸弹，吓晕</string>
     <string name="message_input_friend">输入盟友名查询</string>
     <string name="message_no_friend_found">没有找到相关盟友</string>
+
+    <string name="buy_too_more">土豪,买多啦!</string>
 </resources>

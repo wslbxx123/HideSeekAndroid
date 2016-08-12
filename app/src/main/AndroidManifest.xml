@@ -129,6 +129,15 @@
             android:name=".UI.Activity.MyOrderActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
         </activity>
+
+        <!--支付宝服务-->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

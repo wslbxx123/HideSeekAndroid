@@ -20,13 +20,9 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.google.gson.Gson;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
@@ -48,7 +44,7 @@ import dlmj.hideseek.Util.PayResult;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
+public class ShopAdapter extends BaseAdapter  {
     private Context mContext;
     private List<Shop.ProductsEntity> mList;
     private ImageLoader mImageLoader;
@@ -59,11 +55,7 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
     private NetworkHelper mNetworkHelper;
     private int mGuideNum;
     private int mMax_count;
-
-    // 商户PID
-    public static final String PARTNER = "2088421519055042";
-    // 商户收款账号
-    public static final String SELLER = "wslbxx@hotmail.com";
+    private AlertDialog mAlertDialog;
     private static final int SDK_PAY_FLAG = 1;
 
     @SuppressLint("HandlerLeak")
@@ -89,7 +81,6 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
                         // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
                         if (TextUtils.equals(resultStatus, "8000")) {
                             Toast.makeText(mContext, "支付结果确认中", Toast.LENGTH_SHORT).show();
-
                         } else {
                             // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
                             Toast.makeText(mContext, "支付失败", Toast.LENGTH_SHORT).show();
@@ -102,8 +93,6 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
             }
         };
     };
-    private Shop.ProductsEntity mProductsEntity;
-    private AlertDialog mAlertDialog;
 
     public ShopAdapter(Context context, List<Shop.ProductsEntity> list) {
         this.mContext = context;
@@ -132,7 +121,6 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        mPosition = position;
         ViewHolder holder = null;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -147,15 +135,14 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        mProductsEntity = mList.get(position);
+        Shop.ProductsEntity mProductsEntity = mList.get(position);
         holder.product_name.setText(mProductsEntity.product_name);
         holder.product_image_url.setImageUrl(mProductsEntity.product_image_url, mImageLoader);
         holder.product_image_url.setDefaultImageResId(R.drawable.hsbomb);
         holder.price.setText(mProductsEntity.price);
         holder.purchase_count.setText(mProductsEntity.purchase_count);
         holder.introduction.setText(mProductsEntity.introduction);
-
-        initListener(convertView, mProductsEntity);
+        initListener(convertView,mProductsEntity);
         return convertView;
     }
 
@@ -170,7 +157,7 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
         });
     }
 
-    private void showDialog(Shop.ProductsEntity productsEntity) {
+    private void showDialog(final Shop.ProductsEntity productsEntity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         View view = View.inflate(mContext, R.layout.view_shop_buy_dialog, null);
         builder.setView(view);
@@ -187,9 +174,46 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
         mPrice = Integer.parseInt(productsEntity.price);
         mTotal.setText(productsEntity.price);
         name.setText(productsEntity.product_name);
-        upArrows.setOnClickListener(this);
-        downArrows.setOnClickListener(this);
-        ensurePay.setOnClickListener(this);
+
+        upArrows.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int i = Integer.parseInt(mNum.getText().toString());
+                mNum.setText((i + 1) + "");
+                mTotal.setText((i + 1) * mPrice + "");
+            }
+        });
+        downArrows.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int i = Integer.parseInt(mNum.getText().toString());
+                if (i > 1) {
+                    mNum.setText((i - 1) + "");
+                    mTotal.setText((i - 1) * mPrice + "");
+                }
+            }
+        });
+        ensurePay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               int i = Integer.parseInt(mNum.getText().toString());
+                //超过最大数量,则不允许购买
+                if (i <= mMax_count) {
+                    //创建订单
+                    Map<String, String> params = new HashMap<>();
+                    params.put("store_id", productsEntity.pk_id);
+                    params.put("count", mNum.getText().toString());
+                    System.out.println("count "+mNum.getText().toString()+"productsEntity.pk_id  "+productsEntity.pk_id);
+                    mNetworkHelper.sendPostRequest(UrlParams.CREATE_ORDER_URL, params);
+
+                    //关闭对话框
+                    mAlertDialog.dismiss();
+                } else {
+                    Toast.makeText(mContext, R.string.buy_too_more, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         mGuideNum = Integer.parseInt(UserCache.getInstance().getUser().has_guide);
         mMax_count = productsEntity.max_count;
         if (mPosition == 0 && mGuideNum > 0) {
@@ -199,52 +223,17 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
             mAlertDialog = builder.create();
             mAlertDialog.show();
         }
-    }
 
-    @Override
-    public void onClick(View v) {
-        int i = 1;
-        //商品价格
-        switch (v.getId()) {
-            case R.id.buy_dialog_up_arrows:
-                i = Integer.parseInt(mNum.getText().toString());
-                mNum.setText((i + 1) + "");
-                mTotal.setText((i + 1) * mPrice + "");
-                break;
-            case R.id.buy_dialog_down_arrows:
-                i = Integer.parseInt(mNum.getText().toString());
-                if (i > 1) {
-                    mNum.setText((i - 1) + "");
-                    mTotal.setText((i - 1) * mPrice + "");
-                }
-                break;
-            case R.id.buy_dialog_btn:
-                i = Integer.parseInt(mNum.getText().toString());
-                //超过最大数量,则不允许购买
-                if (i <= mMax_count) {
-                    //创建订单
-                    Map<String, String> params = new HashMap<>();
-                    params.put("store_id", mPosition + "");
-                    params.put("count", mNum.getText().toString());
-                    mNetworkHelper.sendPostRequest(UrlParams.CREATE_ORDER_URL, params);
-                } else {
-                    Toast.makeText(mContext, "土豪,买一个就够啦!", Toast.LENGTH_SHORT).show();
-                }
-                //关闭对话框
-                mAlertDialog.dismiss();
-                break;
-        }
         mNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
                 String result = data.getResult();
                 Gson gson = new Gson();
-                System.out.println(result);
                 CreateOrder order = gson.fromJson(result, CreateOrder.class);
                 CreateOrder.ParamsEntity params = order.params;
                 String sign = order.sign;
                 //调用支付宝进行支付
-                pay(mProductsEntity.product_name,mProductsEntity.introduction,mTotal.getText().toString(),sign,params);
+                pay(sign,params);
             }
 
             @Override
@@ -254,8 +243,8 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
         });
     }
 
-    private void pay(String subject, String body, String price,String sign,CreateOrder.ParamsEntity params) {
-        String orderInfo = getOrderInfo(subject, body, price,params);
+    private void pay(String sign,CreateOrder.ParamsEntity params) {
+        String orderInfo = getOrderInfo(params);
 
         /**
          * 完整的符合支付宝参数规范的订单信息
@@ -263,7 +252,6 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
         final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + getSignType();
 
         Runnable payRunnable = new Runnable() {
-
             @Override
             public void run() {
                 // 构造PayTask 对象
@@ -285,13 +273,13 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
     /**
      * create the order info. 创建订单信息
      */
-    private String getOrderInfo(String subject, String body, String price,CreateOrder.ParamsEntity params) {
+    private String getOrderInfo(CreateOrder.ParamsEntity params) {
 
         // 服务接口名称， 固定值
-       String orderInfo = "&service="+params.service;
+       String orderInfo = "service="+params.service;
 
         // 签约合作者身份ID
-        orderInfo += "partner=" + params.partner;
+        orderInfo += "&partner=" + params.partner;
 
         // 参数编码， 固定值
         orderInfo += "&_input_charset="+params._input_charset;
@@ -303,7 +291,7 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
         orderInfo += "&out_trade_no=" + params.out_trade_no;
 
         // 商品名称
-        orderInfo += "&subject=" + "\"" + subject + "\"";
+        orderInfo += "&subject=" + params.subject;
 
         // 支付类型， 固定值
         orderInfo += "&payment_type=\"1\"";
@@ -312,10 +300,10 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
         orderInfo += "&seller_id=" + params.seller_id;
 
         // 商品金额
-        orderInfo += "&total_fee=" + "\"" + price + "\"";
+        orderInfo += "&total_fee=" + params.total_fee;
 
         // 商品详情
-        orderInfo += "&body=" + "\"" + body + "\"";
+        orderInfo += "&body=" + params.body;
 
         // 设置未付款交易的超时时间
         // 默认30分钟，一旦超时，该笔交易就会自动被关闭。
@@ -323,32 +311,13 @@ public class ShopAdapter extends BaseAdapter implements View.OnClickListener {
         // m-分钟，h-小时，d-天，1c-当天（无论交易何时创建，都在0点关闭）。
         // 该参数数值不接受小数点，如1.5h，可转换为90m。
         orderInfo += "&it_b_pay="+params.it_b_pay;
-
         // extern_token为经过快登授权获取到的alipay_open_id,带上此参数用户将使用授权的账户进行支付
         // orderInfo += "&extern_token=" + "\"" + extern_token + "\"";
-
         // 支付宝处理完请求后，当前页面跳转到商户指定页面的路径，可空
-        orderInfo += "&return_url="+params.show_url;
-
+        orderInfo += "&show_url="+params.show_url;
         // 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
         // orderInfo += "&paymethod=\"expressGateway\"";
-
         return orderInfo;
-    }
-
-    /**
-     * get the out_trade_no for an order. 生成商户订单号，该值在商户端应保持唯一（可自定义格式规范）
-     *
-     */
-    private String getOutTradeNo() {
-        SimpleDateFormat format = new SimpleDateFormat("MMddHHmmss", Locale.getDefault());
-        Date date = new Date();
-        String key = format.format(date);
-
-        Random r = new Random();
-        key = key + r.nextInt();
-        key = key.substring(0, 15);
-        return key;
     }
 
     /**
