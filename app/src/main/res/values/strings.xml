@@ -97,4 +97,6 @@
 
     <string name="add_one_score">+1</string>
     <string name="minus_one_score">-1</string>
+
+    <string name="buy_too_more">rich,you buy more!</string>
 </resources>
