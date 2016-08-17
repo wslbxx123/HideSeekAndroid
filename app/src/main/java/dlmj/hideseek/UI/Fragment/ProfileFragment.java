@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,6 +90,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     private ImageView mRoleImageView;
     private LoadingDialog mLoadingDialog;
     private LinearLayout mMyOrder;
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -492,7 +494,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
             User user = UserCache.getInstance().getUser();
             mPhotoCircleNetworkImageView.setImageUrl(user.getSmallPhotoUrl(), mImageLoader);
             mNicknameTextView.setText(user.getNickname());
-            String date = DateFormat.getDateInstance(DateFormat.DEFAULT).format(user.getRegisterDate());
+            String date = mDateFormat.format(user.getRegisterDate());
             mDateTextView.setText(date + " " + getString(R.string.join));
             mRoleImageView.setImageResource(user.getRoleImageDrawableId());
 
