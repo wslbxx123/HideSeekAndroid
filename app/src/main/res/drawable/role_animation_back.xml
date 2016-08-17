@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/grass_fairy" android:duration="200" />
-    <item android:drawable="@drawable/water_magician" android:duration="200" />
-    <item android:drawable="@drawable/fire_knight" android:duration="200" />
-    <item android:drawable="@drawable/stone_monster" android:duration="200" />
-    <item android:drawable="@drawable/lightning_giant" android:duration="200" />
+    <item android:drawable="@drawable/grass_fairy" android:duration="100" />
+    <item android:drawable="@drawable/water_magician" android:duration="100" />
+    <item android:drawable="@drawable/fire_knight" android:duration="100" />
+    <item android:drawable="@drawable/stone_monster" android:duration="100" />
+    <item android:drawable="@drawable/lightning_giant" android:duration="100" />
 </animation-list>

@@ -34,7 +34,7 @@
     <string name="news_notification">新消息通知</string>
     <string name="clear_cache">清除缓存</string>
     <string name="help_and_feedback">帮助与反馈</string>
-    <string name="rate_hideseek">给找我吧评分</string>
+    <string name="rate_hideseek">评价寻宝部落</string>
     <string name="about">关于</string>
     <string name="logout">退出登录</string>
     <string name="my_profile_title">个人首页</string>
@@ -55,7 +55,7 @@
     <string name="recent_search_cities">最近访问的城市</string>
     <string name="total_cities">全部城市</string>
     <string name="hot_cities">热门城市</string>
-    <string name="go_to_hideseek">进入找我吧</string>
+    <string name="go_to_hideseek">进入寻宝部落</string>
     <string name="choose">选择</string>
     <string name="locating">定位中</string>
     <string name="current_city">当前城市</string>

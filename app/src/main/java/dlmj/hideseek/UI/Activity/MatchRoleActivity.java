@@ -41,7 +41,7 @@ public class MatchRoleActivity extends Activity {
                 mRoleLayout.setBackgroundResource(user.getRoleDrawableId());
                 mRoleTextView.setText(user.getRole().toString(MatchRoleActivity.this));
             }
-        }, 3000);
+        }, 5000);
     }
 
     private void findView() {
