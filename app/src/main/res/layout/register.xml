@@ -48,7 +48,7 @@
                     android:background="@drawable/introduce_btn_back"
                     android:text="@string/send_verification_code"
                     android:textSize="12sp"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/black"
                     android:gravity="center"
                     android:enabled="false"/>
 
@@ -59,7 +59,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:background="@drawable/code_edittext_back"/>
             </LinearLayout>
 
@@ -114,7 +114,7 @@
                 android:text="@string/register"
                 android:textSize="16sp"
                 android:layout_marginTop="33dp"
-                android:textColor="@android:color/black"
+                android:textColor="color/black"
                 android:enabled="false"/>
         </LinearLayout>
     </RelativeLayout>

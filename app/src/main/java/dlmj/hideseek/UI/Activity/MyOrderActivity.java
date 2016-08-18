@@ -41,8 +41,8 @@ public class MyOrderActivity extends Activity{
         mNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
-                //System.out.println(data.getResult());
-                mListView.setAdapter(new MyOrderAdapter(MyOrderActivity.this));
+                System.out.println(data.getResult());
+
             }
 
             @Override
@@ -56,6 +56,7 @@ public class MyOrderActivity extends Activity{
         mNetworkHelper = new NetworkHelper(MyOrderActivity.this);
         Map<String, String> params = new HashMap<>();
         mNetworkHelper.sendPostRequest(UrlParams.GET_ORDERS_URL, params);
+        mListView.setAdapter(new MyOrderAdapter(MyOrderActivity.this));
     }
 
     private void initView() {

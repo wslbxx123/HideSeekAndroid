@@ -21,5 +21,6 @@ public class UrlParams {
     public static String CREATE_ORDER_URL ="http://www.hideseek.cn/index.php/home/store/createOrder";
     public static String PURCHASE_URL ="http://www.hideseek.cn/index.php/home/store/purchase";
     public static String GET_ORDERS_URL ="http://www.hideseek.cn/index.php/home/store/getOrders";
+    public static String CHECK_USER_EXIST ="http://www.hideseek.cn/index.php/home/user/checkIfUserExist";
 
 }

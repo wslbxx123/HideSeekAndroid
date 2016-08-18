@@ -33,7 +33,7 @@ import dlmj.hideseek.Common.Model.CreateOrder;
 import dlmj.hideseek.Common.Model.Shop;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.R;
-import dlmj.hideseek.Util.PayResult;
+import dlmj.hideseek.Common.Util.PayResult;
 
 /**
  * 创建者     ZPL

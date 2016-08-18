@@ -9,7 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import dlmj.hideseek.Util.MD5Utils;
+import dlmj.hideseek.Common.Util.MD5Utils;
 import dlmj.hideseek.Common.Util.UiUtil;
 
 /**
