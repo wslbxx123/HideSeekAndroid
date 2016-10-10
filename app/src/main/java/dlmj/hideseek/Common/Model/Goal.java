@@ -13,17 +13,25 @@ public class Goal{
     private GoalTypeEnum mType;
     private boolean mIsEnabled;
     private String mShowTypeName;
+    private long mCreateBy;
+    private String mIntroduction;
+    private int mScore;
+    private int mUnionType;
 
     public Goal(long pkId, double latitude, double longitude, int orientation, boolean valid,
-                GoalTypeEnum type, boolean isEnabled, String showTypeName) {
+                GoalTypeEnum type, String showTypeName, long createBy, String introduction,
+                int score, int unionType) {
         this.mPkId = pkId;
         this.mLatitude = latitude;
         this.mLongitude = longitude;
         this.mOrientation = orientation;
         this.mValid = valid;
         this.mType = type;
-        this.mIsEnabled = isEnabled;
         this.mShowTypeName = showTypeName;
+        this.mCreateBy = createBy;
+        this.mIntroduction = introduction;
+        this.mScore = score;
+        this.mUnionType = unionType;
     }
 
     public long getPkId() {
@@ -70,8 +78,12 @@ public class Goal{
         return mShowTypeName;
     }
 
+    public int getScore() {
+        return mScore;
+    }
+
     public enum GoalTypeEnum {
-        mushroom(1), monster(2), bomb(3);
+        reward(0), mushroom(1), monster(2), bomb(3);
 
         private int value = 0;
 

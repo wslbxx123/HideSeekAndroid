@@ -1,12 +1,20 @@
 package dlmj.hideseek.Common.Model;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
+import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 import dlmj.hideseek.R;
 
 /**
@@ -20,39 +28,82 @@ public class User implements Serializable{
     private String mPhotoUrl;
     private String mSmallPhotoUrl;
     private Date mRegisterDate;
+    private int mRecord = 0;
     private SexEnum mSex;
     private String mRegion;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private RoleEnum mRole;
     private long mVersion;
     private String mPinyin;
-    public int bomb_num;
-    public String has_guide;
+    private int mBombNum;
+    private boolean mHasGuide;
+    private int mFriendNum;
+    private String mDefaultArea;
+    private String mDefaultAddress;
+    private SharedPreferences mSharedPreferences =
+            SharedPreferenceUtil.getSharedPreferences();
 
-    public User(int bomb_num,String has_guide,long pkId, String phone,
-                String sessionId, String nickname,
-                String registerDate, RoleEnum role,
-                long version, String pinyin) throws ParseException {
-        mPKId = pkId;
-        mPhone = phone;
-        mSessionId = sessionId;
-        mNickname = nickname;
-        mRegisterDate = mDateFormat.parse(registerDate);
-        mRole = role;
-        mVersion = version;
-        mPinyin = pinyin;
-        this.bomb_num = bomb_num;
-        this.has_guide = has_guide;
+    public User(long pkId, String phone, String sessionId, String nickname,
+                String registerDate, int record, RoleEnum role, long version,
+                String pinyin, int bombNum, boolean hasGuide, int friendNum,
+                SexEnum sex, String photoUrl, String smallPhotoUrl, String region,
+                String defaultArea, String defaultAddress) throws ParseException {
+        this.mPKId = pkId;
+        this.mPhone = phone;
+        this.mSessionId = sessionId;
+        this.mNickname = nickname;
+        this.mRegisterDate = mDateFormat.parse(registerDate);
+        this.mRecord = record;
+        this.mRole = role;
+        this.mVersion = version;
+        this.mPinyin = pinyin;
+        this.mBombNum = bombNum;
+        this.mHasGuide = hasGuide;
+        this.mFriendNum = friendNum;
+        this.mSex = sex;
+
+        if(photoUrl != null) {
+            this.mPhotoUrl = photoUrl;
+        }
+
+        if(smallPhotoUrl != null) {
+            this.mSmallPhotoUrl = smallPhotoUrl;
+        }
+
+        if(region != null) {
+            this.mRegion = region;
+        }
+
+        if(defaultArea != null) {
+            this.mDefaultArea = defaultArea;
+        }
+
+        if(defaultAddress != null) {
+            this.mDefaultAddress = defaultAddress;
+        }
     }
 
-    public User(long pkId, String nickname, String photoUrl, String smallPhotoUrl, SexEnum sex,
-                String region, RoleEnum role, long version, String pinyin) {
-        mPKId = pkId;
-        mNickname = nickname;
-        mPhotoUrl = photoUrl;
-        mSmallPhotoUrl = smallPhotoUrl;
+    public User(long pkId, String phone, String nickname, String registerDate,
+                String photoUrl, String smallPhotoUrl, SexEnum sex, String region,
+                RoleEnum role, long version, String pinyin) throws ParseException {
+        this.mPKId = pkId;
+        this.mPhone = phone;
+        this.mNickname = nickname;
+        this.mRegisterDate = mDateFormat.parse(registerDate);
+
+        if(photoUrl != null) {
+            this.mPhotoUrl = photoUrl;
+        }
+
+        if(smallPhotoUrl != null) {
+            this.mSmallPhotoUrl = smallPhotoUrl;
+        }
+
+        if(region != null) {
+            this.mRegion = region;
+        }
+
         mSex = sex;
-        mRegion = region;
         mRole = role;
         mVersion = version;
         mPinyin = pinyin;
@@ -94,6 +145,27 @@ public class User implements Serializable{
         return mRegisterDate;
     }
 
+    public int getRecord() {
+        return mRecord;
+    }
+
+    public void setRecord(int record) throws JSONException {
+        mRecord = record;
+
+        SharedPreferenceSettings accountInfo = SharedPreferenceSettings.USER_INFO;
+        String userInfoStr = mSharedPreferences.getString(accountInfo.getId(),
+                accountInfo.getDefaultValue().toString());
+        JSONObject userInfo = new JSONObject(userInfoStr);
+        userInfo.optInt("record", record);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(accountInfo.getId(), userInfoStr);
+        editor.apply();
+    }
+
+    public int getFriendNum() {
+        return mFriendNum;
+    }
+
     public SexEnum getSex() {
         return mSex;
     }
@@ -120,6 +192,14 @@ public class User implements Serializable{
 
     public String getPinyin() {
         return mPinyin;
+    }
+
+    public int getBombNum() {
+        return mBombNum;
+    }
+
+    public boolean getHasGuide() {
+        return mHasGuide;
     }
 
     public int getRoleDrawableId() {

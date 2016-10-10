@@ -6,6 +6,7 @@ import com.baidu.navisdk.adapter.BaiduNaviManager;
 
 import java.io.File;
 
+import cn.smssdk.SMSSDK;
 import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.DatabaseManager;
@@ -36,6 +37,7 @@ public class HideSeekApplication extends Application {
         mInstance = this;
         init();
         UiUtil.init(this);
+        SMSSDK.initSDK(this, getString(R.string.sms_key), getString(R.string.sms_secret));
     }
 
     @Override

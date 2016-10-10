@@ -21,12 +21,11 @@ import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 public class GoalCache extends BaseCache<Goal>{
     private static final String TAG = "GoalCache";
     private static GoalCache mInstance;
-    private String mUpdateTime;
+    private long mVersion;
     private List<Goal> mUpdateList = new LinkedList<>();
     private Goal mClosestGoal;
     private Goal mSelectedGoal;
     private SharedPreferences mSharedPreferences;
-    private boolean mHasSelectMushroom = false;
     private boolean mIfNeedClearMap = false;
 
     public static GoalCache getInstance(){
@@ -41,12 +40,6 @@ public class GoalCache extends BaseCache<Goal>{
     public GoalCache() {
         super();
         mSharedPreferences = SharedPreferenceUtil.getSharedPreferences();
-    }
-
-    public void clearData() {
-        mUpdateTime = null;
-        mList.clear();
-        mIfNeedClearMap = true;
     }
 
     public void setGoals(String goalsStr, double latitude, double longitude) {
@@ -73,30 +66,29 @@ public class GoalCache extends BaseCache<Goal>{
                         goal.getInt("orientation"),
                         goal.getInt("valid") == 1,
                         Goal.GoalTypeEnum.valueOf(goal.getInt("type")),
-                        goal.getInt("is_enabled") == 1,
-                        goal.getString("show_type_name"));
+                        goal.getString("show_type_name"),
+                        goal.getLong("create_by"),
+                        goal.getString("introduction"),
+                        goal.getInt("score"),
+                        goal.getInt("union_type"));
                 mUpdateList.add(tempGoal);
                 if(tempGoal.getValid()) {
                     mList.add(tempGoal);
                 }
             }
-            mUpdateTime = jsonObject.getString("update_time");
+            mVersion = jsonObject.getLong("version");
         } catch (JSONException e) {
             LogUtil.e(TAG, e.getMessage());
             e.printStackTrace();
         }
     }
 
-    public boolean getHasSelectMushroom() {
-        return mHasSelectMushroom;
+    public void setIfNeedClearMap(boolean ifNeedClearMap) {
+        mIfNeedClearMap = ifNeedClearMap;
     }
 
-    public void setHasSelectMushroom(boolean hasSelectMushroom) {
-        this.mHasSelectMushroom = hasSelectMushroom;
-    }
-
-    public String getUpdateTime() {
-        return mUpdateTime;
+    public long getVersion() {
+        return mVersion;
     }
 
     public List<Goal> getUpdateList() {
@@ -132,5 +124,15 @@ public class GoalCache extends BaseCache<Goal>{
                 }
             } while(!mClosestGoal.getValid() && mList.size() != 0);
         }
+    }
+
+    public void reset() {
+        if(mSelectedGoal != null) {
+            mSelectedGoal.setIsSelected(false);
+            mSelectedGoal = null;
+        }
+        mClosestGoal = null;
+        mList.clear();
+        mVersion = 0;
     }
 }

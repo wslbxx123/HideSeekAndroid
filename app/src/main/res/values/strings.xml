@@ -5,7 +5,7 @@
     <string name="login">Log In</string>
     <string name="register">Register</string>
     <string name="get">Get</string>
-    <string name="tip_title">Boss, a goal there!</string>
+    <string name="tip_title">Leader, a goal there!</string>
     <string name="tip_text">Believe me! Get mushroom to go travel! Now register to check points! </string>
     <string name="action_settings">Settings</string>
     <string name="forget_password">Forget Password?</string>
@@ -75,6 +75,9 @@
     <string name="alliances_title">Alliances</string>
     <string name="splash_introduction">Seeking is a wonderful thing!</string>
     <string name="loading">Loading...</string>
+    <string name="refresh_map_hint">Refreshing map...</string>
+    <string name="ok">OK</string>
+    <string name="not_meet_condition">Not meet hit-monster condition</string>
 
     <string name="error_phone_empty">Please input your phone</string>
     <string name="error_password_empty">Please input the password</string>
@@ -84,16 +87,23 @@
     <string name="error_response_format">The format of response is wrong</string>
     <string name="error_location_failed">Failed to locate</string>
     <string name="error_goal_disappear">The Goal has disappeared</string>
+    <string name="error_session_invalid">You are kicked out by others</string>
+    <string name="error_user_already_exist">The phone is already registered</string>
 
     <string name="warning_not_enabled">You don\'t have the right to beat the monster</string>
 
     <string name="message_input_city">Input city name to search</string>
     <string name="message_no_city_found">Sorry, no city was found</string>
-    <string name="message_get_mushroom">Get a mushroom into a sack successfully</string>
-    <string name="message_get_monster">Beat a monster successfully</string>
-    <string name="message_get_bomb">A bomb went off, ouch</string>
+    <string name="message_get_mushroom">Throw a mushroom monster into sack easily, Rich bitch!</string>
+    <string name="message_get_egg">So excited! Beat an egg monster successfully!</string>
+    <string name="message_get_cow">You are watched by a cow monster，how smart I am to beat it in time!</string>
+    <string name="message_get_bird">Dodged a bullet! Coming across a bird monster scared me!</string>
+    <string name="message_get_giraffe">Thanks to friends,lucky to get a giraffe monster!</string>
+    <string name="message_get_dragon">It is a great satisfaction to get a dragon monster, so cool!</string>
+    <string name="message_get_bomb">Unfortunately detonated a crafty bomb monster, Give me a break!</string>
     <string name="message_input_friend">Input friend name to search</string>
     <string name="message_no_friend_found">Sorry, no friend was found</string>
+    <string name="message_not_login">You haven\'t logged in. Go to login?</string>
 
     <string name="add_one_score">+1</string>
     <string name="minus_one_score">-1</string>

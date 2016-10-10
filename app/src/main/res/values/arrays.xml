@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sword">
-
+        <item>@drawable/sword_a</item>
+        <item>@drawable/sword_b</item>
+        <item>@drawable/sword_c</item>
+        <item>@drawable/sword_d</item>
+        <item>@drawable/sword_e</item>
+        <item>@drawable/sword_f</item>
+        <item>@drawable/sword_g</item>
+        <item>@drawable/sword_h</item>
     </string-array>
-    <!--<item>@drawable/sword_a</item>
-    <item>@drawable/sword_b</item>
-    <item>@drawable/sword_c</item>
-    <item>@drawable/sword_d</item>
-    <item>@drawable/sword_e</item>
-    <item>@drawable/sword_f</item>
-    <item>@drawable/sword_g</item>
-    <item>@drawable/sword_h</item>-->
 
     <string-array name="mushroom">
         <item>@drawable/mushroom</item>

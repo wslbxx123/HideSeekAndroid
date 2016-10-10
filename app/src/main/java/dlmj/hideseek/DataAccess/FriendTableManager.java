@@ -6,17 +6,20 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
 import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
+import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 
 /**
  * Created by Two on 6/6/16.
  */
 public class FriendTableManager {
+    private final static String TAG = "FriendTableManager";
     private SQLiteDatabase mSQLiteDatabase;
     private static FriendTableManager mInstance;
     private SharedPreferences mSharedPreferences;
@@ -35,7 +38,9 @@ public class FriendTableManager {
         mSQLiteDatabase = DatabaseManager.getInstance(context).getDatabase();
         mSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS friend (" +
                 "account_id bigint, " +
+                "phone varchar, " +
                 "nickname varchar, " +
+                "register_date varchar, " +
                 "photo_url varchar, " +
                 "small_photo_url varchar, " +
                 "sex int, " +
@@ -78,20 +83,28 @@ public class FriendTableManager {
     }
 
     public List<User> getFriends() {
-        Cursor cursor = mSQLiteDatabase.query("friend", null, null,
-                null, null, null, null);
-
         List<User> friendList = new LinkedList<>();
-        while (cursor.moveToNext()) {
-            friendList.add(new User(cursor.getLong(cursor.getColumnIndex("account_id")),
-                    cursor.getString(cursor.getColumnIndex("nickname")),
-                    cursor.getString(cursor.getColumnIndex("photo_url")),
-                    cursor.getString(cursor.getColumnIndex("small_photo_url")),
-                    User.SexEnum.valueOf(cursor.getInt(cursor.getColumnIndex("sex"))),
-                    cursor.getString(cursor.getColumnIndex("region")),
-                    User.RoleEnum.valueOf(cursor.getInt(cursor.getColumnIndex("role"))),
-                    cursor.getLong(cursor.getColumnIndex("version")),
-                    cursor.getString(cursor.getColumnIndex("pinyin"))));
+
+        try {
+            Cursor cursor = mSQLiteDatabase.query("friend", null, null,
+                    null, null, null, null);
+            while (cursor.moveToNext()) {
+                friendList.add(new User(
+                        cursor.getLong(cursor.getColumnIndex("account_id")),
+                        cursor.getString(cursor.getColumnIndex("phone")),
+                        cursor.getString(cursor.getColumnIndex("nickname")),
+                        cursor.getString(cursor.getColumnIndex("register_date")),
+                        cursor.getString(cursor.getColumnIndex("photo_url")),
+                        cursor.getString(cursor.getColumnIndex("small_photo_url")),
+                        User.SexEnum.valueOf(cursor.getInt(cursor.getColumnIndex("sex"))),
+                        cursor.getString(cursor.getColumnIndex("region")),
+                        User.RoleEnum.valueOf(cursor.getInt(cursor.getColumnIndex("role"))),
+                        cursor.getLong(cursor.getColumnIndex("version")),
+                        cursor.getString(cursor.getColumnIndex("pinyin"))));
+            }
+        } catch(ParseException ex) {
+            LogUtil.e(TAG, ex.getMessage());
+            ex.printStackTrace();
         }
 
         return friendList;
@@ -105,22 +118,31 @@ public class FriendTableManager {
     }
 
     public List<User> searchFriends(String keyword) {
-        Cursor cursor = mSQLiteDatabase.rawQuery(
-                "select * from friend where nickname like \"%" + keyword + "%\" or pinyin " +
-                        "like \"%" + keyword + "%\" order by pinyin", null);
         List<User> friendList = new LinkedList<>();
-        while (cursor.moveToNext()) {
-            friendList.add(new User(cursor.getLong(cursor.getColumnIndex("account_id")),
-                    cursor.getString(cursor.getColumnIndex("nickname")),
-                    cursor.getString(cursor.getColumnIndex("photo_url")),
-                    cursor.getString(cursor.getColumnIndex("small_photo_url")),
-                    User.SexEnum.valueOf(cursor.getInt(cursor.getColumnIndex("sex"))),
-                    cursor.getString(cursor.getColumnIndex("region")),
-                    User.RoleEnum.valueOf(cursor.getInt(cursor.getColumnIndex("role"))),
-                    cursor.getLong(cursor.getColumnIndex("version")),
-                    cursor.getString(cursor.getColumnIndex("pinyin"))));
+
+        try {
+            Cursor cursor = mSQLiteDatabase.rawQuery(
+                    "select * from friend where nickname like \"%" + keyword + "%\" or pinyin " +
+                            "like \"%" + keyword + "%\" order by pinyin", null);
+            while (cursor.moveToNext()) {
+                friendList.add(new User(cursor.getLong(cursor.getColumnIndex("account_id")),
+                        cursor.getString(cursor.getColumnIndex("phone")),
+                        cursor.getString(cursor.getColumnIndex("nickname")),
+                        cursor.getString(cursor.getColumnIndex("register_date")),
+                        cursor.getString(cursor.getColumnIndex("photo_url")),
+                        cursor.getString(cursor.getColumnIndex("small_photo_url")),
+                        User.SexEnum.valueOf(cursor.getInt(cursor.getColumnIndex("sex"))),
+                        cursor.getString(cursor.getColumnIndex("region")),
+                        User.RoleEnum.valueOf(cursor.getInt(cursor.getColumnIndex("role"))),
+                        cursor.getLong(cursor.getColumnIndex("version")),
+                        cursor.getString(cursor.getColumnIndex("pinyin"))));
+            }
+            cursor.close();
+        } catch (ParseException ex) {
+            LogUtil.e(TAG, ex.getMessage());
+            ex.printStackTrace();
         }
-        cursor.close();
+
         return friendList;
     }
 

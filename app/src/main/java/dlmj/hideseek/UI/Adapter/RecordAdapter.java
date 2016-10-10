@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import dlmj.hideseek.Common.Factory.GoalImageFactory;
 import dlmj.hideseek.Common.Model.Record;
 import dlmj.hideseek.R;
 
@@ -20,10 +21,12 @@ import dlmj.hideseek.R;
 public class RecordAdapter extends BaseAdapter{
     private Context mContext;
     private List<Record> mRecords;
+    private GoalImageFactory mGoalImageFactory;
 
     public RecordAdapter(Context context, List<Record> records) {
-        mContext = context;
-        mRecords = records;
+        this.mContext = context;
+        this.mGoalImageFactory = new GoalImageFactory(mContext);
+        this.mRecords = records;
     }
 
     @Override
@@ -65,7 +68,8 @@ public class RecordAdapter extends BaseAdapter{
         Record record = (Record)getItem(position);
         viewHolder.mDateTextView.setText(record.getDate());
         viewHolder.mTimeTextView.setText(record.getTime());
-        viewHolder.mScoreTextView.setText(record.getScore() + "");
+        viewHolder.mScoreTextView.setText(record.getScore() > 0 ?
+            " " + record.getScore() : record.getScore() + "");
 
         if(position == 0 || !((Record)getItem(position - 1)).getDate().equals(record.getDate())) {
             viewHolder.mDateLayout.setVisibility(View.VISIBLE);
@@ -73,19 +77,9 @@ public class RecordAdapter extends BaseAdapter{
             viewHolder.mDateLayout.setVisibility(View.GONE);
         }
 
-        switch (record.getGoalType()) {
-            case bomb:
-                viewHolder.mSearchTypeImageView.setImageResource(R.drawable.bomb);
-                break;
-            case mushroom:
-                viewHolder.mSearchTypeImageView.setImageResource(R.drawable.mushroom);
-                break;
-            case monster:
-                viewHolder.mSearchTypeImageView.setImageResource(R.drawable.monster);
-                break;
-            default:
-                break;
-        }
+        viewHolder.mSearchTypeImageView.setImageResource(
+                mGoalImageFactory.get(record.getGoalType(),
+                        record.getShowTypeName()));
 
         return convertView;
     }

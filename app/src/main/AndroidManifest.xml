@@ -41,12 +41,15 @@
 
     <!-- 来电消音 -->
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!-- 用于读取手机当前的状态-->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:name=".HideSeekApplication"
@@ -58,6 +61,14 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="@string/map_key"/>
+
+        <meta-data
+            android:name="XG_V2_ACCESS_ID"
+            android:value="@string/xg_access_id" />
+
+        <meta-data
+            android:name="XG_V2_ACCESS_KEY"
+            android:value="@string/xg_access_key" />
 
         <activity
             android:name=".UI.Activity.SplashActivity"
@@ -112,6 +123,7 @@
         <activity
             android:name=".UI.Activity.MapActivity"
             android:theme="@style/MapDialog"
+            android:launchMode="singleInstance"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden">
         </activity>
 
@@ -138,12 +150,34 @@
             android:screenOrientation="behind"
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
+
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
 
         <service android:name="com.amap.api.location.APSService" />
+
+        <service
+            android:name="com.tencent.android.tpush.service.XGPushService"
+            android:exported="true"
+            android:persistent="true"
+            android:process=":xg_service_v2" />
+
+        <!-- 此选项有助于提高抵达率 -->
+        <service
+            android:name="com.tencent.android.tpush.rpc.XGRemoteService"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="dlmj.hideseek.PUSH_ACTION" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

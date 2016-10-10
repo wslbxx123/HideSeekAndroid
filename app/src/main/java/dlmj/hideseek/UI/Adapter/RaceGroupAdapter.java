@@ -14,6 +14,8 @@ import com.android.volley.toolbox.NetworkImageView;
 import java.util.List;
 
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
+import dlmj.hideseek.Common.Factory.GoalImageFactory;
+import dlmj.hideseek.Common.Factory.RaceGroupMessageFactory;
 import dlmj.hideseek.Common.Model.RaceGroup;
 import dlmj.hideseek.R;
 
@@ -24,11 +26,15 @@ public class RaceGroupAdapter extends BaseAdapter {
     private List<RaceGroup> mRaceGroupList;
     private Context mContext;
     private ImageLoader mImageLoader;
+    private GoalImageFactory mGoalImageFactory;
+    private RaceGroupMessageFactory mRaceGroupMessageFactory;
 
     public RaceGroupAdapter(Context context, List<RaceGroup> raceGroupList){
         this.mRaceGroupList = raceGroupList;
         this.mContext = context;
         this.mImageLoader = ImageCacheManager.getInstance(context).getImageLoader();
+        this.mGoalImageFactory = new GoalImageFactory(mContext);
+        this.mRaceGroupMessageFactory = new RaceGroupMessageFactory(mContext);
     }
 
     @Override
@@ -72,22 +78,12 @@ public class RaceGroupAdapter extends BaseAdapter {
         viewHolder.mPhotoImageView.setDefaultImageResId(R.drawable.default_photo);
         viewHolder.mNameTextView.setText(raceGroup.getNickname());
 
-        switch(raceGroup.getRecordItem().getGoalType()) {
-            case mushroom:
-                viewHolder.mGoalImageView.setImageResource(R.drawable.mushroom);
-                viewHolder.mMessageTextView.setText(mContext.getString(R.string.message_get_mushroom));
-                break;
-            case monster:
-                viewHolder.mGoalImageView.setImageResource(R.drawable.monster);
-                viewHolder.mMessageTextView.setText(mContext.getString(R.string.message_get_monster));
-                break;
-            case bomb:
-                viewHolder.mGoalImageView.setImageResource(R.drawable.bomb);
-                viewHolder.mMessageTextView.setText(mContext.getString(R.string.message_get_bomb));
-                break;
-            default:
-                break;
-        }
+        viewHolder.mGoalImageView.setImageResource(
+                mGoalImageFactory.get(raceGroup.getRecordItem().getGoalType(),
+                        raceGroup.getRecordItem().getShowTypeName()));
+        viewHolder.mMessageTextView.setText(
+                mRaceGroupMessageFactory.get(raceGroup.getRecordItem().getGoalType(),
+                        raceGroup.getRecordItem().getShowTypeName()));
 
         viewHolder.mScoreTextView.setText(String.format(mContext.getString(R.string.score_title),
                 raceGroup.getRecordItem().getScoreSum()));

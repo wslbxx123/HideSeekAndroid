@@ -3,6 +3,8 @@ package dlmj.hideseek.UI.Fragment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.text.Editable;
@@ -20,15 +22,16 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import dlmj.hideseek.BusinessLogic.Cache.FriendCache;
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
-import dlmj.hideseek.BusinessLogic.Cache.RecordCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
@@ -53,7 +56,10 @@ import dlmj.hideseek.UI.View.LoadingDialog;
  * Created by Two on 4/30/16.
  * Me
  */
-public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
+public class MeFragment extends Fragment implements UIDataListener<Bean> {
+    private final static int COUNT_DOWN_REFRESH = 1;
+    private final static int COUNT_DOWN_START = 2;
+    private final static int LOADING_END = 3;
     private static String TAG = "ProfileFragment";
     private CircleNetworkImageView mPhotoCircleNetworkImageView;
     private LinearLayout mProfileLayout;
@@ -70,9 +76,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     private String mRegisterPassword;
     private String mReInputPassword;
     private NetworkHelper mNetworkHelper;
-    private NetworkHelper mRecordNetworkHelper;
-    private NetworkHelper mFriendNetworkHelper;
-    private UIDataListener<Bean> mRecordUIDataListener;
+    private NetworkHelper mCheckUserHelper;
     private ErrorMessageFactory mErrorMessageFactory;
     private ImageLoader mImageLoader;
     private LinearLayout mUserInfoLayout;
@@ -91,11 +95,38 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     private LoadingDialog mLoadingDialog;
     private LinearLayout mMyOrder;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private Timer mTimer = new Timer();
+    private TimerTask mTask;
+    private int mCountDown = 60;
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch(msg.what) {
+                case COUNT_DOWN_REFRESH:
+                    mCodeButton.setText(mCountDown + "s");
+                    mCountDown--;
+
+                    if(mCountDown == -1) {
+                        mCodeButton.setText(getString(R.string.send_verification_code));
+                        mTimer.cancel();
+                    }
+                    break;
+                case COUNT_DOWN_START:
+                    mCodeButton.setEnabled(false);
+                    mTimer.schedule(mTask, 0, 1000);
+                    break;
+                case LOADING_END:
+                    if(mLoadingDialog.isShowing()) {
+                        mLoadingDialog.dismiss();
+                    }
+            }
+            super.handleMessage(msg);
+        };
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(rootView == null) {
-            rootView = inflater.inflate(R.layout.profile, null);
+            rootView = inflater.inflate(R.layout.me, null);
             initializeData();
             findView(rootView);
             setListener();
@@ -121,10 +152,17 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
 
     private void initializeData() {
         mNetworkHelper = new NetworkHelper(getActivity());
-        mRecordNetworkHelper = new NetworkHelper(getActivity());
-        mFriendNetworkHelper = new NetworkHelper(getActivity());
+        mCheckUserHelper = new NetworkHelper(getActivity());
         mImageLoader = ImageCacheManager.getInstance(getActivity()).getImageLoader();
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
+        mTask = new TimerTask() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = COUNT_DOWN_REFRESH;
+                mHandler.sendMessage(message);
+            }
+        };
     }
 
     private void findView(View view) {
@@ -145,7 +183,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
         mScoreLayout = (LinearLayout) view.findViewById(R.id.scoreLayout);
         mRoleImageView = (ImageView) view.findViewById(R.id.roleImageView);
         mFriendLayout = (LinearLayout) view.findViewById(R.id.friendLayout);
-        mLoadingDialog = new LoadingDialog(getActivity());
+        mLoadingDialog = new LoadingDialog(getActivity(), getContext().getString(R.string.loading));
         mMyOrder = (LinearLayout) view.findViewById(R.id.myOrder);
         setUserInfo();
 
@@ -154,6 +192,38 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     }
 
     private void setListener() {
+        EventHandler eventHandler = new EventHandler(){
+
+            @Override
+            public void afterEvent(int event, int result, Object data) {
+
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                        if(!mRegisterPassword.equals(mReInputPassword)) {
+                            mToast.show(getString(R.string.error_password_not_same));
+                            return;
+                        }
+
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), UploadPhotoActivity.class);
+                        intent.putExtra(IntentExtraParam.PHONE, mRegisterPhone);
+                        intent.putExtra(IntentExtraParam.PASSWORD, mRegisterPassword);
+                        intent.putExtra(IntentExtraParam.NICKNAME, mNickname);
+                        startActivityForResult(intent, IntroduceActivity.REGISTER_CODE);
+                        mRegisterDialog.dismiss();
+                        mLoginDialog.dismiss();
+                    }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                        //获取验证码成功
+                    }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                        //返回支持发送验证码的国家列表
+                    }
+                }else{
+                    ((Throwable)data).printStackTrace();
+                }
+            }
+        };
+        SMSSDK.registerEventHandler(eventHandler);
+
         mNetworkHelper.setUiDataListener(this);
         mMyOrder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,35 +234,25 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
             }
         });
 
-        mRecordNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
+        mCheckUserHelper.setUiDataListener(new UIDataListener() {
             @Override
-            public void onDataChanged(Bean data) {
-                LogUtil.d(TAG, data.getResult());
-                RecordCache.getInstance(getActivity()).setRecords(data.getResult());
+            public void onDataChanged(Object data) {
+                SMSSDK.submitVerificationCode("86", mRegisterPhone, mCode);
 
-                mScoreTextView.setText(RecordCache.getInstance(getActivity()).getScoreSum() + "");
+                Message handlerMessage = new Message();
+                handlerMessage.what = LOADING_END;
+                mHandler.sendMessage(handlerMessage);
             }
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
                 LogUtil.e(TAG, errorMessage);
+                String message = mErrorMessageFactory.get(errorCode);
+                mToast.show(message);
 
-                mScoreTextView.setText(0 + "");
-            }
-        });
-
-        mFriendNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
-            @Override
-            public void onDataChanged(Bean data) {
-                LogUtil.d(TAG, data.getResult());
-                FriendCache.getInstance(getActivity()).setFriends(data.getResult());
-
-                mFriendTextView.setText(RecordCache.getInstance(getActivity()).getList().size() + "");
-            }
-
-            @Override
-            public void onErrorHappened(int errorCode, String errorMessage) {
-                mFriendTextView.setText(0 + "");
+                Message handlerMessage = new Message();
+                handlerMessage.what = LOADING_END;
+                mHandler.sendMessage(handlerMessage);
             }
         });
 
@@ -236,7 +296,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
         mScoreLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntroduceActivity activity = (IntroduceActivity)ProfileFragment.this.getActivity();
+                IntroduceActivity activity = (IntroduceActivity)MeFragment.this.getActivity();
                 FragmentTabHost fragmentTabHost = activity.getFragmentTabHost();
                 fragmentTabHost.setCurrentTab(1);
             }
@@ -290,25 +350,21 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
             passwordEditText.addTextChangedListener(registerPasswordTextWatcher);
             reInputPasswordEditText.addTextChangedListener(reInputPasswordTextWatcher);
             mRegisterButton.setOnClickListener(mOnRegisterBtnClickListener);
+            mCodeButton.setOnClickListener(mCodeBtnClickListener);
         }
     };
 
     private View.OnClickListener mOnRegisterBtnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(!mRegisterPassword.equals(mReInputPassword)) {
-                mToast.show(getString(R.string.error_password_not_same));
-                return;
+            if (!mLoadingDialog.isShowing()) {
+                mLoadingDialog.show();
             }
 
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), UploadPhotoActivity.class);
-            intent.putExtra(IntentExtraParam.PHONE, mRegisterPhone);
-            intent.putExtra(IntentExtraParam.PASSWORD, mRegisterPassword);
-            intent.putExtra(IntentExtraParam.NICKNAME, mNickname);
-            startActivityForResult(intent, IntroduceActivity.REGISTER_CODE);
-            mRegisterDialog.dismiss();
-            mLoginDialog.dismiss();
+            Map<String, String> params = new HashMap<>();
+            params.put("phone", mRegisterPhone);
+
+            mCheckUserHelper.sendPostRequest(UrlParams.CHECK_IF_USER_EXIST_URL, params);
         }
     };
 
@@ -323,6 +379,18 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
         @Override
         public void onClick(View view) {
             mRegisterDialog.dismiss();
+        }
+    };
+
+    private View.OnClickListener mCodeBtnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Message message = new Message();
+            message.what = COUNT_DOWN_START;
+            mHandler.sendMessage(message);
+
+            SMSSDK.getSupportedCountries();
+            SMSSDK.getVerificationCode("86", mRegisterPhone);
         }
     };
 
@@ -377,7 +445,7 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
             Log.d("Register Phone", mRegisterPhone);
             checkRegisterEnabled();
 
-            if(mRegisterPhone == null || mRegisterPhone.isEmpty()) {
+            if(mRegisterPhone == null || mRegisterPhone.length() < 6) {
                 mCodeButton.setEnabled(false);
             } else {
                 mCodeButton.setEnabled(true);
@@ -497,20 +565,8 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
             String date = mDateFormat.format(user.getRegisterDate());
             mDateTextView.setText(date + " " + getString(R.string.join));
             mRoleImageView.setImageResource(user.getRoleImageDrawableId());
-
-            int scoreSum = RecordCache.getInstance(getActivity()).getScoreSum();
-            if(scoreSum == 0) {
-                mRecordNetworkHelper.sendPostRequest(UrlParams.REFRESH_RECORD_URL, new HashMap<String, String>());
-            } else {
-                mScoreTextView.setText(scoreSum + "");
-            }
-
-            int friendCount = FriendCache.getInstance(getActivity().getApplicationContext()).getList().size();
-            if(friendCount == 0) {
-                mFriendNetworkHelper.sendPostRequest(UrlParams.GET_FRIEND_URL, new HashMap<String, String>());
-            } else {
-                mFriendTextView.setText(friendCount + "");
-            }
+            mScoreTextView.setText(user.getRecord() + "");
+            mFriendTextView.setText(user.getFriendNum() + "");
         } else{
             mNotLoginTextView.setVisibility(View.VISIBLE);
             mUserInfoLayout.setVisibility(View.GONE);
@@ -524,23 +580,24 @@ public class ProfileFragment extends Fragment implements UIDataListener<Bean> {
     public void onDataChanged(Bean data) {
         LogUtil.d(TAG, data.getResult());
         UserCache.getInstance().setUser(data.getResult());
-        GoalCache.getInstance().clearData();
+        GoalCache.getInstance().setIfNeedClearMap(true);
         mLoginDialog.dismiss();
 
         setUserInfo();
-        if(mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
-        }
+
+        Message handlerMessage = new Message();
+        handlerMessage.what = LOADING_END;
+        mHandler.sendMessage(handlerMessage);
     }
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
         LogUtil.d(TAG, "Error message when login: " + errorMessage);
         String errorCodeMessage = mErrorMessageFactory.get(errorCode);
-
-        if(mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
-        }
         mToast.show(errorCodeMessage);
+
+        Message handlerMessage = new Message();
+        handlerMessage.what = LOADING_END;
+        mHandler.sendMessage(handlerMessage);
     }
 }

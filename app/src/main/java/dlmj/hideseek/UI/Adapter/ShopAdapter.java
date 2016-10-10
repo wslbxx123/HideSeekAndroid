@@ -53,7 +53,7 @@ public class ShopAdapter extends BaseAdapter  {
     private int mPrice;
     private int mPosition;
     private NetworkHelper mNetworkHelper;
-    private int mGuideNum;
+    private boolean mHasGuide;
     private int mMax_count;
     private AlertDialog mAlertDialog;
     private static final int SDK_PAY_FLAG = 1;
@@ -214,9 +214,9 @@ public class ShopAdapter extends BaseAdapter  {
             }
         });
 
-        mGuideNum = Integer.parseInt(UserCache.getInstance().getUser().has_guide);
+        mHasGuide = UserCache.getInstance().getUser().getHasGuide();
         mMax_count = productsEntity.max_count;
-        if (mPosition == 0 && mGuideNum > 0) {
+        if (mPosition == 0 && mHasGuide) {
             //已拥有图鉴,无需再次购买
 
         } else {

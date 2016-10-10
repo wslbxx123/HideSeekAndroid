@@ -64,33 +64,25 @@ public class UserCache {
         try {
             JSONObject userInfo = new JSONObject(userInfoStr);
             User user = new User(
-                    userInfo.getInt("bomb_num"),
-                    userInfo.getString("has_guide"),
                     userInfo.getLong("pk_id"),
                     userInfo.getString("phone"),
                     userInfo.getString("session_id"),
                     userInfo.getString("nickname"),
                     userInfo.getString("register_date"),
+                    userInfo.getInt("record"),
                     User.RoleEnum.valueOf(userInfo.getInt("role")),
                     userInfo.getLong("version"),
-                    PinYinUtil.converterToFirstSpell(userInfo.getString("nickname"))
+                    PinYinUtil.converterToFirstSpell(userInfo.getString("nickname")),
+                    userInfo.getInt("bomb_num"),
+                    userInfo.getInt("has_guide") == 1,
+                    userInfo.getInt("friend_num"),
+                    User.SexEnum.valueOf(userInfo.getInt("sex")),
+                    userInfo.getString("photo_url"),
+                    userInfo.getString("small_photo_url"),
+                    userInfo.getString("region"),
+                    userInfo.getString("default_area"),
+                    userInfo.getString("default_address")
             );
-
-            if(userInfo.has("photo_url")) {
-                user.setPhotoUrl(userInfo.getString("photo_url"));
-            }
-
-            if(userInfo.has("small_photo_url")) {
-                user.setSmallPhotoUrl(userInfo.getString("small_photo_url"));
-            }
-
-            if(userInfo.has("sex")) {
-                user.setSex(User.SexEnum.valueOf(userInfo.getInt("sex")));
-            }
-
-            if(userInfo.has("region")) {
-                user.setRegion(userInfo.getString("region"));
-            }
 
             return user;
         } catch (JSONException e) {

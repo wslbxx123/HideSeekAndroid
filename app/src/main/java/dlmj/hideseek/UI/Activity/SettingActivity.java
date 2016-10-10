@@ -65,7 +65,7 @@ public class SettingActivity extends Activity {
                 editor.apply();
                 RecordCache.getInstance(SettingActivity.this).clearList();
                 RecordTableManager.getInstance(getApplicationContext()).clear();
-                GoalCache.getInstance().clearData();
+                GoalCache.getInstance().setIfNeedClearMap(true);
                 RaceGroupCache.getInstance(SettingActivity.this).clearList();
                 RaceGroupTableManager.getInstance(getApplicationContext()).clear();
                 FriendCache.getInstance(getApplication()).clearList();

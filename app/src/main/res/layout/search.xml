@@ -45,10 +45,17 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/search_item_back"
-                    android:gravity="right"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/roleImageView"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:scaleType="centerInside"/>
+
                     <TextView
+                        android:id="@+id/hintTextView"
+                        android:layout_marginLeft="2dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
@@ -113,13 +120,22 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/bomb_throw"
-        android:layout_width="43dp"
+    <ImageButton
+        android:id="@+id/refreshBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="10dp"
+        android:background="@drawable/refresh_btn_back" />
+
+    <RelativeLayout
+        android:id="@+id/setBombLayout"
+        android:layout_width="43dp"
+        android:layout_below="@id/refreshBtn"
         android:layout_marginRight="7dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="7dp"
         android:layout_height="40dp">
         <ImageView
             android:layout_width="40dp"
@@ -143,7 +159,7 @@
     <ImageView
         android:id="@+id/monster_handbook"
         android:layout_marginTop="7dp"
-        android:layout_below="@id/bomb_throw"
+        android:layout_below="@id/setBombLayout"
         android:layout_marginRight="10dp"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -162,8 +178,8 @@
 
     <dlmj.hideseek.UI.View.GameView
         android:id="@+id/gameView"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_marginBottom="250dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"/>

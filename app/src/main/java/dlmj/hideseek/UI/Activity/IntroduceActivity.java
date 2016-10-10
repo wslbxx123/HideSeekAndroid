@@ -10,10 +10,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import dlmj.hideseek.R;
+import dlmj.hideseek.UI.Fragment.MeFragment;
 import dlmj.hideseek.UI.Fragment.RaceGroupFragment;
-import dlmj.hideseek.UI.Fragment.ProfileFragment;
 import dlmj.hideseek.UI.Fragment.RecordFragment;
 import dlmj.hideseek.UI.Fragment.SearchFragment;
+
 //首页
 public class IntroduceActivity extends FragmentActivity{
     private final String TAG = "Introduce Activity";
@@ -23,7 +24,7 @@ public class IntroduceActivity extends FragmentActivity{
             R.drawable.friend_group_back, R.drawable.me_back};
     private int mTabText[] = {R.string.home, R.string.record, R.string.race_group, R.string.me};
     private Class mFragmentArray[] = {SearchFragment.class, RecordFragment.class,
-            RaceGroupFragment.class, ProfileFragment.class};
+            RaceGroupFragment.class, MeFragment.class};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

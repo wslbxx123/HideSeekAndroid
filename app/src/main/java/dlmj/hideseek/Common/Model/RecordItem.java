@@ -10,15 +10,17 @@ public class RecordItem {
     private int mScore;
     private int mScoreSum;
     private long mVersion;
+    private String mShowTypeName;
 
     public RecordItem(long recordId, String time, Goal.GoalTypeEnum goalType, int score,
-                      int scoreSum, long version) {
+                      int scoreSum, long version, String showTypeName) {
         mRecordId = recordId;
         mTime = time;
         mGoalType = goalType;
         mScore = score;
         mScoreSum = scoreSum;
         mVersion = version;
+        mShowTypeName = showTypeName;
     }
 
     public long getRecordId() {
@@ -47,5 +49,9 @@ public class RecordItem {
 
     public long getVersion() {
         return mVersion;
+    }
+
+    public String getShowTypeName() {
+        return mShowTypeName;
     }
 }

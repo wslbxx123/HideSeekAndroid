@@ -17,17 +17,17 @@ public class LoadingDialog extends Dialog{
     private TextView detailTextView;
     private RotateAnimation mAnim;
 
-    public LoadingDialog(Context context) {
+    public LoadingDialog(Context context, String message) {
         super(context, R.style.LoadingDialog);
         setContentView(R.layout.loading_dialog);
-        findView();
+        findView(message);
         initAnim();
     }
 
-    private void findView() {
+    private void findView(String message) {
         routeImageView = (ImageView) findViewById(R.id.routeImageView);
         detailTextView = (TextView) findViewById(R.id.detailTextView);
-        detailTextView.setText(getContext().getString(R.string.loading));
+        detailTextView.setText(message);
         setCancelable(false);
     }
 

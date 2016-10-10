@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,7 +63,9 @@ public class FriendCache extends BaseCache<User>{
 
                     list.add(new User(
                             friend.getLong("pk_id"),
+                            friend.getString("phone"),
                             friend.getString("nickname"),
+                            friend.getString("register_date"),
                             friend.getString("photo_url"),
                             friend.getString("small_photo_url"),
                             User.SexEnum.valueOf(friend.getInt("sex")),
@@ -75,7 +78,12 @@ public class FriendCache extends BaseCache<User>{
                 mFriendTableManager.updateFriend(version, list);
                 mList = list;
             }
-        } catch (JSONException e) {
+        }
+        catch (ParseException e) {
+            LogUtil.e(TAG, e.getMessage());
+            e.printStackTrace();
+        }
+        catch (JSONException e) {
             LogUtil.e(TAG, e.getMessage());
             e.printStackTrace();
         }

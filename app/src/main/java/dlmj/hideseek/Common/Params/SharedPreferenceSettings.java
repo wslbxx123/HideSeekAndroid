@@ -12,7 +12,9 @@ public enum SharedPreferenceSettings {
     FRIEND_VERSION("friendVersion", (long)0),
     RECORD_VERSION("recordVersion", (long)0),
     RECORD_MIN_ID("recordMinId", (long)0),
-    SCORE_SUM("scoreSum", 0);
+    SCORE_SUM("scoreSum", 0),
+    RACE_GROUP_UPDATE_TIME("raceGroupUpdateTime", ""),
+    RECORD_UPDATE_TIME("recordUpdateTime", "");
 
     private final String mId;
     private final Object mDefaultValue;

@@ -13,9 +13,10 @@ public class Record {
     private int mScoreSum;
     private long mVersion;
     private String mDate;
+    private String mShowTypeName;
 
     public Record(long recordId, String time, Goal.GoalTypeEnum goalType, int score,
-                  int scoreSum, long version, String date) {
+                  int scoreSum, long version, String date, String showTypeName) {
         mRecordId = recordId;
         mTime = time;
         mGoalType = goalType;
@@ -23,6 +24,7 @@ public class Record {
         mScoreSum = scoreSum;
         mVersion = version;
         mDate = date;
+        mShowTypeName = showTypeName;
     }
 
     public long getRecordId() {
@@ -59,5 +61,9 @@ public class Record {
 
     public void setDate(String date) {
         mDate = date;
+    }
+
+    public String getShowTypeName() {
+        return mShowTypeName;
     }
 }

@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class RecordTableManager {
     private static RecordTableManager mInstance;
     private SharedPreferences mSharedPreferences;
     private long mRecordMinId = 0;
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public static RecordTableManager getInstance(Context context){
         synchronized (RaceGroupTableManager.class){
@@ -43,7 +46,8 @@ public class RecordTableManager {
                 "goal_type integer, " +
                 "score integer, " +
                 "score_sum integer, " +
-                "version bigint)");
+                "version bigint, " +
+                "show_type_name varchar)");
     }
 
     public void updateRecord(int scoreSum, long recordMinId, long version,
@@ -67,6 +71,7 @@ public class RecordTableManager {
                 contentValues.put("score", record.getScore());
                 contentValues.put("score_sum", record.getScoreSum());
                 contentValues.put("version", record.getVersion());
+                contentValues.put("show_type_name", record.getShowTypeName());
                 String[] args = { String.valueOf(record.getRecordId()) };
                 int count = mSQLiteDatabase.update("record", contentValues, "record_id=?", args);
 
@@ -82,6 +87,20 @@ public class RecordTableManager {
     }
 
     public List<Record> searchRecords() {
+        String updateDateStr = getUpdateDate();
+
+        Date curDate = new Date(System.currentTimeMillis());
+        String curDateStr = mDateFormat.format(curDate);
+
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        SharedPreferenceSettings updateDate = SharedPreferenceSettings.RECORD_UPDATE_TIME;
+        editor.putString(updateDate.getId(), curDateStr);
+        editor.apply();
+
+        if(updateDateStr.isEmpty() || !curDateStr.equals(updateDateStr)) {
+            clearMoreData();
+        }
+
         String limit = null;
         String queryStr;
         String[] selectionArgs;
@@ -106,6 +125,21 @@ public class RecordTableManager {
         return getRecordList(cursor);
     }
 
+    public void clearMoreData() {
+        Cursor cursor = mSQLiteDatabase.rawQuery("select record_id from record " +
+                "order by record_id desc limit 20", null);
+        cursor.moveToLast();
+
+        Long recordId = cursor.getLong(0);
+        cursor.close();
+
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        SharedPreferenceSettings minId = SharedPreferenceSettings.RECORD_MIN_ID;
+        editor.putLong(minId.getId(), recordId);
+        editor.apply();
+        mSQLiteDatabase.delete("record", "record_id<?", new String[]{recordId + ""});
+    }
+
     private List<Record> getRecordList(Cursor cursor) {
         List<Record> recordList = new LinkedList<>();
 
@@ -117,7 +151,8 @@ public class RecordTableManager {
                     cursor.getInt(cursor.getColumnIndex("score")),
                     cursor.getInt(cursor.getColumnIndex("score_sum")),
                     cursor.getLong(cursor.getColumnIndex("version")),
-                    cursor.getString(cursor.getColumnIndex("date_str"))
+                    cursor.getString(cursor.getColumnIndex("date_str")),
+                    cursor.getString(cursor.getColumnIndex("show_type_name"))
             ));
         }
 
@@ -160,6 +195,14 @@ public class RecordTableManager {
                 recordVersion.getId(),
                 (long) recordVersion.getDefaultValue());
         return versionValue;
+    }
+
+    public String getUpdateDate() {
+        SharedPreferenceSettings updateDate = SharedPreferenceSettings.RECORD_UPDATE_TIME;
+        String updateDateStr = mSharedPreferences.getString(
+                updateDate.getId(),
+                (String) updateDate.getDefaultValue());
+        return updateDateStr;
     }
 
     public long getRecordMinId() {

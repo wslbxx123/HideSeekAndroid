@@ -43,6 +43,7 @@ public class GameView extends CustomSurfaceView{
     private int mSwordIndex = 0;
     private boolean mSwordIfDisplayed = false;
     private int mSleepCount = 0;
+    private OnBombGotListener mOnBombGotListener;
 
     public GameView(Context context) {
         this(context, null);
@@ -52,6 +53,10 @@ public class GameView extends CustomSurfaceView{
         super(context, attributeSet);
         mPaint = new Paint();
         setSwordList();
+    }
+
+    public void setOnBombGotListener(OnBombGotListener onBombGotListener) {
+        mOnBombGotListener = onBombGotListener;
     }
 
     public void setSwordList() {
@@ -104,6 +109,7 @@ public class GameView extends CustomSurfaceView{
         }
 
         if(mSwordIndex <= mSwordIDList.length - 1) {
+            LogUtil.d(TAG, mSwordIndex + "");
             mSwordBitmap = BitmapFactory.decodeResource(getResources(), mSwordIDList[mSwordIndex]);
             canvas.drawBitmap(mSwordBitmap, (width - mSwordBitmap.getWidth()) / 2,
                     (height - mSwordBitmap.getHeight()) / 2, mPaint);
@@ -124,9 +130,11 @@ public class GameView extends CustomSurfaceView{
                 mGoalBitmap.recycle();
             }
 
-            if(mWaitIndex > mWaitingCount && mWaitingCount != -1) {
-                mIndex = 0;
-                mWaitIndex = 0;
+            if(mWaitIndex > mWaitingCount) {
+                if(mWaitingCount != -1) {
+                    mIndex = 0;
+                    mWaitIndex = 0;
+                }
             }
 
             if(mIndex <= mBitmapIDList.length - 1) {
@@ -134,6 +142,8 @@ public class GameView extends CustomSurfaceView{
             } else {
                 if(mWaitingCount == -1) {
                     mIfGoalPaused = true;
+
+                    mOnBombGotListener.onBombGot();
                 }
                 mGoalBitmap = BitmapFactory.decodeResource(getResources(),
                         mBitmapIDList[mBitmapIDList.length - 1]);
@@ -216,5 +226,9 @@ public class GameView extends CustomSurfaceView{
 
     public boolean getGoalDisplayed() {
         return mIfGoalDisplayed;
+    }
+
+    public interface OnBombGotListener {
+        public void onBombGot();
     }
 }

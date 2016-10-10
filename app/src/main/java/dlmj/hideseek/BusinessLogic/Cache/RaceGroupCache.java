@@ -86,7 +86,8 @@ public class RaceGroupCache extends BaseCache<RaceGroup>{
                                 Goal.GoalTypeEnum.valueOf(record.getInt("goal_type")),
                                 record.getInt("score"),
                                 record.getInt("score_sum"),
-                                record.getLong("version"))));
+                                record.getLong("version"),
+                                record.getString("show_type_name"))));
             }
 
             mRaceGroupTableManager.updateRaceGroup(recordMinId, version, list);

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -37,6 +38,10 @@ import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.navi.model.NaviLatLng;
+import com.google.gson.JsonNull;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -46,6 +51,7 @@ import java.util.Map;
 
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
+import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
@@ -66,6 +72,7 @@ import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
 import dlmj.hideseek.UI.View.CustomSuperToast;
 import dlmj.hideseek.UI.View.GameView;
+import dlmj.hideseek.UI.View.LoadingDialog;
 
 /**
  * Created by Two on 4/29/16.
@@ -86,6 +93,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private NetworkHelper mNetworkHelper;
     private NetworkHelper mGetGoalNetworkHelper;
     private NetworkHelper mHitMonsterNetworkHelper;
+    private NetworkHelper mSeeMonsterNetworkHelper;
     private Button mNavigateButton;
     private double mLatitude;
     private double mLongitude;
@@ -94,7 +102,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private Goal mEndGoal;
     private TextView mDistanceTextView;
     private int mOrientation;
-    private float mDistance;
+    private double mDistance;
     private SensorManager mSensorManager;
     private boolean mIfRegisteredSensor;
     private Button mGetButton;
@@ -106,6 +114,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private WindowManager mWindowManager;
     private OverlayThread mOverlayThread;
     private GameView mGameView;
+    private ImageView mRoleImageView;
+    private TextView mHintTextView;
     private Handler mUiHandler = new Handler();
     private Handler mRefreshMapHandler = new Handler();
     private boolean mLocationFlag = false;
@@ -116,9 +126,12 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
         }
     };
-    private RelativeLayout mBombThrow;
+    private ImageButton mRefreshBtn;
+    private RelativeLayout mSetBombLayout;
     private ImageView mMonster;
     private TextView mBombNum;
+    private LoadingDialog mLoadingDialog;
+    private boolean mIfSeeGoal = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,7 +151,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             parent.removeView(rootView);
         }
 
-        mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
         return rootView;
     }
 
@@ -168,9 +180,15 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mMapView.onResume();
         LogUtil.d(TAG, "Map View is resumed");
 
-        List<Goal> goals = GoalCache.getInstance().getList();
+        if(GoalCache.getInstance().getIfNeedClearMap()) {
+            refresh();
+        }
 
-        setGoalsOnMap(goals);
+        mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
+
+//        List<Goal> goals = GoalCache.getInstance().getList();
+//
+//        setGoalsOnMap(goals);
         List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
 
         if (sensors.size() > 0){
@@ -180,8 +198,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         } else {
             mOrientation = -1;
         }
-        setEndGoal();
-        setBomb();
+        setSearchView();
     }
 
     private void refreshMap() {
@@ -196,31 +213,39 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mStartLatLng.setLatitude(mLatitude);
         mStartLatLng.setLongitude(mLongitude);
 
-        String updateTime = GoalCache.getInstance().getUpdateTime();
-        LogUtil.d(TAG, updateTime);
-        if(updateTime != null && !updateTime.equals("null")) {
-            params.put("update_time", updateTime);
-        }
+        long version = GoalCache.getInstance().getVersion();
+        params.put("version", version + "");
 
         User user = UserCache.getInstance().getUser();
-        if(user != null) {
+        if(UserCache.getInstance().ifLogin()) {
             params.put("account_role", user.getRole().getValue() + "");
-            mNetworkHelper.sendPostRequest(UrlParams.REFRESH_MAP_URL, params);
-        } else {
-            mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_MAP_URL, params);
         }
+
+        if (!mLoadingDialog.isShowing() && GoalCache.getInstance().getVersion() == 0) {
+            mLoadingDialog.show();
+        }
+
+        mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_MAP_URL, params);
     }
 
     private void setEndGoal() {
+        List<Goal> list = new LinkedList<>();
+
+        if(mEndGoal != null) {
+            list.add(mEndGoal);
+            list.add(GoalCache.getInstance().getSelectedGoal());
+        }
+        setGoalsOnMap(list);
+
         mEndGoal = GoalCache.getInstance().getSelectedGoal();
 
         if(mEndGoal != null) {
             mGameView.setGoal(mEndGoal);
             mEndLatLng.setLatitude(mEndGoal.getLatitude());
             mEndLatLng.setLongitude(mEndGoal.getLongitude());
+            refreshDistance();
+            checkIfGoalDisplayed();
         }
-
-        refreshDistance();
     }
 
     @Override
@@ -254,9 +279,10 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     }
 
     public void refreshDistance() {
-        mDistance = AMapUtils.calculateLineDistance(
+        double distance = AMapUtils.calculateLineDistance(
                 new LatLng(mStartLatLng.getLatitude(), mStartLatLng.getLongitude()),
                 new LatLng(mEndLatLng.getLatitude(), mEndLatLng.getLongitude()));
+        mDistance = distance < 15 ? 0 : distance - 15;
         mDistanceTextView.setText((int)mDistance + "m");
         LogUtil.d(TAG, "distance: " + (int)mDistance + "m");
     }
@@ -280,6 +306,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mNetworkHelper = new NetworkHelper(getActivity());
         mGetGoalNetworkHelper = new NetworkHelper(getActivity());
         mHitMonsterNetworkHelper = new NetworkHelper(getActivity());
+        mSeeMonsterNetworkHelper = new NetworkHelper(getActivity());
 
         mSensorManager =  (SensorManager) getActivity().
                 getSystemService(Context.SENSOR_SERVICE);
@@ -300,23 +327,29 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mGetButton = (Button) view.findViewById(R.id.getButton);
         mDistanceLayout = (LinearLayout) view.findViewById(R.id.distanceLayout);
         mGameView = (GameView) view.findViewById(R.id.gameView);
+        mRoleImageView = (ImageView) view.findViewById(R.id.roleImageView);
+        mHintTextView = (TextView) view.findViewById(R.id.hintTextView);
 
         //右上角图标
-        mBombThrow = (RelativeLayout) view.findViewById(R.id.bomb_throw);
+        mRefreshBtn = (ImageButton) view.findViewById(R.id.refreshBtn);
+        mSetBombLayout = (RelativeLayout) view.findViewById(R.id.setBombLayout);
         mMonster = (ImageView) view.findViewById(R.id.monster_handbook);
         mBombNum = (TextView) view.findViewById(R.id.bomb_num);
-        //用户未登录不显示
-        setBomb();
+
+        mLoadingDialog = new LoadingDialog(getActivity(), getContext().getString(R.string.refresh_map_hint));
     }
 
-    private void setBomb() {
-        if (!UserCache.getInstance().ifLogin()) {
-            mBombThrow.setVisibility(View.GONE);
-            mMonster.setVisibility(View.GONE);
-        } else {
-            mBombThrow.setVisibility(View.VISIBLE);
+    private void setSearchView() {
+        if (UserCache.getInstance().ifLogin()) {
+            mSetBombLayout.setVisibility(View.VISIBLE);
             mMonster.setVisibility(View.VISIBLE);
-            mBombNum.setText("x"+UserCache.getInstance().getUser().bomb_num);
+
+            User user = UserCache.getInstance().getUser();
+            mRoleImageView.setImageResource(user.getRoleImageDrawableId());
+            mBombNum.setText(user.getBombNum() + "");
+        } else {
+            mSetBombLayout.setVisibility(View.GONE);
+            mMonster.setVisibility(View.GONE);
         }
     }
 
@@ -330,17 +363,22 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
-        mBombThrow.setOnClickListener(this);
+        mSetBombLayout.setOnClickListener(this);
         mMonster.setOnClickListener(this);
+
+        mGameView.setOnBombGotListener(new GameView.OnBombGotListener() {
+            @Override
+            public void onBombGot() {
+                if(mEndGoal.getType() == Goal.GoalTypeEnum.bomb) {
+                    getGoal();
+                }
+            }
+        });
 
         UIDataListener<Bean> getGoalUIDataListener = new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
-                if(mEndGoal.getType() == Goal.GoalTypeEnum.bomb) {
-                    mOverlayTextVew.setText(getString(R.string.minus_one_score));
-                } else {
-                    mOverlayTextVew.setText(getString(R.string.add_one_score));
-                }
+                mOverlayTextVew.setText(getScoreStr(mEndGoal.getScore()));
 
                 mOverlayTextVew.setVisibility(View.VISIBLE);
                 mUiHandler.removeCallbacks(mOverlayThread);
@@ -364,12 +402,35 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             @Override
             public void onDataChanged(Bean data) {
                 LogUtil.d(TAG, "Hit monster: " + data.getResult());
-                updateEndGoal();
 
-                mOverlayTextVew.setText(getString(R.string.add_one_score));
-                mOverlayTextVew.setVisibility(View.VISIBLE);
-                mUiHandler.removeCallbacks(mOverlayThread);
-                mUiHandler.postDelayed(mOverlayThread, 1000);
+                try {
+                    String result = data.getResult();
+                    JSONObject jsonObject = new JSONObject(result);
+
+                    if(jsonObject.get("score_sum") != null &&
+                            !(jsonObject.get("score_sum") instanceof JsonNull) &&
+                            !jsonObject.getString("score_sum").equals("null")) {
+                        mOverlayTextVew.setText("+" + mEndGoal.getScore());
+                        mOverlayTextVew.setVisibility(View.VISIBLE);
+                        mUiHandler.removeCallbacks(mOverlayThread);
+                        mUiHandler.postDelayed(mOverlayThread, 1000);
+
+                        if(UserCache.getInstance().ifLogin()) {
+                            UserCache.getInstance().getUser().setRecord(jsonObject.getInt("score_sum"));
+                            updateEndGoal();
+                        }
+                    } else {
+                        int canSuccess = jsonObject.getInt("if_can_success");
+
+                        if(canSuccess == 0) {
+                            mHintTextView.setText(R.string.not_meet_condition);
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                mHitMonsterNetworkHelper.closeLock();
             }
 
             @Override
@@ -380,10 +441,31 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                 if(errorCode == CodeParams.ERROR_GOAL_DISAPPEAR) {
                     updateEndGoal();
                 }
+
+                mHitMonsterNetworkHelper.closeLock();
             }
         };
 
         mHitMonsterNetworkHelper.setUiDataListener(hitMonsterUIDataListener);
+
+        UIDataListener<Bean> seeMonsterUIDataListener = new UIDataListener<Bean>() {
+            @Override
+            public void onDataChanged(Bean data) {
+                LogUtil.d(TAG, "See monster: " + data.getResult());
+            }
+
+            @Override
+            public void onErrorHappened(int errorCode, String errorMessage) {
+                String message = mErrorMessageFactory.get(errorCode);
+                mErrorSuperToast.show(message);
+
+                if(errorCode == CodeParams.ERROR_SESSION_INVALID) {
+                    UserInfoManager.getInstance().checkIfGoToLogin(getActivity());
+                }
+            }
+        };
+
+        mSeeMonsterNetworkHelper.setUiDataListener(seeMonsterUIDataListener);
 
         mNavigateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -409,36 +491,58 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             }
         });
 
+        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refresh();
+            }
+        });
+
         mGetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mGameView.getGoalDisplayed()) {
                     switch(mEndGoal.getType()) {
                         case mushroom:
-                            if(GoalCache.getInstance().getHasSelectMushroom() && !mEndGoal.isEnabled()) {
-                                mErrorSuperToast.show(getActivity().getString(R.string.warning_not_enabled));
-                            } else {
-                                mGameView.hideGoal();
-
-                                Map<String, String> params = new HashMap<>();
-                                params.put("goal_id", mEndGoal.getPkId() + "");
-                                params.put("goal_type", mEndGoal.getType().getValue() + "");
-                                mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
-                            }
+                            getGoal();
                             break;
                         case monster:
                             mGameView.hitMonster();
-//                            Map<String, String> params = new HashMap<>();
-//                            params.put("goal_id", mEndGoal.getPkId() + "");
-//                            User user = UserCache.getInstance().getUser();
-//                            params.put("account_role", user.getRole().getValue() + "");
-//                            mHitMonsterNetworkHelper.sendPostRequest(
-//                                    UrlParams.HIT_MONSTER_URL, params);
+                            Map<String, String> params = new HashMap<>();
+                            params.put("goal_id", mEndGoal.getPkId() + "");
+                            User user = UserCache.getInstance().getUser();
+                            params.put("account_role", user.getRole().getValue() + "");
+                            mHitMonsterNetworkHelper.sendPostRequest(
+                                    UrlParams.HIT_MONSTER_URL, params);
+                            mHitMonsterNetworkHelper.openLock();
                             break;
                     }
                 }
             }
         });
+    }
+
+    private String getScoreStr(int score) {
+        if(score > 0) {
+            return "+" + score;
+        } else {
+            return score + "";
+        }
+    }
+
+    private void getGoal() {
+        Map<String, String> params = new HashMap<>();
+        params.put("goal_id", mEndGoal.getPkId() + "");
+        params.put("goal_type", mEndGoal.getType().getValue() + "");
+        mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
+    }
+
+    private void refresh() {
+        mMap.clear();
+        setUpMap();
+        mEndGoal = null;
+        GoalCache.getInstance().reset();
+        mMarkerHashTable.clear();
     }
 
     private void setUpMap() {
@@ -523,24 +627,24 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
         List<Goal> updateGoals = GoalCache.getInstance().getUpdateList();
 
-        if(updateGoals.size() > 0) {
+        if(mLoadingDialog.isShowing()) {
+            GoalCache.getInstance().refreshClosestGoal(mLatitude, mLongitude);
             setEndGoal();
         }
 
         setGoalsOnMap(updateGoals);
+
+        if(mLoadingDialog.isShowing()) {
+            mLoadingDialog.dismiss();
+        }
     }
 
     @Override
     public void onMapLoaded() {
         setUpMap();
-
     }
 
     private void setGoalsOnMap(List<Goal> goals) {
-        if(GoalCache.getInstance().getIfNeedClearMap()) {
-            mMap.clear();
-        }
-
         for(Goal goal : goals) {
             MarkerOptions markerOptions;
             if(goal.getIsSelected()) {
@@ -575,7 +679,9 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
-
+        if(mLoadingDialog.isShowing()) {
+            mLoadingDialog.dismiss();
+        }
     }
 
     private void checkIfGoalDisplayed() {
@@ -583,16 +689,16 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             LogUtil.d(TAG, "End Goal: Latitude=" + mEndGoal.getLatitude() + ", " +
                     "Longitude=" + mEndGoal.getLongitude());
             if((mEndGoal.getOrientation() == mOrientation || mOrientation == -1) &&
-                    mDistance < 20 && mEndGoal.getValid()) {
+                    mDistance < 10 && mEndGoal.getValid()) {
                 LogUtil.d(TAG, "Goal is displayed");
 
                 mGameView.showGoal();
 
-                if(mEndGoal.getType() == Goal.GoalTypeEnum.bomb) {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("goal_id", mEndGoal.getPkId() + "");
-                    params.put("goal_type", mEndGoal.getType().getValue() + "");
-                    mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
+                if(!mIfSeeGoal && UserCache.getInstance().ifLogin()) {
+                    mIfSeeGoal = true;
+                    if(mEndGoal.getType() == Goal.GoalTypeEnum.monster) {
+                        seeMonster();
+                    }
                 }
             } else {
                 LogUtil.d(TAG, "Goal is hidden");
@@ -601,16 +707,23 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         }
     }
 
+    private void seeMonster() {
+        long pkId = mEndGoal.getPkId();
+        Map<String, String> params = new HashMap<>();
+        params.put("goal_id", pkId + "");
+        mSeeMonsterNetworkHelper.sendPostRequest(UrlParams.SEE_MONSTER_URL, params);
+    }
+
     private void updateEndGoal() {
+        mGameView.hideGoal();
         mEndGoal.setValid(false);
+        mEndGoal.setIsSelected(false);
+
         GoalCache goalCache = GoalCache.getInstance();
         goalCache.setSelectedGoal(null);
         goalCache.refreshClosestGoal(mLatitude, mLongitude);
-        List<Goal> list = new LinkedList<>();
-        list.add(mEndGoal);
-        list.add(goalCache.getSelectedGoal());
+
         setEndGoal();
-        setGoalsOnMap(list);
     }
 
     @Override
@@ -631,7 +744,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.bomb_throw:
+            case R.id.setBombLayout:
                 //跳转到商店
                 forActivity();
                 break;

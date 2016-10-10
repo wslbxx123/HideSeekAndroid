@@ -135,7 +135,7 @@ public class UploadPhotoActivity extends Activity {
         mRegionTextView = (TextView) findViewById(R.id.regionTextView);
         mRegisterButton = (Button) findViewById(R.id.registerButton);
         mToast = new CustomSuperToast(this);
-        mLoadingDialog = new LoadingDialog(this);
+        mLoadingDialog = new LoadingDialog(this, this.getString(R.string.loading));
     }
 
     private void setListener() {
