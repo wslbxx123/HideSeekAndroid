@@ -1,7 +1,7 @@
 package dlmj.hideseek.UI.Activity;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.widget.ListView;
 
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import dlmj.hideseek.UI.Adapter.MyOrderAdapter;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class MyOrderActivity extends Activity{
+public class MyOrderActivity extends FragmentActivity {
 
     private ListView mListView;
     private NetworkHelper mNetworkHelper;
@@ -31,7 +31,7 @@ public class MyOrderActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_order);
+        setContentView(R.layout.my_order);
         initView();
         initData();
         initListener();

@@ -28,11 +28,12 @@ public class UrlParams {
 //    public static String GET_ORDERS_URL ="https://www.hideseek.cn/home/store/getOrders";
 //    public static String SEE_MONSTER_URL = "https://www.hideseek.cn/home/map/seeMonster";
 //    public static String CHECK_IF_USER_EXIST_URL = "https://www.hideseek.cn/home/user/checkIfUserExist";
+//    public static String GET_DANGER_WARNING_URL = "https://www.hideseek.cn/home/map/getDangerWarnings";
 
     /**
      * Debug Mode
      */
-    public static String IP_ADDRESS = "192.168.1.101";
+    public static String IP_ADDRESS = "192.168.1.102";
     public static String LOGIN_URL = "http://" + IP_ADDRESS + "/home/user/login";
     public static String REGISTER_URL = "http://" + IP_ADDRESS + "/home/user/register";
     public static String REFRESH_RECORD_URL = "http://" + IP_ADDRESS + "/home/record/refreshRecords";
@@ -52,4 +53,5 @@ public class UrlParams {
     public static String GET_ORDERS_URL = "http://" + IP_ADDRESS + "/home/store/getOrders";
     public static String SEE_MONSTER_URL = "http://" + IP_ADDRESS + "/home/map/seeMonster";
     public static String CHECK_IF_USER_EXIST_URL = "http://" + IP_ADDRESS + "/home/user/checkIfUserExist";
+    public static String GET_DANGER_WARNING_URL = "http://" + IP_ADDRESS + "/home/map/getDangerWarnings";
 }

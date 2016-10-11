@@ -25,7 +25,7 @@ import dlmj.hideseek.R;
 /**
  * Created by Two on 4/2/16.
  */
-public class BaiduGuideActivity extends Activity {
+public class AMapGuideActivity extends Activity {
     private final String TAG = "BaiduGuide Activity";
     private Handler mHandler = null;
     private BaiduNaviCommonModule mNavigationCommonModule = null;

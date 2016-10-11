@@ -76,7 +76,18 @@
     <string name="refresh_map_hint">刷新地图中……</string>
     <string name="ok">好的</string>
     <string name="not_meet_condition">没有满足打怪条件</string>
+    <string name="watched_by_monster">小心！你被一只%s盯上了</string>
+    <string name="mushroom">蘑菇兽</string>
+    <string name="bomb">诡诈兽</string>
+    <string name="egg">怪诞兽</string>
+    <string name="cow">呲牙兽</string>
+    <string name="bird">飞魂兽</string>
+    <string name="giraffe">长悠兽</string>
+    <string name="dragon">龙冠兽</string>
+    <string name="danger_warning">危险警告</string>
+    <string name="get_it">抓住它</string>
 
+    <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>
     <string name="error_password_empty">请填写密码</string>
     <string name="error_login_failed">用户名和密码不匹配</string>

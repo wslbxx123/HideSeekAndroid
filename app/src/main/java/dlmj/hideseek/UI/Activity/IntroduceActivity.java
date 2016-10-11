@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Fragment.MeFragment;
 import dlmj.hideseek.UI.Fragment.RaceGroupFragment;
@@ -18,7 +19,8 @@ import dlmj.hideseek.UI.Fragment.SearchFragment;
 //首页
 public class IntroduceActivity extends FragmentActivity{
     private final String TAG = "Introduce Activity";
-    public static final int REGISTER_CODE = 300;
+    public final static int GO_TO_WARNING = 100;
+    public final static int REGISTER_CODE = 300;
     private FragmentTabHost mFragmentTabHost;
     private int mTabImage[] = {R.drawable.home_back, R.drawable.record_back,
             R.drawable.friend_group_back, R.drawable.me_back};
@@ -42,6 +44,12 @@ public class IntroduceActivity extends FragmentActivity{
             switch(requestCode) {
                 case REGISTER_CODE:
 
+                    break;
+                case GO_TO_WARNING:
+                    SearchFragment searchFragment = (SearchFragment)getSupportFragmentManager()
+                            .findFragmentById(0);
+                    long goalId = data.getLongExtra(IntentExtraParam.GOAL_ID, 0);
+                    searchFragment.updateEndGoal(goalId);
                     break;
                 default:
                     break;

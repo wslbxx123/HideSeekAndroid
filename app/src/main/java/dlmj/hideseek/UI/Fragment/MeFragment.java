@@ -108,6 +108,7 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
                     if(mCountDown == -1) {
                         mCodeButton.setText(getString(R.string.send_verification_code));
                         mTimer.cancel();
+                        mTimer.purge();
                     }
                     break;
                 case COUNT_DOWN_START:
@@ -444,6 +445,10 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
             mRegisterPhone = charSequence.toString();
             Log.d("Register Phone", mRegisterPhone);
             checkRegisterEnabled();
+
+            mCodeButton.setText(R.string.send_verification_code);
+            mTimer.cancel();
+            mTimer.purge();
 
             if(mRegisterPhone == null || mRegisterPhone.length() < 6) {
                 mCodeButton.setEnabled(false);

@@ -49,6 +49,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
+import cn.sharesdk.onekeyshare.OnekeyShareTheme;
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
@@ -65,9 +68,11 @@ import dlmj.hideseek.Common.Util.DisplayUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Hardware.CameraInterface;
 import dlmj.hideseek.R;
+import dlmj.hideseek.UI.Activity.IntroduceActivity;
 import dlmj.hideseek.UI.Activity.MapActivity;
 import dlmj.hideseek.UI.Activity.NavigationActivity;
 import dlmj.hideseek.UI.Activity.StoreActivity;
+import dlmj.hideseek.UI.Activity.WarningActivity;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
 import dlmj.hideseek.UI.View.CustomSuperToast;
@@ -128,8 +133,10 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     };
     private ImageButton mRefreshBtn;
     private RelativeLayout mSetBombLayout;
-    private ImageView mMonster;
+    private ImageButton mMonsterGuideBtn;
     private TextView mBombNum;
+    private ImageButton mWarningBtn;
+    private ImageButton mShareBtn;
     private LoadingDialog mLoadingDialog;
     private boolean mIfSeeGoal = false;
 
@@ -186,9 +193,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
         mRefreshMapHandler.postDelayed(mRunnable, REFRESH_MAP_INTERVAL);
 
-//        List<Goal> goals = GoalCache.getInstance().getList();
-//
-//        setGoalsOnMap(goals);
         List<Sensor> sensors = mSensorManager.getSensorList(Sensor.TYPE_ORIENTATION);
 
         if (sensors.size() > 0){
@@ -228,6 +232,25 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_MAP_URL, params);
     }
 
+    public void updateEndGoal(long goalId) {
+        Goal selectedGoal = GoalCache.getInstance().getSelectedGoal();
+
+        if(selectedGoal != null) {
+            selectedGoal.setIsSelected(false);
+        }
+
+        Goal goal = GoalCache.getInstance().getGoal(goalId);
+
+        if(goal != null) {
+            goal.setIsSelected(true);
+            GoalCache.getInstance().setSelectedGoal(goal);
+            setEndGoal();
+        } else {
+            String errorMessage = getActivity().getString(R.string.error_goal_invalid);
+            mErrorSuperToast.show(errorMessage);
+        }
+    }
+
     private void setEndGoal() {
         List<Goal> list = new LinkedList<>();
 
@@ -246,6 +269,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             refreshDistance();
             checkIfGoalDisplayed();
         }
+
+        this.mIfSeeGoal = false;
     }
 
     @Override
@@ -313,6 +338,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
         mErrorSuperToast = new CustomSuperToast(getActivity());
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
+
+        ShareSDK.initSDK(getActivity());
     }
 
     private void findView(View view) {
@@ -333,8 +360,10 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         //右上角图标
         mRefreshBtn = (ImageButton) view.findViewById(R.id.refreshBtn);
         mSetBombLayout = (RelativeLayout) view.findViewById(R.id.setBombLayout);
-        mMonster = (ImageView) view.findViewById(R.id.monster_handbook);
+        mMonsterGuideBtn = (ImageButton) view.findViewById(R.id.monsterGuideBtn);
         mBombNum = (TextView) view.findViewById(R.id.bomb_num);
+        mWarningBtn = (ImageButton) view.findViewById(R.id.warningBtn);
+        mShareBtn = (ImageButton) view.findViewById(R.id.shareBtn);
 
         mLoadingDialog = new LoadingDialog(getActivity(), getContext().getString(R.string.refresh_map_hint));
     }
@@ -342,14 +371,18 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private void setSearchView() {
         if (UserCache.getInstance().ifLogin()) {
             mSetBombLayout.setVisibility(View.VISIBLE);
-            mMonster.setVisibility(View.VISIBLE);
+            mMonsterGuideBtn.setVisibility(View.VISIBLE);
+            mWarningBtn.setVisibility(View.VISIBLE);
+            mShareBtn.setVisibility(View.VISIBLE);
 
             User user = UserCache.getInstance().getUser();
             mRoleImageView.setImageResource(user.getRoleImageDrawableId());
             mBombNum.setText(user.getBombNum() + "");
         } else {
             mSetBombLayout.setVisibility(View.GONE);
-            mMonster.setVisibility(View.GONE);
+            mMonsterGuideBtn.setVisibility(View.GONE);
+            mWarningBtn.setVisibility(View.GONE);
+            mShareBtn.setVisibility(View.GONE);
         }
     }
 
@@ -364,7 +397,9 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
         mSetBombLayout.setOnClickListener(this);
-        mMonster.setOnClickListener(this);
+        mMonsterGuideBtn.setOnClickListener(this);
+        mWarningBtn.setOnClickListener(this);
+        mShareBtn.setOnClickListener(this);
 
         mGameView.setOnBombGotListener(new GameView.OnBombGotListener() {
             @Override
@@ -462,6 +497,8 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                 if(errorCode == CodeParams.ERROR_SESSION_INVALID) {
                     UserInfoManager.getInstance().checkIfGoToLogin(getActivity());
                 }
+
+                mIfSeeGoal = false;
             }
         };
 
@@ -748,10 +785,25 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                 //跳转到商店
                 forActivity();
                 break;
-            case R.id.monster_handbook:
+            case R.id.monsterGuideBtn:
                 forActivity();
                 break;
+            case R.id.warningBtn:
+                goToWarning();
+                break;
+            case R.id.shareBtn:
+                share();
+                break;
         }
+    }
+
+    private void goToWarning() {
+        Intent intent = new Intent(getActivity(), WarningActivity.class);
+        startActivityForResult(intent, IntroduceActivity.GO_TO_WARNING);
+    }
+
+    private void share() {
+        OnekeyShare oks = new OnekeyShare();
     }
 
     private void forActivity() {

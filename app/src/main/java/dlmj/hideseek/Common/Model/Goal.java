@@ -1,5 +1,9 @@
 package dlmj.hideseek.Common.Model;
 
+import android.content.Context;
+
+import dlmj.hideseek.R;
+
 /**
  * Created by Two on 5/17/16.
  */
@@ -80,6 +84,21 @@ public class Goal{
 
     public int getScore() {
         return mScore;
+    }
+
+    public String getGoalName(Context context) {
+        switch(this.mType) {
+            case mushroom:
+                return context.getString(R.string.mushroom);
+            case bomb:
+                return context.getString(R.string.bomb);
+            case monster:
+                int identifier = context.getResources().getIdentifier(mShowTypeName, "string",
+                        context.getPackageName());
+                return context.getString(identifier);
+            default:
+                return "";
+        }
     }
 
     public enum GoalTypeEnum {

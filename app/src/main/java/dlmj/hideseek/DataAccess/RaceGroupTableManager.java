@@ -134,7 +134,7 @@ public class RaceGroupTableManager {
         editor.putString(updateDate.getId(), curDateStr);
         editor.apply();
 
-        if(updateDateStr.isEmpty() || !curDateStr.equals(updateDateStr)) {
+        if(!updateDateStr.isEmpty() && !curDateStr.equals(updateDateStr)) {
             clearMoreData();
         }
 

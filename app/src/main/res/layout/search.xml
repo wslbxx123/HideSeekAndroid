@@ -137,16 +137,15 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="7dp"
         android:layout_height="40dp">
-        <ImageView
+        <ImageButton
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/bomb_throw_selector"
-            />
+            android:background="@drawable/set_bomb_back"/>
+
         <TextView
             android:id="@+id/bomb_num"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:text="x0"
             android:textColor="#ff00"
             android:gravity="center"
             android:textSize="10sp"
@@ -156,15 +155,35 @@
     </RelativeLayout>
 
 
-    <ImageView
-        android:id="@+id/monster_handbook"
+    <ImageButton
+        android:id="@+id/monsterGuideBtn"
         android:layout_marginTop="7dp"
         android:layout_below="@id/setBombLayout"
         android:layout_marginRight="10dp"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:src="@drawable/monster_handbook_seclector"/>
+        android:background="@drawable/monster_guide_back"/>
+
+    <ImageButton
+        android:id="@+id/warningBtn"
+        android:layout_marginTop="7dp"
+        android:layout_below="@id/monsterGuideBtn"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/warning_back"/>
+
+    <ImageButton
+        android:id="@+id/shareBtn"
+        android:layout_marginTop="7dp"
+        android:layout_below="@id/warningBtn"
+        android:layout_marginRight="10dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/share_back"/>
 
     <Button
         android:id="@+id/getButton"

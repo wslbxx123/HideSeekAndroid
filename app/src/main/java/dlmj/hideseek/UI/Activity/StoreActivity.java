@@ -47,7 +47,7 @@ public class StoreActivity extends FragmentActivity implements View.OnClickListe
         mRight.setOnClickListener(this);
         mLeft.setSelected(true);
         mViewPager.setCurrentItem(0);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 

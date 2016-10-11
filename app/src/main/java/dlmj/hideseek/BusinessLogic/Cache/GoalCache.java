@@ -83,6 +83,15 @@ public class GoalCache extends BaseCache<Goal>{
         }
     }
 
+    public Goal getGoal(long goalId) {
+        for(Goal goal : mList) {
+            if(goal.getPkId() == goalId) {
+                return goal;
+            }
+        }
+        return null;
+    }
+
     public void setIfNeedClearMap(boolean ifNeedClearMap) {
         mIfNeedClearMap = ifNeedClearMap;
     }

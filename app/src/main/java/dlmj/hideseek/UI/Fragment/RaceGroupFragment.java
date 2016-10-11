@@ -51,6 +51,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
             switch (msg.what) {
                 case MSG_REFRESH_LIST:
                     mRaceGroupAdapter.notifyDataSetChanged();
+                    mRaceGroupListView.onRefreshComplete();
                     break;
             }
         }
@@ -151,7 +152,6 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
         mRaceGroupList.clear();
         mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
         Message.obtain(mUiHandler, MSG_REFRESH_LIST).sendToTarget();
-        mRaceGroupListView.onRefreshComplete();
     }
 
     @Override

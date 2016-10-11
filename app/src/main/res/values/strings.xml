@@ -78,7 +78,18 @@
     <string name="refresh_map_hint">Refreshing map...</string>
     <string name="ok">OK</string>
     <string name="not_meet_condition">Not meet hit-monster condition</string>
+    <string name="watched_by_monster">You are watched by a %s</string>
+    <string name="mushroom">Mushroom</string>
+    <string name="bomb">Bomb</string>
+    <string name="egg">Egg</string>
+    <string name="cow">Cow</string>
+    <string name="bird">Bird</string>
+    <string name="giraffe">Giraffe</string>
+    <string name="dragon">Dragon</string>
+    <string name="danger_warning">Warning</string>
+    <string name="get_it">Get It</string>
 
+    <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
     <string name="error_password_empty">Please input the password</string>
     <string name="error_login_failed">Phone or password error</string>
@@ -89,9 +100,7 @@
     <string name="error_goal_disappear">The Goal has disappeared</string>
     <string name="error_session_invalid">You are kicked out by others</string>
     <string name="error_user_already_exist">The phone is already registered</string>
-
     <string name="warning_not_enabled">You don\'t have the right to beat the monster</string>
-
     <string name="message_input_city">Input city name to search</string>
     <string name="message_no_city_found">Sorry, no city was found</string>
     <string name="message_get_mushroom">Throw a mushroom monster into sack easily, Rich bitch!</string>
@@ -104,9 +113,10 @@
     <string name="message_input_friend">Input friend name to search</string>
     <string name="message_no_friend_found">Sorry, no friend was found</string>
     <string name="message_not_login">You haven\'t logged in. Go to login?</string>
-
     <string name="add_one_score">+1</string>
     <string name="minus_one_score">-1</string>
-
     <string name="buy_too_more">rich,you buy more!</string>
+    <string name="title_activity_warning">WarningActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>
