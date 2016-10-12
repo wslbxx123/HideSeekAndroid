@@ -2,6 +2,8 @@ package dlmj.hideseek.UI.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
@@ -803,7 +805,20 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     }
 
     private void share() {
-        OnekeyShare oks = new OnekeyShare();
+        OnekeyShare oneKeyStare = new OnekeyShare();
+        oneKeyStare.setSilent(true);
+        oneKeyStare.setTheme(OnekeyShareTheme.CLASSIC);
+        oneKeyStare.setTitle(getActivity().getString(R.string.share_title));
+
+        String shareUrl = "https://m.hideseek.cn/home/mindex/sharePage?goal_id="
+                + mEndGoal.getPkId() +
+                "&nickname="
+                + UserCache.getInstance().getUser().getNickname() +
+                "&role=" + UserCache.getInstance().getUser().getRole().getValue();
+        oneKeyStare.setTitleUrl(shareUrl);
+        oneKeyStare.setText(getActivity().getString(R.string.share_message));
+
+        oneKeyStare.show(getActivity());
     }
 
     private void forActivity() {

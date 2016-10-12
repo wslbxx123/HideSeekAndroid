@@ -4,7 +4,7 @@
     	说明：
     	
     	1、表格中的第一项
-    		<ShareSDK 
+    		<ShareSDK
         		AppKey="api20" />
     	是必须的，其中的AppKey是您在ShareSDK上注册的开发者帐号的AppKey
     	
@@ -56,7 +56,7 @@
     -->
     
     <ShareSDK 
-        AppKey = "androidv1101"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
+        AppKey = "17d3cd5aed9ef"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
     
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <SinaWeibo
@@ -69,7 +69,7 @@
         Enable="true" />
 
     <TencentWeibo
-        Id="2" 
+        Id="2"
         SortId="2"
         AppKey="801307650"
         AppSecret="ae36f4ee3946e1cbb98d6965b0b2ff5c"
@@ -98,16 +98,16 @@
     <Wechat
         Id="4"
         SortId="4"
-        AppId="wx4868b35061f87885"
-        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        AppId="wx35d7e379b7472410"
+        AppSecret="d54adfb1105f71be8099b5a803bbc92f"
         BypassApproval="false"
         Enable="true" />
     
     <WechatMoments
         Id="5"
         SortId="5"
-        AppId="wx4868b35061f87885"
-        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        AppId="wx35d7e379b7472410"
+        AppSecret="d54adfb1105f71be8099b5a803bbc92f"
         BypassApproval="false"
         Enable="true" />
         
@@ -122,8 +122,8 @@
 	<QQ
         Id="7"
         SortId="7"
-        AppId="100371282"
-        AppKey="aed9b0303e3ed1e27bae87c33761161d"
+        AppId="1105750722"
+        AppKey="VIUD39SUv4r63NHZ"
         ShareByAppClient="true"
         Enable="true" />
     

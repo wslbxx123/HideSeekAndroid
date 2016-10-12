@@ -86,6 +86,8 @@
     <string name="dragon">龙冠兽</string>
     <string name="danger_warning">危险警告</string>
     <string name="get_it">抓住它</string>
+    <string name="share_title">进入部落时代</string>
+    <string name="share_message">天啊，一只怪兽正在盯着我，快来救我。</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

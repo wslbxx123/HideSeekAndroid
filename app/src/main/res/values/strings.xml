@@ -88,6 +88,8 @@
     <string name="dragon">Dragon</string>
     <string name="danger_warning">Warning</string>
     <string name="get_it">Get It</string>
+    <string name="share_title">Enter into the age of Tribes</string>
+    <string name="share_message">My God! A monster is watching at me, please help me!</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>

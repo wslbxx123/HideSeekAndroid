@@ -113,14 +113,16 @@ public class RaceGroupTableManager {
                 "order by record_id desc limit 20", null);
         cursor.moveToLast();
 
-        Long recordId = cursor.getLong(0);
-        cursor.close();
+        if(cursor.getCount() > 0) {
+            Long recordId = cursor.getLong(0);
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            SharedPreferenceSettings minId = SharedPreferenceSettings.RACE_GROUP_RECORD_MIN_ID;
+            editor.putLong(minId.getId(), recordId);
+            editor.apply();
+            mSQLiteDatabase.delete("race_group", "record_id<?", new String[]{recordId + ""});
+        }
 
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        SharedPreferenceSettings minId = SharedPreferenceSettings.RACE_GROUP_RECORD_MIN_ID;
-        editor.putLong(minId.getId(), recordId);
-        editor.apply();
-        mSQLiteDatabase.delete("race_group", "record_id<?", new String[]{recordId + ""});
+        cursor.close();
     }
 
     public List<RaceGroup> searchRaceGroup() {

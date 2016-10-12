@@ -130,14 +130,15 @@ public class RecordTableManager {
                 "order by record_id desc limit 20", null);
         cursor.moveToLast();
 
-        Long recordId = cursor.getLong(0);
+        if(cursor.getCount() > 0) {
+            Long recordId = cursor.getLong(0);
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            SharedPreferenceSettings minId = SharedPreferenceSettings.RECORD_MIN_ID;
+            editor.putLong(minId.getId(), recordId);
+            editor.apply();
+            mSQLiteDatabase.delete("record", "record_id<?", new String[]{recordId + ""});
+        }
         cursor.close();
-
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        SharedPreferenceSettings minId = SharedPreferenceSettings.RECORD_MIN_ID;
-        editor.putLong(minId.getId(), recordId);
-        editor.apply();
-        mSQLiteDatabase.delete("record", "record_id<?", new String[]{recordId + ""});
     }
 
     private List<Record> getRecordList(Cursor cursor) {
