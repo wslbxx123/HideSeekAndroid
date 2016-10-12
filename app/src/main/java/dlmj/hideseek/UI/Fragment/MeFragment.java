@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,6 +29,7 @@ import java.util.TimerTask;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
@@ -77,6 +77,9 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
     private String mReInputPassword;
     private NetworkHelper mNetworkHelper;
     private NetworkHelper mCheckUserHelper;
+    private NetworkHelper mUserExistNetworkHelper;
+    private UIDataListener<Bean> mRecordUIDataListener;
+
     private ErrorMessageFactory mErrorMessageFactory;
     private ImageLoader mImageLoader;
     private LinearLayout mUserInfoLayout;
@@ -100,12 +103,12 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
     private int mCountDown = 60;
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
-            switch(msg.what) {
+            switch (msg.what) {
                 case COUNT_DOWN_REFRESH:
                     mCodeButton.setText(mCountDown + "s");
                     mCountDown--;
 
-                    if(mCountDown == -1) {
+                    if (mCountDown == -1) {
                         mCodeButton.setText(getString(R.string.send_verification_code));
                         mTimer.cancel();
                         mTimer.purge();
@@ -116,19 +119,20 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
                     mTimer.schedule(mTask, 0, 1000);
                     break;
                 case LOADING_END:
-                    if(mLoadingDialog.isShowing()) {
+                    if (mLoadingDialog.isShowing()) {
                         mLoadingDialog.dismiss();
                     }
             }
             super.handleMessage(msg);
-        };
+        }
     };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(rootView == null) {
+        if (rootView == null) {
             rootView = inflater.inflate(R.layout.me, null);
-            initializeData();
+
+            initData();
             findView(rootView);
             setListener();
         }
@@ -151,7 +155,7 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
         super.onStart();
     }
 
-    private void initializeData() {
+    private void initData() {
         mNetworkHelper = new NetworkHelper(getActivity());
         mCheckUserHelper = new NetworkHelper(getActivity());
         mImageLoader = ImageCacheManager.getInstance(getActivity()).getImageLoader();
@@ -187,20 +191,17 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
         mLoadingDialog = new LoadingDialog(getActivity(), getContext().getString(R.string.loading));
         mMyOrder = (LinearLayout) view.findViewById(R.id.myOrder);
         setUserInfo();
-
-        Window window = mLoginDialog.getWindow();
-        window.setWindowAnimations(R.style.AnimationStyle);
     }
 
     private void setListener() {
-        EventHandler eventHandler = new EventHandler(){
+        EventHandler eventHandler = new EventHandler() {
 
             @Override
             public void afterEvent(int event, int result, Object data) {
 
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                        if(!mRegisterPassword.equals(mReInputPassword)) {
+                        if (!mRegisterPassword.equals(mReInputPassword)) {
                             mToast.show(getString(R.string.error_password_not_same));
                             return;
                         }
@@ -213,16 +214,17 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
                         startActivityForResult(intent, IntroduceActivity.REGISTER_CODE);
                         mRegisterDialog.dismiss();
                         mLoginDialog.dismiss();
-                    }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         //获取验证码成功
-                    }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                    } else if (event == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
                         //返回支持发送验证码的国家列表
                     }
-                }else{
-                    ((Throwable)data).printStackTrace();
+                } else {
+                    ((Throwable) data).printStackTrace();
                 }
             }
         };
+
         SMSSDK.registerEventHandler(eventHandler);
 
         mNetworkHelper.setUiDataListener(this);
@@ -230,7 +232,7 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
             @Override
             public void onClick(View v) {
                 //订单详情页
-                Intent intent = new Intent(getActivity(),MyOrderActivity.class);
+                Intent intent = new Intent(getActivity(), MyOrderActivity.class);
                 startActivity(intent);
             }
         });
@@ -257,10 +259,11 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
             }
         });
 
+
         mProfileLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(UserCache.getInstance().ifLogin()) {
+                if (UserCache.getInstance().ifLogin()) {
                     //个人信息
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MyProfileActivity.class);
@@ -297,7 +300,7 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
         mScoreLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntroduceActivity activity = (IntroduceActivity)MeFragment.this.getActivity();
+                IntroduceActivity activity = (IntroduceActivity) MeFragment.this.getActivity();
                 FragmentTabHost fragmentTabHost = activity.getFragmentTabHost();
                 fragmentTabHost.setCurrentTab(1);
             }
@@ -398,14 +401,12 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
     TextWatcher phoneTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
             mPhone = charSequence.toString();
             Log.d("Phone", mPhone);
-
             checkLoginEnabled();
         }
 
@@ -446,11 +447,7 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
             Log.d("Register Phone", mRegisterPhone);
             checkRegisterEnabled();
 
-            mCodeButton.setText(R.string.send_verification_code);
-            mTimer.cancel();
-            mTimer.purge();
-
-            if(mRegisterPhone == null || mRegisterPhone.length() < 6) {
+            if (mRegisterPhone == null || mRegisterPhone.isEmpty()) {
                 mCodeButton.setEnabled(false);
             } else {
                 mCodeButton.setEnabled(true);
@@ -460,6 +457,15 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
         @Override
         public void afterTextChanged(Editable s) {
 
+            mCodeButton.setText(R.string.send_verification_code);
+            mTimer.cancel();
+            mTimer.purge();
+
+            if (mRegisterPhone == null || mRegisterPhone.length() < 6) {
+                mCodeButton.setEnabled(false);
+            } else {
+                mCodeButton.setEnabled(true);
+            }
         }
     };
 
@@ -561,7 +567,7 @@ public class MeFragment extends Fragment implements UIDataListener<Bean> {
 
     private void setUserInfo() {
         //判断是否登录
-        if(UserCache.getInstance().ifLogin()) {
+        if (UserCache.getInstance().ifLogin()) {
             mNotLoginTextView.setVisibility(View.GONE);
             mUserInfoLayout.setVisibility(View.VISIBLE);
             User user = UserCache.getInstance().getUser();

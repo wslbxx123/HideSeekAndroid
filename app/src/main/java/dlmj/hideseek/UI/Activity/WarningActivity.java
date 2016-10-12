@@ -40,7 +40,6 @@ public class WarningActivity extends Activity implements UIDataListener<Bean>{
     private final static int MSG_REFRESH_LIST = 1;
 
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss");
     private PullToRefreshListView mWarningListView;
     private TextView mLeftTimeTextView;
     private WarningAdapter mWarningAdapter;
