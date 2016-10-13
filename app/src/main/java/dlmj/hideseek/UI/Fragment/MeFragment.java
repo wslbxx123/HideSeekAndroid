@@ -132,7 +132,6 @@ public class MeFragment extends BaseFragment {
                 } else {
                     ((BaseFragmentActivity)getActivity()).getLoginDialog().resetData();
                     ((BaseFragmentActivity)getActivity()).getLoginDialog().show();
-                    setUserInfo();
                 }
             }
         });

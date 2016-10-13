@@ -1,5 +1,6 @@
 package dlmj.hideseek.UI.Fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.RecordTableManager;
 import dlmj.hideseek.R;
+import dlmj.hideseek.UI.Activity.BaseFragmentActivity;
 import dlmj.hideseek.UI.Adapter.RecordAdapter;
 
 /**
@@ -99,6 +101,15 @@ public class RecordFragment extends BaseFragment implements UIDataListener<Bean>
 
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
+
+        ((BaseFragmentActivity)getActivity()).getLoginDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                if(UserCache.getInstance().ifLogin()) {
+                    mRecordListView.setRefreshing(true);
+                }
+            }
+        });
 
         mGetRecordNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override

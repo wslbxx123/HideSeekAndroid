@@ -45,6 +45,19 @@ public class BaseActivity extends Activity implements OnUserLoginListener, OnUse
     }
 
     @Override
+    protected void onDestroy() {
+        if(mLoginDialog.isShowing()) {
+            mLoginDialog.dismiss();
+        }
+
+        if(mRegisterDialog.isShowing()) {
+            mRegisterDialog.dismiss();
+        }
+
+        super.onDestroy();
+    }
+
+    @Override
     public void showRegisterDialog() {
         mRegisterDialog.resetData();
         mRegisterDialog.show();
