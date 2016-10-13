@@ -40,6 +40,7 @@ public class User implements Serializable{
     private int mFriendNum;
     private String mDefaultArea;
     private String mDefaultAddress;
+    private boolean mIsFriend;
     private SharedPreferences mSharedPreferences =
             SharedPreferenceUtil.getSharedPreferences();
 
@@ -200,6 +201,10 @@ public class User implements Serializable{
 
     public boolean getHasGuide() {
         return mHasGuide;
+    }
+
+    public void setIsFriend(boolean isFriend) {
+        this.mIsFriend = isFriend;
     }
 
     public int getRoleDrawableId() {

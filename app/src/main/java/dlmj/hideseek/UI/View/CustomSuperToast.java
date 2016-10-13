@@ -1,6 +1,7 @@
 package dlmj.hideseek.UI.View;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.Gravity;
 
 import com.github.johnpersano.supertoasts.SuperToast;
@@ -30,5 +31,9 @@ public class CustomSuperToast {
     public void show(String context) {
         mSuperToast.setText(context);
         mSuperToast.show();
+    }
+
+    public void setListener(SuperToast.OnDismissListener onDismissListener) {
+        mSuperToast.setOnDismissListener(onDismissListener);
     }
 }

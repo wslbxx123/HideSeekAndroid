@@ -88,6 +88,7 @@
     <string name="get_it">抓住它</string>
     <string name="share_title">进入部落时代</string>
     <string name="share_message">天啊，一只怪兽正在盯着我，快来救我。</string>
+    <string name="add_friend">添加好友</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>
@@ -112,6 +113,7 @@
     <string name="message_get_dragon">大快人心！龙冠兽霸气回收，让我高调嘚瑟下。</string>
     <string name="message_get_bomb">不幸引爆1只蹲点的诡诈兽，给跪了！</string>
     <string name="message_input_friend">输入盟友名查询</string>
+    <string name="message_phone_or_nickname">手机或昵称</string>
     <string name="message_no_friend_found">没有找到相关盟友</string>
     <string name="message_not_login">你还没有登录，去登录吗？</string>
 

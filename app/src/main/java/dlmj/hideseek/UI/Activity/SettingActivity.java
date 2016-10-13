@@ -11,6 +11,7 @@ import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
 import dlmj.hideseek.BusinessLogic.Cache.RecordCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
+import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 import dlmj.hideseek.DataAccess.FriendTableManager;
@@ -46,30 +47,8 @@ public class SettingActivity extends Activity {
         mLogoutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sharedPreferences = SharedPreferenceUtil.getSharedPreferences();
-                SharedPreferenceSettings sessionToken = SharedPreferenceSettings.SESSION_TOKEN;
-                SharedPreferenceSettings userInfo = SharedPreferenceSettings.USER_INFO;
-                SharedPreferenceSettings friendVersion = SharedPreferenceSettings.FRIEND_VERSION;
-                SharedPreferenceSettings recordVersion = SharedPreferenceSettings.RECORD_VERSION;
-                SharedPreferenceSettings recordMinId = SharedPreferenceSettings.RECORD_MIN_ID;
-                SharedPreferenceSettings raceGroupVersion = SharedPreferenceSettings.RACE_GROUP_VERSION;
-                SharedPreferenceSettings raceGroupRecordMinId = SharedPreferenceSettings.RACE_GROUP_RECORD_MIN_ID;
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove(sessionToken.getId());
-                editor.remove(userInfo.getId());
-                editor.remove(friendVersion.getId());
-                editor.remove(recordVersion.getId());
-                editor.remove(recordMinId.getId());
-                editor.remove(raceGroupVersion.getId());
-                editor.remove(raceGroupRecordMinId.getId());
-                editor.apply();
-                RecordCache.getInstance(SettingActivity.this).clearList();
-                RecordTableManager.getInstance(getApplicationContext()).clear();
+                UserInfoManager.getInstance().logout(getApplicationContext());
                 GoalCache.getInstance().setIfNeedClearMap(true);
-                RaceGroupCache.getInstance(SettingActivity.this).clearList();
-                RaceGroupTableManager.getInstance(getApplicationContext()).clear();
-                FriendCache.getInstance(getApplication()).clearList();
-                FriendTableManager.getInstance(getApplicationContext()).clear();
                 finish();
             }
         });

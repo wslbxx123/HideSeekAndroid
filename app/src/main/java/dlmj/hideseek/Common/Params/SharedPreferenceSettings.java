@@ -14,7 +14,16 @@ public enum SharedPreferenceSettings {
     RECORD_MIN_ID("recordMinId", (long)0),
     SCORE_SUM("scoreSum", 0),
     RACE_GROUP_UPDATE_TIME("raceGroupUpdateTime", ""),
-    RECORD_UPDATE_TIME("recordUpdateTime", "");
+    RECORD_UPDATE_TIME("recordUpdateTime", ""),
+    PRODUCT_MIN_ID("productMinId", (long)0),
+    PRODUCT_VERSION("productVersion", (long)0),
+    REWARD_VERSION("rewardVersion", (long)0),
+    REWARD_MIN_ID("rewardMinId", (long)0),
+    PURCHASE_ORDER_VERSION("purchaseOrderVersion", (long)0),
+    PURCHASE_ORDER_MIN_ID("purchaseOrderMinId", (long)0),
+    EXCHANGE_ORDER_VERSION("exchangeOrderVersion", (long)0),
+    EXCHANGE_ORDER_MIN_ID("exchangeOrderMinId", (long)0),
+    CHANNEL_ID("channelId", "");
 
     private final String mId;
     private final Object mDefaultValue;
