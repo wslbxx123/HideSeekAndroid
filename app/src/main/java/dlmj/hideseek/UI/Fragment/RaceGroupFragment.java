@@ -3,7 +3,6 @@ package dlmj.hideseek.UI.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +21,11 @@ import java.util.Map;
 import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.RaceGroup;
+import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.RaceGroupTableManager;
@@ -34,7 +35,7 @@ import dlmj.hideseek.UI.Adapter.RaceGroupAdapter;
 /**
  * Created by Two on 5/14/16.
  */
-public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>, ListView.OnScrollListener {
+public class RaceGroupFragment extends BaseFragment implements UIDataListener<Bean>, ListView.OnScrollListener {
     private final static String TAG = "RaceGroupFragment";
     private final static int MSG_REFRESH_LIST = 1;
     private static final int VISIBLE_REFRESH_COUNT = 3;
@@ -46,6 +47,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
     private NetworkHelper mGetRaceGroupNetworkHelper;
     private boolean mIsLoading = false;
     private View mLoadMoreView;
+    private ErrorMessageFactory mErrorMessageFactory;
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -87,6 +89,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
         mRaceGroupAdapter = new RaceGroupAdapter(getActivity(), mRaceGroupList);
         mNetworkHelper = new NetworkHelper(getActivity());
         mGetRaceGroupNetworkHelper = new NetworkHelper(getActivity());
+        mErrorMessageFactory = new ErrorMessageFactory(getActivity());
     }
 
     private void findView(View view) {
@@ -109,6 +112,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
             @Override
             public void onDataChanged(Bean data) {
                 LogUtil.d(TAG, data.getResult());
+                mResponseCode = CodeParams.SUCCESS;
                 RaceGroupCache.getInstance(getActivity()).addRaceGroup(data.getResult());
 
                 mRaceGroupList.clear();
@@ -121,7 +125,11 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
-                LogUtil.e(TAG, errorMessage);
+                LogUtil.d(TAG, errorMessage);
+                mResponseCode = errorCode;
+
+                String message = mErrorMessageFactory.get(errorCode);
+                mToast.show(message);
             }
         });
 
@@ -131,6 +139,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
                 Map<String, String> params = new HashMap<>();
                 params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
                 params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                mResponseCode = 0;
                 mNetworkHelper.sendPostRequest(UrlParams.REFRESH_RACE_GROUP_URL, params);
                 RaceGroupCache.getInstance(getActivity()).clearList();
             }
@@ -147,7 +156,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
     @Override
     public void onDataChanged(Bean data) {
         LogUtil.d(TAG, data.getResult());
-
+        mResponseCode = CodeParams.SUCCESS;
         RaceGroupCache.getInstance(getActivity()).setRaceGroup(data.getResult());
         mRaceGroupList.clear();
         mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
@@ -157,6 +166,10 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
         LogUtil.d(TAG, errorMessage);
+        mResponseCode = errorCode;
+
+        String message = mErrorMessageFactory.get(errorCode);
+        mToast.show(message);
     }
 
     @Override
@@ -179,6 +192,7 @@ public class RaceGroupFragment extends Fragment implements UIDataListener<Bean>,
                     Map<String, String> params = new HashMap<>();
                     params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
                     params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                    mResponseCode = 0;
                     mGetRaceGroupNetworkHelper.sendPostRequest(UrlParams.GET_RACE_GROUP_URL, params);
                 } else {
                     mRaceGroupList.clear();

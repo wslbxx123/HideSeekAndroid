@@ -26,16 +26,18 @@ import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Cache.WarningCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.Warning;
+import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Adapter.WarningAdapter;
 
-public class WarningActivity extends Activity implements UIDataListener<Bean>{
+public class WarningActivity extends BaseActivity implements UIDataListener<Bean>{
     private final static String TAG = "WarningActivity";
     private final static int MSG_REFRESH_LIST = 1;
 
@@ -46,7 +48,8 @@ public class WarningActivity extends Activity implements UIDataListener<Bean>{
     private List<Warning> mWarningList = new LinkedList<>();
     private NetworkHelper mNetworkHelper;
     private CountDownTimer mCountDownTimer;
-    private Date mLeftTime;
+    private ErrorMessageFactory mErrorMessageFactory;
+
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -91,6 +94,7 @@ public class WarningActivity extends Activity implements UIDataListener<Bean>{
     private void initData() {
         mWarningAdapter = new WarningAdapter(this, mWarningList);
         mNetworkHelper = new NetworkHelper(this);
+        mErrorMessageFactory = new ErrorMessageFactory(this);
     }
 
     private void findView() {
@@ -122,6 +126,7 @@ public class WarningActivity extends Activity implements UIDataListener<Bean>{
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Map<String, String> params = new HashMap<>();
+                mResponseCode = 0;
                 mNetworkHelper.sendPostRequest(UrlParams.GET_DANGER_WARNING_URL, params);
                 RaceGroupCache.getInstance(WarningActivity.this).clearList();
             }
@@ -136,7 +141,7 @@ public class WarningActivity extends Activity implements UIDataListener<Bean>{
     @Override
     public void onDataChanged(Bean data) {
         LogUtil.d(TAG, data.getResult());
-
+        mResponseCode = CodeParams.SUCCESS;
         WarningCache.getInstance().setWarnings(data.getResult());
 
         try {
@@ -162,7 +167,12 @@ public class WarningActivity extends Activity implements UIDataListener<Bean>{
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
-        LogUtil.d(TAG, errorMessage);
+        LogUtil.e(TAG, errorMessage);
+
+        mResponseCode = errorCode;
+
+        String message = mErrorMessageFactory.get(errorCode);
+        mToast.show(message);
     }
 
     private void setCountDownTimer(long interval) {
@@ -173,8 +183,6 @@ public class WarningActivity extends Activity implements UIDataListener<Bean>{
         mCountDownTimer = new CountDownTimer(interval, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mLeftTime = new Date(millisUntilFinished);
-
                 long secondSum = millisUntilFinished / 1000;
                 long hour = secondSum / (60 * 60);
                 secondSum = secondSum - hour * (60 * 60);

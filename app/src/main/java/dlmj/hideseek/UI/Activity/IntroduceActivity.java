@@ -1,7 +1,6 @@
 package dlmj.hideseek.UI.Activity;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
 import android.view.View;
@@ -17,7 +16,7 @@ import dlmj.hideseek.UI.Fragment.RecordFragment;
 import dlmj.hideseek.UI.Fragment.SearchFragment;
 
 //首页
-public class IntroduceActivity extends FragmentActivity{
+public class IntroduceActivity extends BaseFragmentActivity{
     private final String TAG = "Introduce Activity";
     public final static int GO_TO_WARNING = 100;
     public final static int REGISTER_CODE = 300;

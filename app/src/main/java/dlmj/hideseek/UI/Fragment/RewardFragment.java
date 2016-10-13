@@ -25,10 +25,12 @@ import java.util.Map;
 
 import dlmj.hideseek.BusinessLogic.Cache.ShopRewardCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.Reward;
 import dlmj.hideseek.Common.Params.UrlParams;
+import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Adapter.RewardAdapter;
 
@@ -41,7 +43,8 @@ import dlmj.hideseek.UI.Adapter.RewardAdapter;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class RewardFragment extends Fragment implements UIDataListener<Bean> {
+public class RewardFragment extends BaseFragment implements UIDataListener<Bean> {
+    private static final String TAG = "RewardFragment";
     private static final int MSG_REFRESH_LIST = 1;
     private PullToRefreshGridView mPTRGridView;
     private View mView;
@@ -58,6 +61,7 @@ public class RewardFragment extends Fragment implements UIDataListener<Bean> {
         }
     };
     private RewardAdapter mRewardAdapter;
+    private ErrorMessageFactory mErrorMessageFactory;
     private GridView mGridView;
 
     @Nullable
@@ -92,7 +96,11 @@ public class RewardFragment extends Fragment implements UIDataListener<Bean> {
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
-                Toast.makeText(getContext(),"网络连接失败",Toast.LENGTH_SHORT).show();
+                LogUtil.d(TAG, errorMessage);
+                mResponseCode = errorCode;
+
+                String message = mErrorMessageFactory.get(errorCode);
+                mToast.show(message);
             }
         });
 
@@ -103,6 +111,7 @@ public class RewardFragment extends Fragment implements UIDataListener<Bean> {
                 Map<String, String> params = new HashMap<>();
                 params.put("version", 1 + "");
                 params.put("reward_min_id", 10 + "");
+                mResponseCode = 0;
                 mGetRewardNetworkHelper.sendPostRequestWithoutSid(UrlParams.GET_REWARD_URL, params);
             }
 
@@ -113,6 +122,7 @@ public class RewardFragment extends Fragment implements UIDataListener<Bean> {
                     Map<String, String> params = new HashMap<>();
                     params.put("version", 0 + "");
                     params.put("reward_min_id", 0 + "");
+                    mResponseCode = 0;
                     mNetworkHelper.sendPostRequestWithoutSid(UrlParams.REFRESH_REWARD_URL, params);
                 }
                 mPTRGridView.onRefreshComplete();
@@ -147,8 +157,9 @@ public class RewardFragment extends Fragment implements UIDataListener<Bean> {
         //当界面为空的时候显示的视图
         mPTRGridView.setEmptyView(tv);
 
-        mRewardAdapter = new RewardAdapter(getContext(), mRewardEntity);
+        mRewardAdapter = new RewardAdapter(getActivity(), mRewardEntity);
         mGridView.setAdapter(mRewardAdapter);
+        mErrorMessageFactory = new ErrorMessageFactory(getActivity());
     }
 
     private void initView() {
@@ -171,6 +182,9 @@ public class RewardFragment extends Fragment implements UIDataListener<Bean> {
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
-        Toast.makeText(getContext(),"网络连接失败",Toast.LENGTH_SHORT).show();
+        LogUtil.d(TAG, errorMessage);
+
+        String message = mErrorMessageFactory.get(errorCode);
+        mToast.show(message);
     }
 }

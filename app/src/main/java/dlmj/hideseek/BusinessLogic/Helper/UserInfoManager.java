@@ -11,6 +11,7 @@ import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
 import dlmj.hideseek.BusinessLogic.Cache.RecordCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
+import dlmj.hideseek.Common.Interfaces.OnUserLoginListener;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 import dlmj.hideseek.DataAccess.FriendTableManager;
@@ -18,6 +19,7 @@ import dlmj.hideseek.DataAccess.RaceGroupTableManager;
 import dlmj.hideseek.DataAccess.RecordTableManager;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.MyOrderActivity;
+import dlmj.hideseek.UI.View.LoginDialog;
 
 /**
  * Created by Two on 08/10/2016.
@@ -105,8 +107,10 @@ public class UserInfoManager {
     public boolean logout(Context context) {
         clearData(context);
 
-        Intent intent = new Intent(context, MyOrderActivity.class);
-        context.startActivity(intent);
+        LoginDialog loginDialog = new LoginDialog(context);
+        loginDialog.setOnUserLoginListener((OnUserLoginListener)context);
+        loginDialog.show();
+
         return true;
     }
 }

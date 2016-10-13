@@ -103,6 +103,10 @@
     <string name="error_goal_disappear">The Goal has disappeared</string>
     <string name="error_session_invalid">You are kicked out by others</string>
     <string name="error_user_already_exist">The phone is already registered</string>
+    <string name="error_password_short">The password is too short</string>
+    <string name="error_password_long">The length of password cannot be greater than 45</string>
+    <string name="error_verification_code">The input verification code is wrong</string>
+
     <string name="warning_not_enabled">You don\'t have the right to beat the monster</string>
     <string name="message_input_city">Input city name to search</string>
     <string name="message_no_city_found">Sorry, no city was found</string>

@@ -100,6 +100,9 @@
     <string name="error_goal_disappear">目标已经消失</string>
     <string name="error_session_invalid">你已经被迫掉线</string>
     <string name="error_user_already_exist">手机号已经被注册</string>
+    <string name="error_password_short">密码太短</string>
+    <string name="error_password_long">密码不能超过45位</string>
+    <string name="error_verification_code">输入的验证码不正确</string>
 
     <string name="warning_not_enabled">你没有打怪兽的权限</string>
 

@@ -1,6 +1,5 @@
 package dlmj.hideseek.UI.Activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,14 +31,12 @@ import dlmj.hideseek.R;
 import dlmj.hideseek.UI.View.CustomSuperToast;
 import dlmj.hideseek.UI.View.LoadingDialog;
 
-public class AddFriendActivity extends Activity implements UIDataListener<Bean> {
+public class AddFriendActivity extends BaseActivity implements UIDataListener<Bean> {
     private final static String TAG = "AddFriendActivity";
     private NetworkHelper mNetworkHelper;
     private EditText mSearchEditText;
     private LoadingDialog mLoadingDialog;
-    private CustomSuperToast mToast;
     private ErrorMessageFactory mErrorMessageFactory;
-    private int mCode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,18 +66,10 @@ public class AddFriendActivity extends Activity implements UIDataListener<Bean> 
         mNetworkHelper.setUiDataListener(this);
         mSearchEditText = (EditText) findViewById(R.id.searchEditText);
         mLoadingDialog = new LoadingDialog(this, getString(R.string.loading));
-        mToast = new CustomSuperToast(this);
     }
 
     public void setListener() {
-        mToast.setListener(new SuperToast.OnDismissListener() {
-            @Override
-            public void onDismiss(View view) {
-                if(mCode == CodeParams.ERROR_SESSION_INVALID) {
-                    UserInfoManager.getInstance().logout(AddFriendActivity.this);
-                }
-            }
-        });
+
     }
 
     public void refreshData() {
@@ -90,19 +79,20 @@ public class AddFriendActivity extends Activity implements UIDataListener<Bean> 
         if (!mLoadingDialog.isShowing()) {
             mLoadingDialog.show();
         }
+        mResponseCode = 0;
         mNetworkHelper.sendPostRequestWithoutSid(UrlParams.SEARCH_FRIENDS_URL, params);
     }
 
     @Override
     public void onDataChanged(Bean data) {
         LogUtil.d(TAG, data.getResult());
-        mCode = CodeParams.SUCCESS;
+        mResponseCode = CodeParams.SUCCESS;
         getUsers(data.getResult());
     }
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
-        mCode = errorCode;
+        mResponseCode = errorCode;
 
         String message = mErrorMessageFactory.get(errorCode);
         mToast.show(message);

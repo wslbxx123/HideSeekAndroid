@@ -3,8 +3,6 @@ package dlmj.hideseek.UI.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +22,12 @@ import java.util.Map;
 
 import dlmj.hideseek.BusinessLogic.Cache.ShopRewardCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.Shop;
 import dlmj.hideseek.Common.Params.UrlParams;
+import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Adapter.ShopAdapter;
 
@@ -40,8 +40,8 @@ import dlmj.hideseek.UI.Adapter.ShopAdapter;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class ShopFragment extends Fragment implements UIDataListener<Bean> {
-
+public class ShopFragment extends BaseFragment implements UIDataListener<Bean> {
+    private static final String TAG = "ShopFragment";
     private static final int MSG_REFRESH_LIST = 1;
     private PullToRefreshGridView mPTRGridView;
     private View mView;
@@ -59,10 +59,10 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
     };
     private ShopAdapter mShopAdapter;
     private GridView mGridView;
+    private ErrorMessageFactory mErrorMessageFactory;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mView == null) {
             mView = View.inflate(getContext(), R.layout.fragment_shop, null);
         }
@@ -93,7 +93,10 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
+                LogUtil.d(TAG, errorMessage);
 
+                String message = mErrorMessageFactory.get(errorCode);
+                mToast.show(message);
             }
         });
 
@@ -150,6 +153,7 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
 
         mShopAdapter = new ShopAdapter(getContext(), mProductsEntity);
         mGridView.setAdapter(mShopAdapter);
+        mErrorMessageFactory = new ErrorMessageFactory(getActivity());
     }
 
     private void initView() {
@@ -173,6 +177,9 @@ public class ShopFragment extends Fragment implements UIDataListener<Bean> {
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
+        LogUtil.d(TAG, errorMessage);
 
+        String message = mErrorMessageFactory.get(errorCode);
+        mToast.show(message);
     }
 }

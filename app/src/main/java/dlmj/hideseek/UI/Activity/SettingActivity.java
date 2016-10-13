@@ -47,7 +47,7 @@ public class SettingActivity extends Activity {
         mLogoutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserInfoManager.getInstance().logout(getApplicationContext());
+                UserInfoManager.getInstance().clearData(getApplicationContext());
                 GoalCache.getInstance().setIfNeedClearMap(true);
                 finish();
             }

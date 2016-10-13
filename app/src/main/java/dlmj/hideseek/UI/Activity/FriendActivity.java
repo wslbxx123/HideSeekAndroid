@@ -17,18 +17,23 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.github.johnpersano.supertoasts.SuperToast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import dlmj.hideseek.BusinessLogic.Cache.FriendCache;
+import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.OnTouchingLetterChangedListener;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.ForeignCity;
 import dlmj.hideseek.Common.Model.User;
+import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.PinYinUtil;
@@ -38,11 +43,12 @@ import dlmj.hideseek.UI.Adapter.FriendListAdapter;
 import dlmj.hideseek.UI.Adapter.FriendResultListAdapter;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CustomLetterListView;
+import dlmj.hideseek.UI.View.CustomSuperToast;
 
 /**
  * Created by Two on 6/5/16.
  */
-public class FriendActivity extends Activity implements UIDataListener<Bean>, AbsListView.OnScrollListener{
+public class FriendActivity extends BaseActivity implements UIDataListener<Bean>, AbsListView.OnScrollListener{
     private final static String TAG = "FriendActivity";
     private final static int MSG_REFRESH_LIST = 100;
     private ListView mFriendListView;
@@ -62,6 +68,8 @@ public class FriendActivity extends Activity implements UIDataListener<Bean>, Ab
     private EditText mSearchEditText;
     private List<User> mResultFriendList = new ArrayList<>();
     private FriendTableManager mFriendTableManager;
+    private ErrorMessageFactory mErrorMessageFactory;
+
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -89,6 +97,7 @@ public class FriendActivity extends Activity implements UIDataListener<Bean>, Ab
         }
         setAlphaIndexer();
         mFriendListAdapter.notifyDataSetChanged();
+        mResponseCode = 0;
         mNetworkHelper.sendPostRequest(UrlParams.GET_FRIEND_URL, new HashMap<String, String>());
     }
 
@@ -116,6 +125,7 @@ public class FriendActivity extends Activity implements UIDataListener<Bean>, Ab
         mFriendResultListAdapter = new FriendResultListAdapter(this, mResultFriendList);
         mNetworkHelper = new NetworkHelper(this);
         mFriendTableManager = FriendTableManager.getInstance(this);
+        mErrorMessageFactory = new ErrorMessageFactory(this);
     }
 
     private void findView() {
@@ -196,6 +206,7 @@ public class FriendActivity extends Activity implements UIDataListener<Bean>, Ab
 
     @Override
     public void onDataChanged(Bean data) {
+        mResponseCode = CodeParams.SUCCESS;
         LogUtil.d(TAG, data.getResult());
 
         FriendCache.getInstance(this).setFriends(data.getResult());
@@ -207,7 +218,10 @@ public class FriendActivity extends Activity implements UIDataListener<Bean>, Ab
 
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
-        LogUtil.e(TAG, errorMessage);
+        mResponseCode = errorCode;
+
+        String message = mErrorMessageFactory.get(errorCode);
+        mToast.show(message);
     }
 
     @Override

@@ -1,12 +1,10 @@
 package dlmj.hideseek.UI.Fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,9 +20,11 @@ import dlmj.hideseek.BusinessLogic.Cache.RecordCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 
+import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.Record;
+import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.RecordTableManager;
@@ -34,7 +34,7 @@ import dlmj.hideseek.UI.Adapter.RecordAdapter;
 /**
  * Created by Two on 4/29/16.
  */
-public class RecordFragment extends Fragment implements UIDataListener<Bean>, ListView.OnScrollListener {
+public class RecordFragment extends BaseFragment implements UIDataListener<Bean>, ListView.OnScrollListener {
     private static String TAG = "RecordFragment";
     private static final int VISIBLE_REFRESH_COUNT = 3;
     private PullToRefreshListView mRecordListView;
@@ -46,6 +46,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
     private NetworkHelper mGetRecordNetworkHelper;
     private boolean mIsLoading = false;
     private View mLoadMoreView;
+    private ErrorMessageFactory mErrorMessageFactory;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
         mNetworkHelper = new NetworkHelper(getActivity());
         mRecordAdapter = new RecordAdapter(getActivity(), mRecordList);
         mGetRecordNetworkHelper = new NetworkHelper(getActivity());
+        mErrorMessageFactory = new ErrorMessageFactory(getActivity());
     }
 
     private void findView(View view) {
@@ -102,6 +104,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
             @Override
             public void onDataChanged(Bean data) {
                 LogUtil.d(TAG, data.getResult());
+                mResponseCode = CodeParams.SUCCESS;
                 RecordCache.getInstance(getActivity()).addRecords(data.getResult());
 
                 mRecordList.clear();
@@ -114,7 +117,11 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
-                LogUtil.e(TAG, errorMessage);
+                LogUtil.d(TAG, errorMessage);
+                mResponseCode = errorCode;
+
+                String message = mErrorMessageFactory.get(errorCode);
+                mToast.show(message);
             }
         });
 
@@ -124,6 +131,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
                 Map<String, String> params = new HashMap<>();
                 params.put("version", RecordTableManager.getInstance(getActivity()).getVersion() + "");
                 params.put("record_min_id", RecordTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                mResponseCode = 0;
                 mNetworkHelper.sendPostRequest(UrlParams.REFRESH_RECORD_URL, params);
                 RecordCache.getInstance(getActivity()).clearList();
             }
@@ -140,7 +148,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
     @Override
     public void onDataChanged(Bean data) {
         LogUtil.d(TAG, data.getResult());
-
+        mResponseCode = CodeParams.SUCCESS;
         RecordCache.getInstance(getActivity()).setRecords(data.getResult());
         mScoreTextView.setText(RecordCache.getInstance(getActivity()).getScoreSum() + "");
         mRecordList.clear();
@@ -152,6 +160,10 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
     @Override
     public void onErrorHappened(int errorCode, String errorMessage) {
         LogUtil.d(TAG, errorMessage);
+        mResponseCode = errorCode;
+
+        String message = mErrorMessageFactory.get(errorCode);
+        mToast.show(message);
     }
 
     @Override
@@ -174,6 +186,7 @@ public class RecordFragment extends Fragment implements UIDataListener<Bean>, Li
                     Map<String, String> params = new HashMap<>();
                     params.put("version", RecordTableManager.getInstance(getActivity()).getVersion() + "");
                     params.put("record_min_id", RecordTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                    mResponseCode = 0;
                     mGetRecordNetworkHelper.sendPostRequest(UrlParams.GET_RECORD_URL, params);
                 } else {
                     mRecordList.clear();

@@ -2,8 +2,6 @@ package dlmj.hideseek.UI.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
@@ -12,7 +10,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -77,14 +74,13 @@ import dlmj.hideseek.UI.Activity.StoreActivity;
 import dlmj.hideseek.UI.Activity.WarningActivity;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
-import dlmj.hideseek.UI.View.CustomSuperToast;
 import dlmj.hideseek.UI.View.GameView;
 import dlmj.hideseek.UI.View.LoadingDialog;
 
 /**
  * Created by Two on 4/29/16.
  */
-public class SearchFragment extends Fragment implements CameraInterface.CamOpenOverCallback,
+public class SearchFragment extends BaseFragment implements CameraInterface.CamOpenOverCallback,
         CameraSurfaceView.OnCreateListener, LocationSource, AMapLocationListener,
         UIDataListener<Bean>, SensorEventListener, AMap.OnMapLoadedListener, View.OnClickListener {
     private final static int REFRESH_MAP_INTERVAL = 5000;
@@ -115,7 +111,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
     private Button mGetButton;
     private Hashtable<Long, Marker> mMarkerHashTable = new Hashtable<>();
     private LinearLayout mDistanceLayout;
-    private CustomSuperToast mErrorSuperToast;
     private ErrorMessageFactory mErrorMessageFactory;
     private TextView mOverlayTextVew;
     private WindowManager mWindowManager;
@@ -249,7 +244,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             setEndGoal();
         } else {
             String errorMessage = getActivity().getString(R.string.error_goal_invalid);
-            mErrorSuperToast.show(errorMessage);
+            mToast.show(errorMessage);
         }
     }
 
@@ -338,7 +333,6 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         mSensorManager =  (SensorManager) getActivity().
                 getSystemService(Context.SENSOR_SERVICE);
 
-        mErrorSuperToast = new CustomSuperToast(getActivity());
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
 
         ShareSDK.initSDK(getActivity());
@@ -415,6 +409,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         UIDataListener<Bean> getGoalUIDataListener = new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
+                mResponseCode = CodeParams.SUCCESS;
                 mOverlayTextVew.setText(getScoreStr(mEndGoal.getScore()));
 
                 mOverlayTextVew.setVisibility(View.VISIBLE);
@@ -426,8 +421,11 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
+                LogUtil.d(TAG, errorMessage);
+                mResponseCode = errorCode;
+
                 String message = mErrorMessageFactory.get(errorCode);
-                mErrorSuperToast.show(message);
+                mToast.show(message);
 
                 mGameView.goalContinue();
             }
@@ -439,6 +437,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
             @Override
             public void onDataChanged(Bean data) {
                 LogUtil.d(TAG, "Hit monster: " + data.getResult());
+                mResponseCode = 0;
 
                 try {
                     String result = data.getResult();
@@ -472,8 +471,11 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
+                LogUtil.d(TAG, errorMessage);
+                mResponseCode = errorCode;
+
                 String message = mErrorMessageFactory.get(errorCode);
-                mErrorSuperToast.show(message);
+                mToast.show(message);
 
                 if(errorCode == CodeParams.ERROR_GOAL_DISAPPEAR) {
                     updateEndGoal();
@@ -488,13 +490,17 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         UIDataListener<Bean> seeMonsterUIDataListener = new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
+                mResponseCode = CodeParams.SUCCESS;
                 LogUtil.d(TAG, "See monster: " + data.getResult());
             }
 
             @Override
             public void onErrorHappened(int errorCode, String errorMessage) {
+                LogUtil.d(TAG, errorMessage);
+                mResponseCode = errorCode;
+
                 String message = mErrorMessageFactory.get(errorCode);
-                mErrorSuperToast.show(message);
+                mToast.show(message);
 
                 if(errorCode == CodeParams.ERROR_SESSION_INVALID) {
                     UserInfoManager.getInstance().checkIfGoToLogin(getActivity());
@@ -551,6 +557,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
                             params.put("goal_id", mEndGoal.getPkId() + "");
                             User user = UserCache.getInstance().getUser();
                             params.put("account_role", user.getRole().getValue() + "");
+                            mResponseCode = 0;
                             mHitMonsterNetworkHelper.sendPostRequest(
                                     UrlParams.HIT_MONSTER_URL, params);
                             mHitMonsterNetworkHelper.openLock();
@@ -573,6 +580,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         Map<String, String> params = new HashMap<>();
         params.put("goal_id", mEndGoal.getPkId() + "");
         params.put("goal_type", mEndGoal.getType().getValue() + "");
+        mResponseCode = 0;
         mGetGoalNetworkHelper.sendPostRequest(UrlParams.GET_GOAL_URL, params);
     }
 
@@ -721,6 +729,11 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         if(mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();
         }
+
+        LogUtil.d(TAG, errorMessage);
+
+        String message = mErrorMessageFactory.get(errorCode);
+        mToast.show(message);
     }
 
     private void checkIfGoalDisplayed() {
@@ -750,6 +763,7 @@ public class SearchFragment extends Fragment implements CameraInterface.CamOpenO
         long pkId = mEndGoal.getPkId();
         Map<String, String> params = new HashMap<>();
         params.put("goal_id", pkId + "");
+        mResponseCode = 0;
         mSeeMonsterNetworkHelper.sendPostRequest(UrlParams.SEE_MONSTER_URL, params);
     }
 
