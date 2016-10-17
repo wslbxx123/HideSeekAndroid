@@ -19,6 +19,7 @@ import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
 import dlmj.hideseek.Common.Util.BaseInfoUtil;
+import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 
 /**
@@ -28,7 +29,7 @@ public class NetworkHelper implements Response.Listener<JSONObject>,
         Response.ErrorListener{
     private static String TAG = "Network Helper";
     private Context mContext;
-    private boolean mIsLocked = false;
+    private boolean mIsLocked;
 
     public NetworkHelper(Context context) {
         this.mContext = context;
@@ -39,6 +40,7 @@ public class NetworkHelper implements Response.Listener<JSONObject>,
     }
 
     protected CustomJsonRequest getRequestForPost(String url, Map<String, String> params) {
+        LogUtil.d(TAG, convertParamsToUrl(url,params));
         return new CustomJsonRequest(Request.Method.POST, url, params, this, this);
     }
 
@@ -129,7 +131,7 @@ public class NetworkHelper implements Response.Listener<JSONObject>,
 
                 if (flag == CodeParams.SUCCESS) {
                     bean = new Bean();
-                    bean.setFlag(flag);
+                    bean.setFlag(CodeParams.SUCCESS);
                     bean.setMessage(message);
                     bean.setResult(result);
 

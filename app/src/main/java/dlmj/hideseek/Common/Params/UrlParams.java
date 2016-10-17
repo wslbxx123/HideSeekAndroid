@@ -28,7 +28,7 @@ public class UrlParams {
     public static String CHECK_IF_USER_EXIST_URL = "https://www.hideseek.cn/home/user/checkIfUserExist";
     public static String GET_DANGER_WARNING_URL = "https://www.hideseek.cn/home/map/getDangerWarnings";
     public static String SEARCH_FRIENDS_URL = "https://www.hideseek.cn/home/friend/searchFriends";
-
+    public static String UPDATE_SEX_URL="https://www.hideseek.cn/home/user/updateSex";//更新性别
     /**
      * Debug Mode
      */
@@ -54,4 +54,5 @@ public class UrlParams {
 //    public static String CHECK_IF_USER_EXIST_URL = "http://" + IP_ADDRESS + "/home/user/checkIfUserExist";
 //    public static String GET_DANGER_WARNING_URL = "http://" + IP_ADDRESS + "/home/map/getDangerWarnings";
 //    public static String SEARCH_FRIENDS_URL = "http://" + IP_ADDRESS + "/home/friend/searchFriends";
+//    public static String UPDATE_SEX_URL="http://" + IP_ADDRESS + "/home/user/updateSex";//更新性别
 }

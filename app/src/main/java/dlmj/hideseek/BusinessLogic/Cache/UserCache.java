@@ -17,7 +17,7 @@ import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
  * Created by Two on 5/1/16.
  */
 public class UserCache {
-    private final static String TAG = "UserCache";
+    private static final String TAG = "UserCache";
     private User mUser;
     private static UserCache mInstance;
     private SharedPreferences mSharedPreferences;
@@ -47,6 +47,27 @@ public class UserCache {
         return from(userInfoStr);
     }
 
+    public void update(User user,String key,Object value)
+    {
+        try {
+            mUser=user;
+            //读取缓存
+            SharedPreferenceSettings accountInfo = SharedPreferenceSettings.USER_INFO;
+            String userInfoStr = mSharedPreferences.getString(accountInfo.getId(),
+                    accountInfo.getDefaultValue().toString());
+            JSONObject localJsonObj=new JSONObject(userInfoStr);
+            localJsonObj.put(key,value);
+            //更新回去
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            SharedPreferenceSettings sessionToken = SharedPreferenceSettings.SESSION_TOKEN;
+            SharedPreferenceSettings userInfo = SharedPreferenceSettings.USER_INFO;
+            editor.putString(sessionToken.getId(), mUser.getSessionId());
+            editor.putString(userInfo.getId(), localJsonObj.toString());
+            editor.apply();
+        } catch (Exception e) {
+            LogUtil.e(TAG, e.getMessage());
+        }
+    }
     public void setUser(String userInfoStr) {
         mUser = from(userInfoStr);
 
