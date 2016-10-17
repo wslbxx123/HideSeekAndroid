@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class FriendTableManager {
     private SQLiteDatabase mSQLiteDatabase;
     private static FriendTableManager mInstance;
     private SharedPreferences mSharedPreferences;
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static FriendTableManager getInstance(Context context){
         synchronized (FriendTableManager.class){
@@ -59,7 +61,9 @@ public class FriendTableManager {
             mSQLiteDatabase.beginTransaction();
             for(User user : friendList){
                 ContentValues contentValues = new ContentValues();
+                contentValues.put("phone", user.getPhone());
                 contentValues.put("nickname", user.getNickname());
+                contentValues.put("register_date", mDateFormat.format(user.getRegisterDate()));
                 contentValues.put("photo_url", user.getPhotoUrl());
                 contentValues.put("small_photo_url", user.getSmallPhotoUrl());
                 contentValues.put("sex", user.getSex().getValue());

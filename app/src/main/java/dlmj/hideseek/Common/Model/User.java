@@ -2,13 +2,12 @@ package dlmj.hideseek.Common.Model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import com.google.gson.Gson;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,7 +19,7 @@ import dlmj.hideseek.R;
 /**
  * Created by Two on 5/1/16.
  */
-public class User implements Serializable{
+public class User implements Parcelable {
     private long mPKId;
     private String mPhone;
     private String mSessionId;
@@ -41,6 +40,9 @@ public class User implements Serializable{
     private String mDefaultArea;
     private String mDefaultAddress;
     private boolean mIsFriend;
+    private String mAlias;
+    private String mAddTime;
+    private String mRequestMessage;
     private SharedPreferences mSharedPreferences =
             SharedPreferenceUtil.getSharedPreferences();
 
@@ -108,6 +110,32 @@ public class User implements Serializable{
         mRole = role;
         mVersion = version;
         mPinyin = pinyin;
+    }
+
+    public User(Parcel parcel) {
+        try {
+            this.mPKId = parcel.readLong();
+            this.mPhone = parcel.readString();
+            this.mSessionId = parcel.readString();
+            this.mNickname = parcel.readString();
+            this.mPhotoUrl = parcel.readString();
+            this.mSmallPhotoUrl = parcel.readString();
+            this.mRegisterDate = mDateFormat.parse(parcel.readString());
+            this.mRecord = parcel.readInt();
+            this.mSex = SexEnum.valueOf(parcel.readInt());
+            this.mRegion = parcel.readString();
+            this.mRole = RoleEnum.valueOf(parcel.readInt());
+            this.mVersion = parcel.readLong();
+            this.mPinyin = parcel.readString();
+            this.mBombNum = parcel.readInt();
+            this.mHasGuide = parcel.readInt() == 1;
+            this.mFriendNum = parcel.readInt();
+            this.mDefaultArea = parcel.readString();
+            this.mDefaultAddress = parcel.readString();
+            this.mIsFriend = parcel.readInt() == 1;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public long getPKId() {
@@ -207,6 +235,14 @@ public class User implements Serializable{
         this.mIsFriend = isFriend;
     }
 
+    public String getAlias() {
+        return mAlias;
+    }
+
+    public void setAlias(String alias) {
+        mAlias = alias;
+    }
+
     public int getRoleDrawableId() {
         switch(mRole) {
             case grassFairy:
@@ -241,6 +277,55 @@ public class User implements Serializable{
         }
     }
 
+    public int getSexImageDrawableId() {
+        switch(mSex) {
+            case female:
+                return R.drawable.female;
+            case male:
+                return R.drawable.male;
+            default:
+                return 0;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(mPKId);
+        parcel.writeString(mPhone);
+        parcel.writeString(mSessionId);
+        parcel.writeString(mNickname);
+        parcel.writeString(mPhotoUrl);
+        parcel.writeString(mSmallPhotoUrl);
+        parcel.writeString(mDateFormat.format(mRegisterDate));
+        parcel.writeInt(mRecord);
+        parcel.writeInt(mSex.getValue());
+        parcel.writeString(mRegion);
+        parcel.writeInt(mRole.getValue());
+        parcel.writeLong(mVersion);
+        parcel.writeString(mPinyin);
+        parcel.writeInt(mBombNum);
+        parcel.writeInt(mHasGuide ? 1 : 0);
+        parcel.writeInt(mFriendNum);
+        parcel.writeString(mDefaultArea);
+        parcel.writeString(mDefaultAddress);
+        parcel.writeInt(mIsFriend ? 1 : 0);
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel parcel) {
+            return new User(parcel);
+        }
+
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
     public enum SexEnum {
         notSet(0), female(1), male(2), secret(3);
 
@@ -274,8 +359,11 @@ public class User implements Serializable{
                     return context.getString(R.string.female);
                 case male:
                     return context.getString(R.string.male);
+                case secret:
+                    return context.getString(R.string.secret);
+                case notSet:
                 default:
-                    return "";
+                    return context.getString(R.string.not_set);
             }
         }
     }

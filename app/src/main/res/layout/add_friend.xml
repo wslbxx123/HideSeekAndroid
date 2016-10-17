@@ -7,16 +7,16 @@
         android:id="@+id/titleLayout"
         android:layout_width="fill_parent"
         android:layout_height="44dp"
-        android:gravity="center"
         android:background="@color/yellow_ffcc00">
         <LinearLayout
+            android:id="@+id/backLayout"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:orientation="horizontal">
-            <ImageButton
+            <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:scaleType="centerInside"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="@string/add_friend"
+            android:text="@string/add_friend_title"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
@@ -47,7 +47,10 @@
         android:hint="@string/message_phone_or_nickname"
         android:padding="10dip"
         android:textColor="@color/gray_515151"
-        android:textSize="14sp">
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:imeOptions="actionSearch"
+        android:inputType="text">
     </EditText>
 
     <com.handmark.pulltorefresh.library.PullToRefreshListView

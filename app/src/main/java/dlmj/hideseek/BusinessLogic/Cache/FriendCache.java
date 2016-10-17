@@ -61,7 +61,7 @@ public class FriendCache extends BaseCache<User>{
                     friendStr = friendList.getString(i);
                     JSONObject friend = new JSONObject(friendStr);
 
-                    list.add(new User(
+                    User user = new User(
                             friend.getLong("pk_id"),
                             friend.getString("phone"),
                             friend.getString("nickname"),
@@ -72,7 +72,11 @@ public class FriendCache extends BaseCache<User>{
                             friend.getString("region"),
                             User.RoleEnum.valueOf(friend.getInt("role")),
                             friend.getLong("version"),
-                            PinYinUtil.converterToFirstSpell(friend.getString("nickname"))));
+                            PinYinUtil.converterToFirstSpell(friend.getString("nickname")));
+
+                    user.setAlias(friend.getString("remark"));
+
+                    list.add(user);
                 }
 
                 mFriendTableManager.updateFriend(version, list);

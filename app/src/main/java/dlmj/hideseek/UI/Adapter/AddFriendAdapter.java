@@ -19,30 +19,30 @@ import dlmj.hideseek.R;
 import dlmj.hideseek.UI.View.CircleNetworkImageView;
 
 /**
- * Created by Two on 6/5/16.
+ * Created by Two on 13/10/2016.
  */
-public class FriendListAdapter extends BaseAdapter{
+public class AddFriendAdapter extends BaseAdapter {
     private Context mContext;
-    private List<User> mFriendList;
+    private List<User> mAddFriendList;
     private ImageLoader mImageLoader;
 
-    public FriendListAdapter(Context context, List<User> friendList) {
+    public AddFriendAdapter(Context context, List<User> addFriendList) {
         this.mContext = context;
-        this.mFriendList = friendList;
+        this.mAddFriendList = addFriendList;
         this.mImageLoader = ImageCacheManager.getInstance(context).getImageLoader();
     }
 
     @Override
     public int getCount() {
-        if(mFriendList != null) {
-            return mFriendList.size();
+        if(mAddFriendList != null) {
+            return mAddFriendList.size();
         }
         return 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return mFriendList.get(position);
+        return mAddFriendList.get(position);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class FriendListAdapter extends BaseAdapter{
             viewHolder.mAlphaTextView = (TextView) convertView.findViewById(R.id.alphaTextView);
             viewHolder.mFriendImageView = (CircleNetworkImageView) convertView.findViewById(R.id.friendImageView);
             viewHolder.mFriendNameTextView = (TextView) convertView.findViewById(R.id.friendNameTextView);
-            viewHolder.mNicknameTextView = (TextView) convertView.findViewById(R.id.nicknameTextView);
+            viewHolder.mRoleImageView = (ImageView) convertView.findViewById(R.id.roleImageView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -69,19 +69,9 @@ public class FriendListAdapter extends BaseAdapter{
 
         User user = (User)getItem(position);
         viewHolder.mFriendImageView.setImageUrl(user.getSmallPhotoUrl(), mImageLoader);
-
-        if(user.getAlias() != null && user.getAlias().isEmpty()) {
-            viewHolder.mFriendNameTextView.setText(user.getAlias());
-            viewHolder.mNicknameTextView.setVisibility(View.VISIBLE);
-            viewHolder.mNicknameTextView.setText(String.format(mContext.getString(R.string.name),
-                    user.getNickname()));
-        } else {
-            viewHolder.mFriendNameTextView.setText(user.getNickname());
-            viewHolder.mNicknameTextView.setVisibility(View.INVISIBLE);
-        }
-
+        viewHolder.mFriendNameTextView.setText(user.getNickname());
         String currentStr = PinYinUtil.getAlpha(user.getPinyin());
-        String previewStr = (position - 1) >= 0 ? PinYinUtil.getAlpha(mFriendList
+        String previewStr = (position - 1) >= 0 ? PinYinUtil.getAlpha(mAddFriendList
                 .get(position - 1).getPinyin()) : " ";
         if (!previewStr.equals(currentStr)) {
             viewHolder.mAlphaTextView.setVisibility(View.VISIBLE);
@@ -90,13 +80,15 @@ public class FriendListAdapter extends BaseAdapter{
             viewHolder.mAlphaTextView.setVisibility(View.GONE);
         }
 
+        viewHolder.mRoleImageView.setImageResource(user.getRoleImageDrawableId());
+
         return convertView;
     }
 
     private class ViewHolder {
         CircleNetworkImageView mFriendImageView;
         TextView mFriendNameTextView;
-        TextView mNicknameTextView;
         TextView mAlphaTextView;
+        ImageView mRoleImageView;
     }
 }

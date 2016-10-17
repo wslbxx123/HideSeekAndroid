@@ -12,4 +12,6 @@ public class IntentExtraParam {
     public static final String START_POINT = "START_POINT";
     public static final String END_POINT = "END_POINT";
     public static final String GOAL_ID = "GOAL_ID";
+    public static final String LAST_TITLE = "LAST_TITLE";
+    public static final String PROFILE_INFO = "PROFILE_INFO";
 }

@@ -70,6 +70,10 @@ public class CustomLetterListView extends View {
         this(context,null);
     }
 
+    public void setAlphas(String[] alphas) {
+        mAlphas = alphas;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

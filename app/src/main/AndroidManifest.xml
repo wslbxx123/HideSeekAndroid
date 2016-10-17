@@ -133,6 +133,7 @@
         <activity
             android:name=".UI.Activity.FriendActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:label="@string/friend_title"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -148,7 +149,16 @@
         <activity
             android:name=".UI.Activity.WarningActivity"
             android:label="@string/title_activity_warning"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".UI.Activity.ProfileActivity"
+            android:label="@string/profile_title"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".UI.Activity.AddFriendActivity"
+            android:label="@string/add_friend_title"
+            android:screenOrientation="portrait">
         </activity>
 
         <!-- 支付宝服务 -->
@@ -209,11 +219,6 @@
                 <action android:name="dlmj.hideseek.PUSH_ACTION" />
             </intent-filter>
         </service>
-
-        <activity
-            android:name=".UI.Activity.AddFriendActivity"
-            android:label="@string/title_activity_add_friend" >
-        </activity>
     </application>
 
 </manifest>

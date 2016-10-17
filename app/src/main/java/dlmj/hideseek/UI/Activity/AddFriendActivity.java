@@ -3,9 +3,10 @@ package dlmj.hideseek.UI.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-
-import com.github.johnpersano.supertoasts.SuperToast;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,25 +18,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.CodeParams;
+import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.PinYinUtil;
 import dlmj.hideseek.R;
-import dlmj.hideseek.UI.View.CustomSuperToast;
 import dlmj.hideseek.UI.View.LoadingDialog;
 
 public class AddFriendActivity extends BaseActivity implements UIDataListener<Bean> {
     private final static String TAG = "AddFriendActivity";
+    private String mLastTitle;
     private NetworkHelper mNetworkHelper;
     private EditText mSearchEditText;
     private LoadingDialog mLoadingDialog;
+    private LinearLayout mBackLayout;
+    private TextView mLastTitleTextView;
     private ErrorMessageFactory mErrorMessageFactory;
 
     @Override
@@ -47,17 +50,8 @@ public class AddFriendActivity extends BaseActivity implements UIDataListener<Be
         setListener();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK) {
-            if(!mSearchEditText.getText().toString().isEmpty()) {
-                refreshData();
-            }
-        }
-        return true;
-    }
-
     public void initData() {
+        mLastTitle = getIntent().getStringExtra(IntentExtraParam.LAST_TITLE);
         mNetworkHelper = new NetworkHelper(this);
         mErrorMessageFactory = new ErrorMessageFactory(this);
     }
@@ -66,10 +60,29 @@ public class AddFriendActivity extends BaseActivity implements UIDataListener<Be
         mNetworkHelper.setUiDataListener(this);
         mSearchEditText = (EditText) findViewById(R.id.searchEditText);
         mLoadingDialog = new LoadingDialog(this, getString(R.string.loading));
+        mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
+        mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
+        mLastTitleTextView.setText(mLastTitle);
     }
 
     public void setListener() {
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
+        mSearchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    refreshData();
+                }
+
+                return false;
+            }
+        });
     }
 
     public void refreshData() {
@@ -80,14 +93,18 @@ public class AddFriendActivity extends BaseActivity implements UIDataListener<Be
             mLoadingDialog.show();
         }
         mResponseCode = 0;
-        mNetworkHelper.sendPostRequestWithoutSid(UrlParams.SEARCH_FRIENDS_URL, params);
+        mNetworkHelper.sendPostRequest(UrlParams.SEARCH_FRIENDS_URL, params);
     }
 
     @Override
     public void onDataChanged(Bean data) {
         LogUtil.d(TAG, data.getResult());
         mResponseCode = CodeParams.SUCCESS;
-        getUsers(data.getResult());
+        List<User> userList = getUsers(data.getResult());
+
+        if (mLoadingDialog.isShowing()) {
+            mLoadingDialog.dismiss();
+        }
     }
 
     @Override
@@ -96,6 +113,10 @@ public class AddFriendActivity extends BaseActivity implements UIDataListener<Be
 
         String message = mErrorMessageFactory.get(errorCode);
         mToast.show(message);
+
+        if (mLoadingDialog.isShowing()) {
+            mLoadingDialog.dismiss();
+        }
     }
 
     private List<User> getUsers(String friendInfoStr) {

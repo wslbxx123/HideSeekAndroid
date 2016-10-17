@@ -18,8 +18,8 @@
     <string name="call_out">呼叫机</string>
     <string name="home">主页</string>
     <string name="score">分</string>
-    <string name="me_title">我 的</string>
-    <string name="record_title">战 绩</string>
+    <string name="me_title">我的</string>
+    <string name="record_title">战绩列表</string>
     <string name="not_login">未登录</string>
     <string name="friends">朋友</string>
     <string name="scores">积分</string>
@@ -70,7 +70,7 @@
     <string name="lightningGiant">闪电巨人</string>
     <string name="role">身份</string>
     <string name="score_title">积分：%s</string>
-    <string name="alliances_title">盟友</string>
+    <string name="friend_title">好友</string>
     <string name="splash_introduction">找寻也是一种美好！</string>
     <string name="loading">加载中……</string>
     <string name="refresh_map_hint">刷新地图中……</string>
@@ -88,7 +88,9 @@
     <string name="get_it">抓住它</string>
     <string name="share_title">进入部落时代</string>
     <string name="share_message">天啊，一只怪兽正在盯着我，快来救我。</string>
-    <string name="add_friend">添加好友</string>
+    <string name="add_friend_title">添加好友</string>
+    <string name="profile_title">主页</string>
+    <string name="name">名字：%s</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

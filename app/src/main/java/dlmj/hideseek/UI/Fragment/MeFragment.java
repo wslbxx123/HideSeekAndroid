@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.Common.Model.User;
+import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.BaseFragmentActivity;
 import dlmj.hideseek.UI.Activity.FriendActivity;
@@ -33,6 +34,7 @@ import dlmj.hideseek.UI.View.CircleNetworkImageView;
  */
 public class MeFragment extends BaseFragment {
     private static String TAG = "MeFragment";
+    private String mTitle;
     private CircleNetworkImageView mPhotoCircleNetworkImageView;
     private LinearLayout mProfileLayout;
 
@@ -81,6 +83,7 @@ public class MeFragment extends BaseFragment {
     }
 
     private void initData() {
+        mTitle = getActivity().getString(R.string.me_title);
         mImageLoader = ImageCacheManager.getInstance(getActivity()).getImageLoader();
     }
 
@@ -159,6 +162,7 @@ public class MeFragment extends BaseFragment {
             public void onClick(View view) {
                 Intent intent = new Intent();
                 intent.setClass(getActivity(), FriendActivity.class);
+                intent.putExtra(IntentExtraParam.LAST_TITLE, mTitle);
                 startActivity(intent);
             }
         });

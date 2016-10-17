@@ -1,7 +1,7 @@
 package dlmj.hideseek.UI.Activity;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,27 +13,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.github.johnpersano.supertoasts.SuperToast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import dlmj.hideseek.BusinessLogic.Cache.FriendCache;
-import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.OnTouchingLetterChangedListener;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
-import dlmj.hideseek.Common.Model.ForeignCity;
 import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.CodeParams;
+import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.PinYinUtil;
@@ -43,13 +44,13 @@ import dlmj.hideseek.UI.Adapter.FriendListAdapter;
 import dlmj.hideseek.UI.Adapter.FriendResultListAdapter;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CustomLetterListView;
-import dlmj.hideseek.UI.View.CustomSuperToast;
 
 /**
  * Created by Two on 6/5/16.
  */
 public class FriendActivity extends BaseActivity implements UIDataListener<Bean>, AbsListView.OnScrollListener{
     private final static String TAG = "FriendActivity";
+    private String mLastTitle;
     private final static int MSG_REFRESH_LIST = 100;
     private ListView mFriendListView;
     private ListView mResultListView;
@@ -66,6 +67,9 @@ public class FriendActivity extends BaseActivity implements UIDataListener<Bean>
     private WindowManager mWindowManager;
     private OverlayThread mOverlayThread;
     private EditText mSearchEditText;
+    private ImageButton mAddFriendButton;
+    private LinearLayout mBackLayout;
+    private TextView mLastTitleTextView;
     private List<User> mResultFriendList = new ArrayList<>();
     private FriendTableManager mFriendTableManager;
     private ErrorMessageFactory mErrorMessageFactory;
@@ -98,7 +102,9 @@ public class FriendActivity extends BaseActivity implements UIDataListener<Bean>
         setAlphaIndexer();
         mFriendListAdapter.notifyDataSetChanged();
         mResponseCode = 0;
-        mNetworkHelper.sendPostRequest(UrlParams.GET_FRIEND_URL, new HashMap<String, String>());
+        Map<String, String> params = new HashMap<>();
+        params.put("version", mFriendTableManager.getVersion() + "");
+        mNetworkHelper.sendPostRequest(UrlParams.GET_FRIEND_URL, params);
     }
 
     @Override
@@ -118,9 +124,13 @@ public class FriendActivity extends BaseActivity implements UIDataListener<Bean>
                 mAlphaIndexer.put(name, i);
             }
         }
+
+//        mLetterListView.setAlphas((String[]) mAlphaIndexer.keySet().toArray());
+//        mLetterListView.invalidate();
     }
 
     private void initData() {
+        mLastTitle = getIntent().getStringExtra(IntentExtraParam.LAST_TITLE);
         mFriendListAdapter = new FriendListAdapter(this, mFriendList);
         mFriendResultListAdapter = new FriendResultListAdapter(this, mResultFriendList);
         mNetworkHelper = new NetworkHelper(this);
@@ -148,10 +158,42 @@ public class FriendActivity extends BaseActivity implements UIDataListener<Bean>
         mWindowManager.addView(mOverlayTextVew, layoutParams);
         mOverlayThread = new OverlayThread(mOverlayTextVew, mUiHandler);
         mSearchEditText = (EditText) findViewById(R.id.searchEditText);
+        mAddFriendButton = (ImageButton) findViewById(R.id.addFriendBtn);
+        mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
+        mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
+        mLastTitleTextView.setText(mLastTitle);
     }
 
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
+
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        mFriendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                User friend = mFriendList.get(position);
+
+                Intent intent = new Intent(FriendActivity.this, ProfileActivity.class);
+                intent.putExtra(IntentExtraParam.LAST_TITLE, FriendActivity.this.getTitle().toString());
+                intent.putExtra(IntentExtraParam.PROFILE_INFO, friend);
+                startActivity(intent);
+            }
+        });
+
+        mAddFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FriendActivity.this, AddFriendActivity.class);
+                intent.putExtra(IntentExtraParam.LAST_TITLE, FriendActivity.this.getTitle().toString());
+                startActivity(intent);
+            }
+        });
 
         mLetterListView.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
             @Override
