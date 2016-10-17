@@ -93,6 +93,8 @@
     <string name="add_friend_title">Add Friend</string>
     <string name="profile_title">Profile</string>
     <string name="name">Name: %s</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>

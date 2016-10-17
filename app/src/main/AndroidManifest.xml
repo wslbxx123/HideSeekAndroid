@@ -160,6 +160,11 @@
             android:label="@string/add_friend_title"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".UI.Activity.ModifySexActivity"
+            android:label="@string/sex"
+            android:screenOrientation="portrait">
+        </activity>
 
         <!-- 支付宝服务 -->
         <activity

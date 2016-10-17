@@ -1,42 +1,30 @@
 package dlmj.hideseek.UI.Activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
-import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
-import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
-import dlmj.hideseek.Common.Interfaces.UIDataListener;
-import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.User;
-import dlmj.hideseek.Common.Params.CodeParams;
-import dlmj.hideseek.Common.Params.UrlParams;
-import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.View.CircleNetworkImageView;
-import dlmj.hideseek.UI.View.CustomSuperToast;
-import dlmj.hideseek.UI.View.LoadingDialog;
 
 /**
  * Created by Two on 5/4/16.
  */
-public class MyProfileActivity extends BaseActivity{
+public class MyProfileActivity extends Activity {
     private static String TAG="MyProfileActivity";
-    private static final int LOADING_END = 1;
-    private static final int CHANGE_SEX_SUCCESS = 2;
+    public static final int MODIFY_CODE=1;
+    public static final int RESULT_CODE_SEX_SUCCESS=2;//修改性别成功的Code
+    public static final int RESULT_CODE_NICKNAME_SUCCESS=3;//修改昵称
+    public static final int RESULT_CODE_REGION_SUCCESS=4;//修改地址
+    public static final int RESULT_CODE_PROFILE_SUCCESS=5;//修改头像
+
     private View mProfileLayout;
     private CircleNetworkImageView mPhotoCircleNetworkImageView;
     private View mNicknameLayout;
@@ -48,32 +36,8 @@ public class MyProfileActivity extends BaseActivity{
     private View mRegionLayout;
     private TextView mRegionTextView;
     private ImageLoader mImageLoader;
-    private NetworkHelper mNetworkHelper;
-    private LoadingDialog mLoadingDialog;
-    private CustomSuperToast mToast;
-    private ErrorMessageFactory mErrorMessageFactory;
 
     private User mUser;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case LOADING_END:
-                    if (mLoadingDialog.isShowing()) {
-                        mLoadingDialog.dismiss();
-                    }
-                    break;
-                case CHANGE_SEX_SUCCESS:
-                    if (mLoadingDialog.isShowing()) {
-                        mLoadingDialog.dismiss();
-                    }
-                    mSexTextView.setText(msg.obj.toString());
-                    break;
-            }
-            super.handleMessage(msg);
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +48,8 @@ public class MyProfileActivity extends BaseActivity{
     }
 
     private void initData() {
-        mNetworkHelper = new NetworkHelper(this);
         mUser = UserCache.getInstance().getUser();
         mImageLoader = ImageCacheManager.getInstance(getApplicationContext()).getImageLoader();
-        mErrorMessageFactory = new ErrorMessageFactory(this);
     }
 
     private void findView() {
@@ -108,8 +70,6 @@ public class MyProfileActivity extends BaseActivity{
         mRegionLayout = findViewById(R.id.regionLayout);
         mRegionTextView = (TextView) findViewById(R.id.regionTextView);
         mRegionTextView.setText(mUser.getRegion());
-        mLoadingDialog = new LoadingDialog(this, getString(R.string.loading));
-        mToast = new CustomSuperToast(this);
     }
 
     private void setListener() {
@@ -129,37 +89,7 @@ public class MyProfileActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
                 //性别
-                AlertDialog.Builder builder = new AlertDialog.Builder(MyProfileActivity.this);
-                String[] sexes = {getString(R.string.male), getString(R.string.female),
-                        getString(R.string.secret)};
-                builder.setItems(sexes, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        if (!mLoadingDialog.isShowing()) {
-                            mLoadingDialog.show();
-                        }
-                        //更新后的性别 0：未设置，1：女，2：男，3：秘密
-                        String selectSex="";
-                        switch (which)
-                        {
-                            case 0://弹窗里面第一个是男
-                                selectSex="2";
-                                break;
-                            case 1:
-                                selectSex="1";
-                                break;
-                            case 2:
-                                selectSex="3";
-                                break;
-                        }
-                        Map<String, String> params = new HashMap<>();
-                        params.put("sex",selectSex);
-                        mNetworkHelper.sendPostRequest(UrlParams.UPDATE_SEX_URL,params);
-                    }
-                });
-                builder.show();
+                startActivityForResult(new Intent(MyProfileActivity.this,ModifySexActivity.class),MODIFY_CODE);
             }
         });
         mRegionLayout.setOnClickListener(new View.OnClickListener() {
@@ -168,38 +98,29 @@ public class MyProfileActivity extends BaseActivity{
                 //地址
             }
         });
-
-        //修改性别监听
-        mNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
-            @Override
-            public void onDataChanged(Bean data) {
-                mResponseCode = CodeParams.SUCCESS;
-                try {
-                    //改变UI
-                    JSONObject result=new JSONObject(data.getResult());
-                    Message m=new Message();
-                    int updateSexInt=result.optInt("sex");
-                    User.SexEnum disPlaySex=User.SexEnum.valueOf(updateSexInt);
-                    m.obj= disPlaySex.toString(MyProfileActivity.this);
-                    m.what=CHANGE_SEX_SUCCESS;
-                    mHandler.sendMessage(m);
-                    //更新缓存
-                    mUser.setSex(disPlaySex);
-                    UserCache.getInstance().update(mUser,"sex",updateSexInt);
-                } catch (Exception e) {
-                    LogUtil.e(TAG, e.getMessage());
-                }
-            }
-
-            @Override
-            public void onErrorHappened(int errorCode, String errorMessage) {
-                mHandler.sendEmptyMessage(LOADING_END);
-                mResponseCode = errorCode;
-                String message = mErrorMessageFactory.get(errorCode);
-                mToast.show(message);
-            }
-        });
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==MODIFY_CODE)
+        {
+            switch (resultCode)
+            {
+                case RESULT_CODE_PROFILE_SUCCESS:
+                    //头像
+                    break;
+                case RESULT_CODE_NICKNAME_SUCCESS:
+                    //昵称
+                    break;
+                case RESULT_CODE_SEX_SUCCESS:
+                    //性别
+                    mSexTextView.setText(mUser.getSex().toString(this));
+                    break;
+                case RESULT_CODE_REGION_SUCCESS:
+                    //地址
+                    break;
+            }
+        }
+    }
 }

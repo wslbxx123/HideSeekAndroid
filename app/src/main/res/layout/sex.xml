@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/gray_f1f0f0">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="44dp"
+        android:gravity="center_vertical"
+        android:background="@color/yellow_ffcc00">
+        <TextView
+            android:id="@+id/cancelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="@string/cancel"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="16sp"
+            android:text="@string/sex"
+            />
+        <TextView
+            android:id="@+id/submitTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="@string/save"
+            android:enabled="false"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/sexLayout"
+        style="@style/CrossBarLayout"
+        android:layout_marginTop="12dp">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:text="@string/sex"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/sexTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/black"/>
+
+        <ImageView
+            android:layout_width="5dp"
+            android:layout_height="10dp"
+            android:background="@drawable/right_arrow"
+            android:layout_marginRight="10dp"/>
+    </LinearLayout>
+</LinearLayout>
