@@ -1,14 +1,13 @@
 package dlmj.hideseek.UI.Activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.TextView;
-
-import org.json.JSONObject;
+import android.widget.EditText;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,26 +25,25 @@ import dlmj.hideseek.R;
 import dlmj.hideseek.UI.View.CustomSuperToast;
 import dlmj.hideseek.UI.View.LoadingDialog;
 
+
 /**
- * 修改性别<br/>
- * Created on 2016/10/17
+ * 修改昵称<br/>
+ * Created on 2016/10/18
  *
  * @author yekangqi
  */
 
-public class ModifySexActivity extends BaseActivity implements UIDataListener<Bean> {
-    private static final String TAG="ModifySexActivity";
+public class ModifyNickNameActivity extends BaseActivity implements UIDataListener<Bean> {
+    private static final String TAG="ModifyNickNameActivity";
     private static final int LOADING_END = 1;
     private View mCancelTextView;
     private View mSubmitTextView;
-    private View mSexLayout;
-    private TextView mSexTextView;
     private User mUser;
+    private EditText mNinameEditText;
     private NetworkHelper mNetworkHelper;
     private LoadingDialog mLoadingDialog;
     private CustomSuperToast mToast;
     private ErrorMessageFactory mErrorMessageFactory;
-    private String selectSex;//选择的性别
 
     private Handler mHandler = new Handler() {
         @Override
@@ -64,7 +62,7 @@ public class ModifySexActivity extends BaseActivity implements UIDataListener<Be
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sex);
+        setContentView(R.layout.nickname);
         initData();
         findView();
         setListener();
@@ -79,9 +77,9 @@ public class ModifySexActivity extends BaseActivity implements UIDataListener<Be
     private void findView() {
         mCancelTextView = findViewById(R.id.cancelTextView);
         mSubmitTextView = findViewById(R.id.submitTextView);
-        mSexLayout = findViewById(R.id.sexLayout);
-        mSexTextView = (TextView) findViewById(R.id.sexTextView);
-        mSexTextView.setText(mUser.getSex().toString(this));
+        mNinameEditText = (EditText) findViewById(R.id.nicknameEditText);
+        mNinameEditText.setText(mUser.getNickname());
+        mNinameEditText.setSelection(mUser.getNickname().length());
 
         mLoadingDialog = new LoadingDialog(this, getString(R.string.loading));
         mToast = new CustomSuperToast(this);
@@ -101,40 +99,24 @@ public class ModifySexActivity extends BaseActivity implements UIDataListener<Be
                     mLoadingDialog.show();
                 }
                 Map<String, String> params = new HashMap<>();
-                params.put("sex",selectSex);
-                mNetworkHelper.sendPostRequest(UrlParams.UPDATE_SEX_URL,params);
+                params.put("nickname",mNinameEditText.getText().toString());
+                mNetworkHelper.sendPostRequest(UrlParams.UPDATE_NICKNAME_URL,params);
             }
         });
-        mSexLayout.setOnClickListener(new View.OnClickListener() {
+        mNinameEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                //性别
-                AlertDialog.Builder builder = new AlertDialog.Builder(ModifySexActivity.this);
-                final String[] sexes = {getString(R.string.female), getString(R.string.male),
-                        getString(R.string.secret)};
-                builder.setItems(sexes, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        //更新后的性别 0：未设置，1：女，2：男，3：秘密
-                        switch (which)
-                        {
-                            case 0://弹窗里面第一个是女
-                                selectSex="1";
-                                break;
-                            case 1:
-                                selectSex="2";
-                                break;
-                            case 2:
-                                selectSex="3";
-                                break;
-                        }
-                        mSexTextView.setText(sexes[which]);
-                        mSubmitTextView.setEnabled(true);
-                    }
-                });
-                builder.show();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mSubmitTextView.setEnabled(!TextUtils.isEmpty(s));
             }
         });
         mNetworkHelper.setUiDataListener(this);
@@ -144,16 +126,9 @@ public class ModifySexActivity extends BaseActivity implements UIDataListener<Be
     public void onDataChanged(Bean data) {
         mResponseCode = CodeParams.SUCCESS;
         try {
-            //改变UI
-            JSONObject result=new JSONObject(data.getResult());
-            int updateSexInt=result.optInt("sex");
-            User.SexEnum disPlaySex=User.SexEnum.valueOf(updateSexInt);
-            mHandler.sendEmptyMessage(LOADING_END);
-            //更新缓存
-            mUser.setSex(disPlaySex);
-            UserCache.getInstance().update(mUser,"sex",updateSexInt);
-            setResult(MyProfileActivity.RESULT_CODE_SEX_SUCCESS);
-            //退出
+            //改变UI TODO
+
+            setResult(MyProfileActivity.RESULT_CODE_NICKNAME_SUCCESS);
             finish();
         } catch (Exception e) {
             LogUtil.e(TAG, e.getMessage());
