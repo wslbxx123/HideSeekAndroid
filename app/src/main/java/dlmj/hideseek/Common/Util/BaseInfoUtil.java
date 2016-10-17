@@ -1,6 +1,8 @@
 package dlmj.hideseek.Common.Util;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 
 import java.io.File;
@@ -81,5 +83,26 @@ public class BaseInfoUtil {
         String path = dirPath + File.separator + fileName + "_" + new Date().getTime() + ".jpg";
         LogUtil.d(TAG, path);
         return path;
+    }
+
+    //版本号
+    public static String getVersion(Context context) {
+        return getPackageInfo(context).versionName + "." + getPackageInfo(context).versionCode;
+    }
+
+    private static PackageInfo getPackageInfo(Context context) {
+        PackageInfo packageInfo = null;
+
+        try {
+            PackageManager pm = context.getPackageManager();
+            packageInfo = pm.getPackageInfo(context.getPackageName(),
+                    PackageManager.GET_CONFIGURATIONS);
+
+            return packageInfo;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return packageInfo;
     }
 }

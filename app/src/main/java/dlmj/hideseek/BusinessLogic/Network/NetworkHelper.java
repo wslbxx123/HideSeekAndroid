@@ -18,6 +18,7 @@ import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
+import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 
 /**
@@ -70,6 +71,7 @@ public class NetworkHelper implements Response.Listener<JSONObject>,
                     sessionToken.getId(),
                     (String)sessionToken.getDefaultValue());
             params.put("session_id", sessionTokenStr);
+            params.put("app_version", BaseInfoUtil.getVersion(mContext));
             VolleyQueueController.getInstance(mContext)
                     .getRequestQueue().add(getRequestForPost(url, params));
         }
