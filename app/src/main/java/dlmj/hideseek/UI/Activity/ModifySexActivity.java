@@ -1,5 +1,6 @@
 package dlmj.hideseek.UI.Activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -143,16 +144,16 @@ public class ModifySexActivity extends BaseActivity implements UIDataListener<Be
     @Override
     public void onDataChanged(Bean data) {
         mResponseCode = CodeParams.SUCCESS;
+        mHandler.sendEmptyMessage(LOADING_END);
         try {
             //改变UI
             JSONObject result=new JSONObject(data.getResult());
             int updateSexInt=result.optInt("sex");
             User.SexEnum disPlaySex=User.SexEnum.valueOf(updateSexInt);
-            mHandler.sendEmptyMessage(LOADING_END);
             //更新缓存
             mUser.setSex(disPlaySex);
             UserCache.getInstance().update(mUser,"sex",updateSexInt);
-            setResult(MyProfileActivity.RESULT_CODE_SEX_SUCCESS);
+            setResult(Activity.RESULT_OK);
             //退出
             finish();
         } catch (Exception e) {

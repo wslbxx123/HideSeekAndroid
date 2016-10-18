@@ -27,7 +27,7 @@ public class User implements Parcelable {
     private String mPhotoUrl;
     private String mSmallPhotoUrl;
     private Date mRegisterDate;
-    private int mRecord = 0;
+    private int mRecord;
     private SexEnum mSex;
     private String mRegion;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -168,6 +168,10 @@ public class User implements Parcelable {
 
     public String getNickname() {
         return mNickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.mNickname = nickname;
     }
 
     public Date getRegisterDate() {
@@ -338,10 +342,12 @@ public class User implements Parcelable {
     }
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
         public User createFromParcel(Parcel parcel) {
             return new User(parcel);
         }
 
+        @Override
         public User[] newArray(int size) {
             return new User[size];
         }
@@ -350,9 +356,9 @@ public class User implements Parcelable {
     public enum SexEnum {
         notSet(0), female(1), male(2), secret(3);
 
-        private int value = 0;
+        private int value;
 
-        private SexEnum(int value) {    //    必须是private的，否则编译错误
+        SexEnum(int value) {    //    必须是private的，否则编译错误
             this.value = value;
         }
 
@@ -392,9 +398,9 @@ public class User implements Parcelable {
     public enum RoleEnum {
         grassFairy(0), waterMagician(1), fireKnight(2), stoneMonster(3), lightningGiant(4);
 
-        private int value = 0;
+        private int value;
 
-        private RoleEnum(int value) {    //    必须是private的，否则编译错误
+        RoleEnum(int value) {    //    必须是private的，否则编译错误
             this.value = value;
         }
 

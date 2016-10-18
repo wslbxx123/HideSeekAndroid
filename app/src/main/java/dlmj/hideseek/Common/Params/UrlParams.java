@@ -30,6 +30,8 @@ public class UrlParams {
     public static String SEARCH_FRIENDS_URL = "https://www.hideseek.cn/home/friend/searchFriends";
     public static String UPDATE_SEX_URL="https://www.hideseek.cn/home/user/updateSex";//更新性别
     public static String UPDATE_NICKNAME_URL="https://www.hideseek.cn/home/user/updateNickname";
+    public static String UPDATEREGION_URL="https://www.hideseek.cn/home/user/updateRegion";
+    public static String UPDATEPHOTOURL_URL ="https://www.hideseek.cn/home/user/updatePhotoUrl";
     /**
      * Debug Mode
      */
@@ -57,4 +59,6 @@ public class UrlParams {
 //    public static String SEARCH_FRIENDS_URL = "http://" + IP_ADDRESS + "/home/friend/searchFriends";
 //    public static String UPDATE_SEX_URL="http://" + IP_ADDRESS + "/home/user/updateSex";//更新性别
 //    public static String UPDATE_NICKNAME_URL="http://" + IP_ADDRESS + "/home/user/updateNickname";
+//    public static String UPDATEREGION_URL="http://" + IP_ADDRESS + "/home/user/updateRegion";
+//    public static String UPDATEPHOTOURL_URL ="http://" + IP_ADDRESS + "/home/user/updatePhotoUrl";
 }

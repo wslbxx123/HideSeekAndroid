@@ -44,7 +44,8 @@ public class UserCache {
         String userInfoStr = mSharedPreferences.getString(accountInfo.getId(),
                 accountInfo.getDefaultValue().toString());
 
-        return from(userInfoStr);
+        mUser=from(userInfoStr);
+        return mUser;
     }
 
     public void update(User user,String key,Object value)

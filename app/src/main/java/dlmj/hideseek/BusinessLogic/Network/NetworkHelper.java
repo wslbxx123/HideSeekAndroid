@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -18,6 +19,7 @@ import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
+import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
@@ -42,6 +44,34 @@ public class NetworkHelper implements Response.Listener<JSONObject>,
     protected CustomJsonRequest getRequestForPost(String url, Map<String, String> params) {
         LogUtil.d(TAG, convertParamsToUrl(url,params));
         return new CustomJsonRequest(Request.Method.POST, url, params, this, this);
+    }
+
+    public void getRequestForPostWitFile(String url,String filePartName, File file, Map<String, String> params) {
+        LogUtil.d(TAG, convertParamsToUrl(url,params));
+        if(!mIsLocked) {
+            SharedPreferenceSettings sessionToken = SharedPreferenceSettings.SESSION_TOKEN;
+            SharedPreferences sharedPreferences = SharedPreferenceUtil.getSharedPreferences();
+            String sessionTokenStr = sharedPreferences.getString(
+                    sessionToken.getId(),
+                    (String)sessionToken.getDefaultValue());
+            params.put("session_id", sessionTokenStr);
+            params.put("app_version", BaseInfoUtil.getVersion(mContext));
+            MultiPartJsonRequest mMultiPartRequest = new MultiPartJsonRequest(UrlParams.UPDATEPHOTOURL_URL, new Response.Listener<String>(){
+
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        disposeResponse(new JSONObject(response));
+                    } catch (Exception e) {
+                        disposeVolleyError(new VolleyError(null==response?e.getMessage():response));
+                    }
+                }
+            },
+            this, filePartName, file, params);
+            VolleyQueueController.getInstance(mContext)
+                    .getRequestQueue().add(mMultiPartRequest);
+        }
+//        return new CustomJsonRequest(Request.Method.POST, url, params, this, this);
     }
 
     public void sendGetRequest(String url, Map<String, String> params) {

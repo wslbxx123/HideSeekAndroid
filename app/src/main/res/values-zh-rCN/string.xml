@@ -96,6 +96,7 @@
     <string name="set_remark">设置备注</string>
     <string name="tribe">部落</string>
     <string name="add">添加</string>
+    <string name="photograph">照片</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

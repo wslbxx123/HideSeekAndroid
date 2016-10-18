@@ -98,6 +98,7 @@
     <string name="set_remark">Set Remark</string>
     <string name="tribe">Tribe</string>
     <string name="add">Add</string>
+    <string name="photograph">photo</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>

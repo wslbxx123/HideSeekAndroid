@@ -105,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:textColor="@color/black"/>
+            android:textColor="@color/gray_8e8d8b"/>
 
         <ImageView
             android:layout_width="5dp"
@@ -135,7 +135,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:textColor="@color/black"/>
+            android:textColor="@color/gray_8e8d8b"/>
     </LinearLayout>
 
     <LinearLayout
@@ -170,10 +170,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/regionLayout"
         style="@style/CrossBarLayout"
         android:layout_marginTop="12dp">
         <LinearLayout
-            android:id="@+id/regionLayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
