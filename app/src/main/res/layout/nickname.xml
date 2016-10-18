@@ -20,13 +20,14 @@
             android:gravity="center"
             android:textSize="16sp"
             android:text="@string/cancel"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="16sp"
-            android:text="@string/sex"
-            />
+            android:text="@string/sex"/>
+
         <TextView
             android:id="@+id/submitTextView"
             android:layout_width="wrap_content"

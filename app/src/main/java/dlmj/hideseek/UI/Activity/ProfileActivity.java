@@ -22,6 +22,7 @@ import dlmj.hideseek.UI.View.CircleNetworkImageView;
 public class ProfileActivity extends BaseActivity{
     private CircleNetworkImageView mPhotoCircleImageView;
     private LinearLayout mBackLayout;
+    private TextView mLastTitleTextView;
     private TextView mFriendNameTextView;
     private TextView mNicknameTextView;
     private ImageView mSexImageView;
@@ -31,6 +32,8 @@ public class ProfileActivity extends BaseActivity{
     private TextView mSetRemarkTextView;
     private ImageView mRightArrowImageView;
     private Button mAddButton;
+
+    private String mLastTitle;
 
     private ImageLoader mImageLoader;
     private User mUser;
@@ -47,15 +50,19 @@ public class ProfileActivity extends BaseActivity{
 
     private void initData() {
         mUser = getIntent().getParcelableExtra(IntentExtraParam.PROFILE_INFO);
+        mLastTitle = getIntent().getStringExtra(IntentExtraParam.LAST_TITLE);
         mImageLoader = ImageCacheManager.getInstance(this).getImageLoader();
     }
 
     private void findView() {
         mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
+        mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
+        mLastTitleTextView.setText(mLastTitle);
         mPhotoCircleImageView = (CircleNetworkImageView) findViewById(R.id.photoCircleImageView);
         mPhotoCircleImageView.setImageUrl(mUser.getSmallPhotoUrl(), mImageLoader);
         mFriendNameTextView = (TextView) findViewById(R.id.friendNameTextView);
         mNicknameTextView = (TextView) findViewById(R.id.nicknameTextView);
+        mNicknameTextView.setText(mUser.getNickname());
         mSexImageView = (ImageView) findViewById(R.id.sexImageView);
         mSexImageView.setImageResource(mUser.getSexImageDrawableId());
         mRegionTextView = (TextView) findViewById(R.id.regionTextView);
@@ -71,7 +78,8 @@ public class ProfileActivity extends BaseActivity{
         }
 
         if(mUser.getIsFriend()) {
-            mSetRemarkTextView.setVisibility(View.INVISIBLE);
+            mSetRemarkTextView.setVisibility(View.VISIBLE);
+            mRightArrowImageView.setVisibility(View.VISIBLE);
             if(mUser.getAlias() == null || mUser.getAlias().isEmpty()) {
                 mFriendNameTextView.setText(mUser.getNickname());
                 mNicknameTextView.setVisibility(View.INVISIBLE);
@@ -81,7 +89,9 @@ public class ProfileActivity extends BaseActivity{
                 mNicknameTextView.setVisibility(View.VISIBLE);
             }
         } else {
-
+            mSetRemarkTextView.setVisibility(View.INVISIBLE);
+            mRightArrowImageView.setVisibility(View.INVISIBLE);
+            mNicknameTextView.setVisibility(View.INVISIBLE);
         }
 
         mAddButton = (Button) findViewById(R.id.addBtn);

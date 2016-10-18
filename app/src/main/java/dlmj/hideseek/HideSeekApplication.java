@@ -1,12 +1,17 @@
 package dlmj.hideseek;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.baidu.navisdk.adapter.BaiduNaviManager;
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushManager;
 
 import java.io.File;
 
 import cn.smssdk.SMSSDK;
+import dlmj.hideseek.BusinessLogic.Cache.UserCache;
+import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.DataAccess.DatabaseManager;
@@ -48,6 +53,21 @@ public class HideSeekApplication extends Application {
 
     public void init() {
         initDirs();
+
+        if(UserCache.getInstance().ifLogin()) {
+            User user = UserCache.getInstance().getUser();
+            XGPushManager.registerPush(getApplicationContext(), user.getPhone(), new XGIOperateCallback() {
+                @Override
+                public void onSuccess(Object data, int flag) {
+                    Log.d("TPush", "注册成功，设备token为：" + data);
+                }
+
+                @Override
+                public void onFail(Object data, int errCode, String msg) {
+                    Log.d("TPush", "注册失败，错误码：" + errCode + ",错误信息：" + msg);
+                }
+            });
+        }
     }
 
     /**

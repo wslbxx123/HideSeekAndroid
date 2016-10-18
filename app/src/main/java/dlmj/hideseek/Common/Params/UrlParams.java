@@ -32,6 +32,7 @@ public class UrlParams {
     public static String UPDATE_NICKNAME_URL="https://www.hideseek.cn/home/user/updateNickname";
     public static String UPDATEREGION_URL="https://www.hideseek.cn/home/user/updateRegion";
     public static String UPDATEPHOTOURL_URL ="https://www.hideseek.cn/home/user/updatePhotoUrl";
+    public static String ADD_FRIENDS_URL = "https://www.hideseek.cn/home/friend/addFriend";
     /**
      * Debug Mode
      */

@@ -99,6 +99,9 @@
     <string name="tribe">Tribe</string>
     <string name="add">Add</string>
     <string name="photograph">photo</string>
+    <string name="friend_verification_title">Friend Verification</string>
+    <string name="request_message">Request Message</string>
+    <string name="send">Send</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>

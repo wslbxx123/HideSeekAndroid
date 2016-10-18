@@ -37,7 +37,7 @@
     <string name="rate_hideseek">评价寻宝部落</string>
     <string name="about">关于</string>
     <string name="logout">退出登录</string>
-    <string name="my_profile_title">个人首页</string>
+    <string name="my_profile_title">个人中心</string>
     <string name="photo">头像</string>
     <string name="nickname">昵称</string>
     <string name="sex">性别</string>
@@ -97,6 +97,9 @@
     <string name="tribe">部落</string>
     <string name="add">添加</string>
     <string name="photograph">照片</string>
+    <string name="friend_verification_title">好友验证</string>
+    <string name="request_message">请求信息</string>
+    <string name="send">发送</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

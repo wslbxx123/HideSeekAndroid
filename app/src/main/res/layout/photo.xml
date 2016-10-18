@@ -18,6 +18,7 @@
             android:layout_marginLeft="10dp"
             android:scaleType="centerInside"
             android:src="@drawable/back_icon"/>
+
         <TextView
             android:id="@+id/backTextView"
             android:layout_width="wrap_content"
@@ -28,13 +29,14 @@
             android:gravity="center"
             android:textSize="16sp"
             android:text="@string/profile"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="16sp"
-            android:text="@string/photograph"
-            />
+            android:text="@string/photograph"/>
+
         <ImageView
             android:id="@+id/settingsLayout"
             android:layout_width="40dp"
@@ -46,8 +48,10 @@
             android:scaleType="centerInside"
             android:src="@drawable/menu"/>
     </RelativeLayout>
+
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/photoNetworkImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
 </LinearLayout>
