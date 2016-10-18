@@ -238,6 +238,7 @@ public class UploadPhotoActivity extends Activity {
                     map.put("phone", mPhone);
                     map.put("nickname", mNickname);
                     map.put("password", mPassword);
+                    map.put("app_platform", "1");
 
                     map.put("role", (int) (Math.random() * 5) + "");
 

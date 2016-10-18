@@ -1,5 +1,6 @@
 package dlmj.hideseek.UI.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,8 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
-
-import org.w3c.dom.Text;
 
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
 import dlmj.hideseek.Common.Model.User;
@@ -29,6 +28,8 @@ public class ProfileActivity extends BaseActivity{
     private TextView mRegionTextView;
     private TextView mRoleTextView;
     private ImageView mRoleImageView;
+    private TextView mSetRemarkTextView;
+    private ImageView mRightArrowImageView;
     private Button mAddButton;
 
     private ImageLoader mImageLoader;
@@ -61,18 +62,26 @@ public class ProfileActivity extends BaseActivity{
         mRoleTextView = (TextView) findViewById(R.id.roleTextView);
         mRoleTextView.setText(mUser.getRoleName(this));
         mRoleImageView = (ImageView) findViewById(R.id.roleImageView);
-        mRoleImageView.setImageResource(mUser.getRoleDrawableId());
+        mRoleImageView.setImageResource(mUser.getRoleImageDrawableId());
+        mSetRemarkTextView = (TextView) findViewById(R.id.setRemarkTextView);
+        mRightArrowImageView = (ImageView) findViewById(R.id.rightArrowImageView);
+
         if(mUser.getRegion() != null) {
             mRegionTextView.setText(mUser.getRegion());
         }
 
-        if(mUser.getAlias() == null || mUser.getAlias().isEmpty()) {
-            mFriendNameTextView.setText(mUser.getNickname());
-            mNicknameTextView.setVisibility(View.INVISIBLE);
+        if(mUser.getIsFriend()) {
+            mSetRemarkTextView.setVisibility(View.INVISIBLE);
+            if(mUser.getAlias() == null || mUser.getAlias().isEmpty()) {
+                mFriendNameTextView.setText(mUser.getNickname());
+                mNicknameTextView.setVisibility(View.INVISIBLE);
+            } else {
+                mFriendNameTextView.setText(mUser.getAlias());
+                mNicknameTextView.setText(mUser.getNickname());
+                mNicknameTextView.setVisibility(View.VISIBLE);
+            }
         } else {
-            mFriendNameTextView.setText(mUser.getAlias());
-            mNicknameTextView.setText(mUser.getNickname());
-            mNicknameTextView.setVisibility(View.VISIBLE);
+
         }
 
         mAddButton = (Button) findViewById(R.id.addBtn);
@@ -88,6 +97,14 @@ public class ProfileActivity extends BaseActivity{
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ProfileActivity.this, FriendVerificationActivity.class);
+                startActivity(intent);
             }
         });
     }

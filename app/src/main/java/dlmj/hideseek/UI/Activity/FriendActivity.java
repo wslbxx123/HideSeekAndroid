@@ -179,6 +179,7 @@ public class FriendActivity extends BaseActivity implements UIDataListener<Bean>
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 User friend = mFriendList.get(position);
 
+                friend.setIsFriend(true);
                 Intent intent = new Intent(FriendActivity.this, ProfileActivity.class);
                 intent.putExtra(IntentExtraParam.LAST_TITLE, FriendActivity.this.getTitle().toString());
                 intent.putExtra(IntentExtraParam.PROFILE_INFO, friend);

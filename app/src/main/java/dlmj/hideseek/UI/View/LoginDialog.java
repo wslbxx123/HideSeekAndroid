@@ -74,6 +74,7 @@ public class LoginDialog extends Dialog implements UIDataListener<Bean> {
             Map<String, String> params = new HashMap<>();
             params.put("phone", mPhone);
             params.put("password", mPassword);
+            params.put("app_platform", "1");
 
             if (!mLoadingDialog.isShowing()) {
                 mLoadingDialog.show();
