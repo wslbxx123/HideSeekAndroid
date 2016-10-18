@@ -1,5 +1,6 @@
 package dlmj.hideseek.UI.Activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +9,8 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -125,9 +128,11 @@ public class ModifyNickNameActivity extends BaseActivity implements UIDataListen
     public void onDataChanged(Bean data) {
         mResponseCode = CodeParams.SUCCESS;
         try {
-            //改变UI TODO
-
-            setResult(MyProfileActivity.RESULT_CODE_NICKNAME_SUCCESS);
+            JSONObject result=new JSONObject(data.getResult());
+            String nickname =result.optString("nickname");
+            mUser.setNickname(nickname);
+            UserCache.getInstance().update(mUser,"nickname",nickname);
+            setResult(Activity.RESULT_OK);
             finish();
         } catch (Exception e) {
             LogUtil.e(TAG, e.getMessage());

@@ -93,6 +93,7 @@
     <string name="name">名字：%s</string>
     <string name="save">保存</string>
     <string name="cancel">取消</string>
+    <string name="photograph">照片</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

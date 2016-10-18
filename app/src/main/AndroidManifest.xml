@@ -170,6 +170,11 @@
             android:label="@string/nickname"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".UI.Activity.ModifyHeadPhotoActivity"
+            android:label="@string/photograph"
+            android:screenOrientation="portrait">
+        </activity>
 
         <!-- 支付宝服务 -->
         <activity

@@ -45,7 +45,7 @@ import dlmj.hideseek.UI.View.LoadingDialog;
  * Created by Two on 5/4/16.
  */
 public class UploadPhotoActivity extends Activity {
-    private final static String TAG = "UploadPhotoActivity";
+    private static final String TAG = "UploadPhotoActivity";
     private final String FILE_NAME = "Upload";
     private final int CROP_REQUEST_CODE = 300;
     private final int CHOOSE_REGION = 200;
@@ -203,7 +203,7 @@ public class UploadPhotoActivity extends Activity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(UploadPhotoActivity.this);
-                final String[] sexes = {getString(R.string.male), getString(R.string.female),
+                final String[] sexes = { getString(R.string.female),getString(R.string.male),
                         getString(R.string.secret)};
                 builder.setItems(sexes, new DialogInterface.OnClickListener()
                 {
