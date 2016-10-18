@@ -33,7 +33,7 @@ import dlmj.hideseek.UI.View.LoadingDialog;
  * @author yekangqi
  */
 
-public class ModifyNickNameActivity extends BaseActivity implements UIDataListener<Bean> {
+public class ModifyNicknameActivity extends BaseActivity implements UIDataListener<Bean> {
     private static final String TAG="ModifyNickNameActivity";
     private static final int LOADING_END = 1;
     private View mCancelTextView;

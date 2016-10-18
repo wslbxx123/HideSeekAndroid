@@ -83,7 +83,7 @@ public class MyProfileActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //昵称
-                startActivityForResult(new Intent(MyProfileActivity.this,ModifyNickNameActivity.class),MODIFY_CODE);
+                startActivityForResult(new Intent(MyProfileActivity.this,ModifyNicknameActivity.class),MODIFY_CODE);
             }
         });
         mSexLayout.setOnClickListener(new View.OnClickListener() {
