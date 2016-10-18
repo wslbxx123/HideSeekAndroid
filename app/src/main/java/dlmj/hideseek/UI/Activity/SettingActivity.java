@@ -1,22 +1,14 @@
 package dlmj.hideseek.UI.Activity;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import dlmj.hideseek.BusinessLogic.Cache.FriendCache;
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
-import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
-import dlmj.hideseek.BusinessLogic.Cache.RecordCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
-import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
-import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
-import dlmj.hideseek.DataAccess.FriendTableManager;
-import dlmj.hideseek.DataAccess.RaceGroupTableManager;
-import dlmj.hideseek.DataAccess.RecordTableManager;
 import dlmj.hideseek.R;
 
 /**
@@ -50,6 +42,12 @@ public class SettingActivity extends Activity {
                 UserInfoManager.getInstance().clearData(getApplicationContext());
                 GoalCache.getInstance().setIfNeedClearMap(true);
                 finish();
+            }
+        });
+        findViewById(R.id.feedbackLayout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SettingActivity.this,FeedBackActivity.class));
             }
         });
     }

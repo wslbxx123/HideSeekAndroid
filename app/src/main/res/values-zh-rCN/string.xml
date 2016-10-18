@@ -100,6 +100,13 @@
     <string name="friend_verification_title">好友验证</string>
     <string name="request_message">请求信息</string>
     <string name="send">发送</string>
+    <string name="feedback">反馈</string>
+    <string name="contacts">联系人</string>
+    <string name="phone_or_email">手机或邮箱</string>
+    <string name="submit">提交</string>
+    <string name="advice">意见</string>
+    <string name="consultation">咨询</string>
+    <string name="complaints">投诉</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

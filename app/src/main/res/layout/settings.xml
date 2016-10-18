@@ -40,6 +40,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/feedbackLayout"
         style="@style/CrossBarLayout"
         android:layout_marginTop="12dp">
         <TextView

@@ -102,6 +102,13 @@
     <string name="friend_verification_title">Friend Verification</string>
     <string name="request_message">Request Message</string>
     <string name="send">Send</string>
+    <string name="feedback">FeedBack</string>
+    <string name="contacts">Contacts</string>
+    <string name="phone_or_email">Phone Or Email</string>
+    <string name="submit">Submit</string>
+    <string name="advice">Advice</string>
+    <string name="consultation">Consultation</string>
+    <string name="complaints">Complaints</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
