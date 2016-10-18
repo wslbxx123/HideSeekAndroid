@@ -74,6 +74,7 @@ public class FriendCache extends BaseCache<User>{
                             friend.getLong("version"),
                             PinYinUtil.converterToFirstSpell(friend.getString("nickname")));
 
+                    user.setIsFriend(true);
                     user.setAlias(friend.getString("remark"));
 
                     list.add(user);
@@ -91,5 +92,11 @@ public class FriendCache extends BaseCache<User>{
             LogUtil.e(TAG, e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public void removeFriend(User friend) {
+        mFriendTableManager.removeFriend(friend.getPKId());
+
+        mList = mFriendTableManager.getFriends();
     }
 }

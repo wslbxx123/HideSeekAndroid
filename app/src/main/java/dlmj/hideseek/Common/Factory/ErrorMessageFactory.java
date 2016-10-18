@@ -29,6 +29,8 @@ public class ErrorMessageFactory {
                 return mResources.getString(R.string.error_response_format);
             case CodeParams.ERROR_GOAL_DISAPPEAR:
                 return mResources.getString(R.string.error_goal_disappear);
+            case CodeParams.ERROR_SEARCH_MYSELF:
+                return mResources.getString(R.string.error_search_myself);
             default:
                 return "";
         }

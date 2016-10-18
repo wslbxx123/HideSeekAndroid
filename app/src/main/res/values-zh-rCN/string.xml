@@ -21,7 +21,7 @@
     <string name="me_title">我的</string>
     <string name="record_title">战绩列表</string>
     <string name="not_login">未登录</string>
-    <string name="friends">朋友</string>
+    <string name="friends">好友</string>
     <string name="scores">积分</string>
     <string name="reward_exchange">战品兑换</string>
     <string name="my_orders">我的订单</string>
@@ -93,6 +93,9 @@
     <string name="name">名字：%s</string>
     <string name="save">保存</string>
     <string name="cancel">取消</string>
+    <string name="set_remark">设置备注</string>
+    <string name="tribe">部落</string>
+    <string name="add">添加</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>
@@ -107,6 +110,7 @@
     <string name="error_password_short">密码太短</string>
     <string name="error_password_long">密码不能超过45位</string>
     <string name="error_verification_code">输入的验证码不正确</string>
+    <string name="error_search_myself">不能加自己为好友</string>
 
     <string name="warning_not_enabled">你没有打怪兽的权限</string>
 

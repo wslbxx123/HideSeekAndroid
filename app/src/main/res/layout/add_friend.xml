@@ -21,9 +21,10 @@
                 android:layout_height="20dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/back_icon"/>
-            
+
             <TextView
                 android:id="@+id/lastTitleTextView"
+                android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

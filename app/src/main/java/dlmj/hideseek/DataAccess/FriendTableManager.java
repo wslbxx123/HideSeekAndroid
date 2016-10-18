@@ -21,6 +21,7 @@ import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
  */
 public class FriendTableManager {
     private final static String TAG = "FriendTableManager";
+    private final static String TABLE_NAME = "friend";
     private SQLiteDatabase mSQLiteDatabase;
     private static FriendTableManager mInstance;
     private SharedPreferences mSharedPreferences;
@@ -148,6 +149,13 @@ public class FriendTableManager {
         }
 
         return friendList;
+    }
+
+    public void removeFriend(long accountId) {
+        mSQLiteDatabase.beginTransaction();
+        mSQLiteDatabase.delete(TABLE_NAME, "account_id=", new String[]{accountId + ""});
+        mSQLiteDatabase.setTransactionSuccessful();
+        mSQLiteDatabase.endTransaction();
     }
 
     public void clear() {

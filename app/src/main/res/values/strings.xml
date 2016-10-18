@@ -95,6 +95,9 @@
     <string name="name">Name: %s</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="set_remark">Set Remark</string>
+    <string name="tribe">Tribe</string>
+    <string name="add">Add</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
@@ -110,6 +113,7 @@
     <string name="error_password_short">The password is too short</string>
     <string name="error_password_long">The length of password cannot be greater than 45</string>
     <string name="error_verification_code">The input verification code is wrong</string>
+    <string name="error_search_myself">Cannot add yourself as friend</string>
 
     <string name="warning_not_enabled">You don\'t have the right to beat the monster</string>
     <string name="message_input_city">Input city name to search</string>

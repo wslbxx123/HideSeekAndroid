@@ -1,5 +1,6 @@
 package dlmj.hideseek.UI.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -102,6 +103,12 @@ public class AddFriendActivity extends BaseActivity implements UIDataListener<Be
         mResponseCode = CodeParams.SUCCESS;
         List<User> userList = getUsers(data.getResult());
 
+        if(userList.size() > 1) {
+
+        } else if(userList.size() == 1) {
+            goToProfile(userList.get(0));
+        }
+
         if (mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();
         }
@@ -151,5 +158,12 @@ public class AddFriendActivity extends BaseActivity implements UIDataListener<Be
         }
 
         return list;
+    }
+
+    private void goToProfile(User user) {
+        Intent intent = new Intent(AddFriendActivity.this, ProfileActivity.class);
+        intent.putExtra(IntentExtraParam.LAST_TITLE, AddFriendActivity.this.getTitle().toString());
+        intent.putExtra(IntentExtraParam.PROFILE_INFO, user);
+        startActivity(intent);
     }
 }

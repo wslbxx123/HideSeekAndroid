@@ -231,6 +231,10 @@ public class User implements Parcelable {
         return mHasGuide;
     }
 
+    public boolean getIsFriend() {
+        return this.mIsFriend;
+    }
+
     public void setIsFriend(boolean isFriend) {
         this.mIsFriend = isFriend;
     }
@@ -277,6 +281,23 @@ public class User implements Parcelable {
         }
     }
 
+    public String getRoleName(Context context) {
+        switch(mRole) {
+            case grassFairy:
+                return context.getString(R.string.grassFairy);
+            case waterMagician:
+                return context.getString(R.string.waterMagician);
+            case fireKnight:
+                return context.getString(R.string.fireKnight);
+            case stoneMonster:
+                return context.getString(R.string.stoneMonster);
+            case lightningGiant:
+                return context.getString(R.string.lightningGiant);
+            default:
+                return "";
+        }
+    }
+
     public int getSexImageDrawableId() {
         switch(mSex) {
             case female:
@@ -304,7 +325,7 @@ public class User implements Parcelable {
         parcel.writeString(mDateFormat.format(mRegisterDate));
         parcel.writeInt(mRecord);
         parcel.writeInt(mSex.getValue());
-        parcel.writeString(mRegion);
+        parcel.writeString((mRegion == null || mRegion.equals("null")) ? "" : mRegion);
         parcel.writeInt(mRole.getValue());
         parcel.writeLong(mVersion);
         parcel.writeString(mPinyin);
@@ -369,7 +390,7 @@ public class User implements Parcelable {
     }
 
     public enum RoleEnum {
-        grassFairy(1), waterMagician(2), fireKnight(3), stoneMonster(4), lightningGiant(5);
+        grassFairy(0), waterMagician(1), fireKnight(2), stoneMonster(3), lightningGiant(4);
 
         private int value = 0;
 
