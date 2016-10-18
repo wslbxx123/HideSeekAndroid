@@ -25,9 +25,8 @@ import dlmj.hideseek.R;
 import dlmj.hideseek.UI.View.CustomSuperToast;
 import dlmj.hideseek.UI.View.LoadingDialog;
 
-
 /**
- * 修改昵称<br/>
+ * <br/>
  * Created on 2016/10/18
  *
  * @author yekangqi
