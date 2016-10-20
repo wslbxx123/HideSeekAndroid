@@ -33,9 +33,7 @@
     <string name="join">join</string>
     <string name="profile">Profile</string>
     <string name="settings_title">Settings</string>
-    <string name="news_notification">News Notification</string>
     <string name="clear_cache">Clear Cache</string>
-    <string name="help_and_feedback">Help &amp; Feedback</string>
     <string name="rate_hideseek">Rate HideSeek</string>
     <string name="about">About</string>
     <string name="logout">Log Out</string>
@@ -109,6 +107,11 @@
     <string name="advice">Advice</string>
     <string name="consultation">Consultation</string>
     <string name="complaints">Complaints</string>
+    <string name="submit_success">Submit Success!</string>
+    <string name="use_guide">Use Guide</string>
+    <string name="clear_finish">Clear Finish!</string>
+    <string name="clear_dialog_content">Are you sure you clear the local cache?</string>
+    <string name="browser">Browser</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
@@ -146,4 +149,6 @@
     <string name="title_activity_warning">WarningActivity</string>
     <string name="hello_world">Hello world!</string>
 
+    <!--使用指南的url-->
+    <string name="use_guide_url">"http://mp.weixin.qq.com/s?__biz=MzIzNzQ4MTU1NQ==&amp;mid=100000001&amp;idx=1&amp;sn=5545a634716ca5fce962759fe5fb18c0&amp;chksm=68c6ba3d5fb1332b6e0fb3080c6d94da4af57940068ef9ae2b579a88fd8f90c59e357e7ece1d&amp;scene=18#wechat_redirect"</string>
 </resources>

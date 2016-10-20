@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -42,7 +43,7 @@ public class BaseInfoUtil {
     }
 
     public static String getSdCardImageDir(Context context) {
-        String dirPath = getProjectDir(context) + File.separator + BaseInfoUtil.APP_IMAGE_NAME;
+        String dirPath = getProjectDir(context) + File.separator + APP_IMAGE_NAME;
         File file = new File(dirPath);
 
         if (!file.exists()) {
@@ -60,7 +61,7 @@ public class BaseInfoUtil {
     }
 
     public static String getImageDir(Context context) {
-        String dirPath = context.getExternalCacheDir() + File.separator + BaseInfoUtil.APP_IMAGE_NAME;
+        String dirPath = context.getExternalCacheDir() + File.separator + APP_IMAGE_NAME;
         File file = new File(dirPath);
 
         if (!file.exists()) {
@@ -85,12 +86,93 @@ public class BaseInfoUtil {
         return path;
     }
 
+    /**
+     * 获取路径
+     */
+    private static String getPath(Context context,boolean isSdCard)
+    {
+        return isSdCard? getSdCardImageDir(context) : getImageDir(context);
+    }
+
+    /**
+     * 获取文件夹内的文件大小(只获取一级目录)
+     * @param path
+     * @return
+     */
+    private static long getFileSize(String path)
+    {
+        if (TextUtils.isEmpty(path))
+        {
+            return 0;
+        }
+        File filePath=new File(path);
+        File[] itemList=filePath.listFiles();
+        long totalSize=0;
+        if (null!=itemList)
+        {
+            for (File f:itemList)
+            {
+                if (f.exists() && f.isFile() && f.length()>0)
+                {
+                    totalSize=totalSize+f.length();
+                }
+            }
+        }
+        return totalSize;
+    }
+
+    /**
+     * 删除路径下的所有文件
+     * @param path
+     */
+    private static void deleteFlie(String path)
+    {
+        if (TextUtils.isEmpty(path))
+        {
+            return ;
+        }
+        File filePath=new File(path);
+        File[] itemList=filePath.listFiles();
+        long totalSize=0;
+        if (null!=itemList)
+        {
+            for (File f:itemList)
+            {
+                if (f.exists() && f.isFile())
+                {
+                    f.delete();
+                }
+            }
+        }
+    }
+
+    /**
+     * 缓存大小
+     */
+    public static long getCacheSize(Context context)
+    {
+        String sdCardFilePath=getPath(context,true);
+        String phoneFilePath=getPath(context,false);
+        return getFileSize(sdCardFilePath)+getFileSize(phoneFilePath);
+    }
+
+    /**
+     * 清空缓存
+     */
+    public static void clearImageCache(Context context)
+    {
+        String sdCardFilePath=getPath(context,true);
+        String phoneFilePath=getPath(context,false);
+        deleteFlie(sdCardFilePath);
+        deleteFlie(phoneFilePath);
+    }
+
     //版本号
     public static String getVersion(Context context) {
         return getPackageInfo(context).versionName + "." + getPackageInfo(context).versionCode;
     }
 
-    private static PackageInfo getPackageInfo(Context context) {
+    public static PackageInfo getPackageInfo(Context context) {
         PackageInfo packageInfo = null;
 
         try {

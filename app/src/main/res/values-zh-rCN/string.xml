@@ -31,12 +31,10 @@
     <string name="join">加入</string>
     <string name="profile">个人中心</string>
     <string name="settings_title">设 置</string>
-    <string name="news_notification">新消息通知</string>
     <string name="clear_cache">清除缓存</string>
-    <string name="help_and_feedback">帮助与反馈</string>
     <string name="rate_hideseek">评价寻宝部落</string>
     <string name="about">关于</string>
-    <string name="logout">退出登录</string>
+    <string name="logout">注销</string>
     <string name="my_profile_title">个人中心</string>
     <string name="photo">头像</string>
     <string name="nickname">昵称</string>
@@ -107,6 +105,11 @@
     <string name="advice">意见</string>
     <string name="consultation">咨询</string>
     <string name="complaints">投诉</string>
+    <string name="submit_success">提交成功!</string>
+    <string name="use_guide">使用指南</string>
+    <string name="clear_finish">清除完毕!</string>
+    <string name="clear_dialog_content">你确认清除本地缓存?</string>
+    <string name="browser">浏览器</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

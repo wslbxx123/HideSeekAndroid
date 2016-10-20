@@ -202,13 +202,21 @@
         </activity>
         <activity
             android:name=".UI.Activity.FriendVerificationActivity"
-            android:label="@string/photograph"
+            android:label="@string/friend_verification_title"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".UI.Activity.FeedBackActivity"
-            android:label="@string/photograph"
+            android:label="@string/feedback"
             android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".UI.Activity.AboutActivity"
+                  android:label="@string/about"
+                  android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".UI.Activity.BrowserActivity"
+                  android:label="@string/browser"
+                  android:screenOrientation="portrait">
         </activity>
 
         <activity

@@ -33,6 +33,8 @@ public class UrlParams {
     public static String UPDATEREGION_URL="https://www.hideseek.cn/home/user/updateRegion";
     public static String UPDATEPHOTOURL_URL ="https://www.hideseek.cn/home/user/updatePhotoUrl";
     public static String ADD_FRIENDS_URL = "https://www.hideseek.cn/home/friend/addFriend";
+    public static String ADDFEEDBACK_URL="https://www.hideseek.cn/home/setting/addFeedback";
+
     /**
      * Debug Mode
      */
@@ -62,4 +64,5 @@ public class UrlParams {
 //    public static String UPDATE_NICKNAME_URL="http://" + IP_ADDRESS + "/home/user/updateNickname";
 //    public static String UPDATEREGION_URL="http://" + IP_ADDRESS + "/home/user/updateRegion";
 //    public static String UPDATEPHOTOURL_URL ="http://" + IP_ADDRESS + "/home/user/updatePhotoUrl";
+//    public static String ADDFEEDBACK_URL="http://" + IP_ADDRESS + "/home/setting/addFeedback";
 }

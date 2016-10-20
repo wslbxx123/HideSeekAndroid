@@ -55,7 +55,8 @@
             android:layout_marginRight="20dp"
             android:text="@string/advice"
             android:textSize="12sp"
-            android:background="@drawable/feedback_type_back"/>
+            android:background="@drawable/feedback_type_back_press"
+            />
         <Button
             android:id="@+id/consultationButton"
             android:layout_width="0px"
@@ -89,7 +90,8 @@
             android:layout_marginBottom="30dp"
             android:text="@string/submit"
             android:textSize="12sp"
-            android:background="@drawable/introduce_btn_back"/>
+            android:background="@drawable/introduce_btn_back"
+            android:enabled="false"/>
         <LinearLayout
             android:id="@+id/contactsLayout"
             style="@style/CrossBarLayout"
