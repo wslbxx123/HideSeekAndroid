@@ -59,10 +59,11 @@ public class ProfileActivity extends BaseActivity{
         mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
         mLastTitleTextView.setText(mLastTitle);
         mPhotoCircleImageView = (CircleNetworkImageView) findViewById(R.id.photoCircleImageView);
+        mPhotoCircleImageView.setDefaultImageResId(R.drawable.default_photo);
         mPhotoCircleImageView.setImageUrl(mUser.getSmallPhotoUrl(), mImageLoader);
         mFriendNameTextView = (TextView) findViewById(R.id.friendNameTextView);
         mNicknameTextView = (TextView) findViewById(R.id.nicknameTextView);
-        mNicknameTextView.setText(mUser.getNickname());
+        mFriendNameTextView.setText(mUser.getNickname());
         mSexImageView = (ImageView) findViewById(R.id.sexImageView);
         mSexImageView.setImageResource(mUser.getSexImageDrawableId());
         mRegionTextView = (TextView) findViewById(R.id.regionTextView);
@@ -114,6 +115,7 @@ public class ProfileActivity extends BaseActivity{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ProfileActivity.this, FriendVerificationActivity.class);
+                intent.putExtra(IntentExtraParam.PROFILE_INFO, mUser);
                 startActivity(intent);
             }
         });

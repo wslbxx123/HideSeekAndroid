@@ -80,20 +80,17 @@
             android:value="@string/xg_access_key" />
 
         <receiver
-            android:name="com.tencent.android.tpush.XGPushReceiver"
+            android:name=".BroadcastReceiver.CustomPushReceiver"
             android:process=":xg_service_v2" >
             <intent-filter android:priority="0x7fffffff" >
+                <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE" />
+                <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
                 <!-- 【必须】 信鸽SDK的内部广播 -->
                 <action android:name="com.tencent.android.tpush.action.SDK" />
                 <action android:name="com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE" />
                 <!-- 【必须】 系统广播：开屏和网络切换 -->
                 <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-
-                <!-- 【可选】 一些常用的系统广播，增强信鸽service的复活机会，请根据需要选择。当然，你也可以添加APP自定义的一些广播让启动service -->
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
             </intent-filter>
         </receiver>
 
@@ -202,7 +199,13 @@
         </activity>
         <activity
             android:name=".UI.Activity.FriendVerificationActivity"
-            android:label="@string/photograph"
+            android:label="@string/friend_verification_title"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".UI.Activity.NewFriendActivity"
+            android:label="@string/new_friends_title"
             android:screenOrientation="portrait">
         </activity>
 
@@ -211,7 +214,7 @@
             android:exported="false" >
             <intent-filter>
                 <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"-->
-                <action android:name="" />
+                <action android:name="android.intent.action" />
             </intent-filter>
         </activity>
 

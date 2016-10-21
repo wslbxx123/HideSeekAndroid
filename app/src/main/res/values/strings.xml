@@ -102,6 +102,19 @@
     <string name="friend_verification_title">Friend Verification</string>
     <string name="request_message">Request Message</string>
     <string name="send">Send</string>
+    <string name="self_introduction">I am %s</string>
+    <string name="new_friends">New Friends</string>
+    <string name="accept">Accept</string>
+    <string name="added">Added</string>
+    <string name="new_friends_title">New Friends</string>
+    <string name="friend_request_message">You got a friend request</string>
+    <string name="accept_friend_request">Accepted your friend request</string>
+    <string name="monster_guide">Monster Guide</string>
+    <string name="win_score">Win Score: </string>
+    <string name="battle_role">Battle Role: </string>
+    <string name="none">None</string>
+    <string name="league_race">%d race is enough</string>
+    <string name="league_races">League of %d races</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
@@ -118,6 +131,7 @@
     <string name="error_password_long">The length of password cannot be greater than 45</string>
     <string name="error_verification_code">The input verification code is wrong</string>
     <string name="error_search_myself">Cannot add yourself as friend</string>
+    <string name="error_guide_not_see_monster">You can only use the monster guide when you see the monster</string>
 
     <string name="warning_not_enabled">You don\'t have the right to beat the monster</string>
     <string name="message_input_city">Input city name to search</string>

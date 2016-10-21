@@ -92,7 +92,12 @@ public class User implements Parcelable {
         this.mPKId = pkId;
         this.mPhone = phone;
         this.mNickname = nickname;
-        this.mRegisterDate = mDateFormat.parse(registerDate);
+
+        if(registerDate.isEmpty()) {
+            this.mRegisterDate =new Date();
+        } else {
+            this.mRegisterDate = mDateFormat.parse(registerDate);
+        }
 
         if(photoUrl != null) {
             this.mPhotoUrl = photoUrl;
@@ -110,6 +115,22 @@ public class User implements Parcelable {
         mRole = role;
         mVersion = version;
         mPinyin = pinyin;
+    }
+
+    public User(long pkId, String phone, String nickname, String registerDate,
+                String photoUrl, String smallPhotoUrl) throws ParseException {
+        this.mPKId = pkId;
+        this.mPhone = phone;
+        this.mNickname = nickname;
+        this.mRegisterDate = mDateFormat.parse(registerDate);
+
+        if(photoUrl != null) {
+            this.mPhotoUrl = photoUrl;
+        }
+
+        if(smallPhotoUrl != null) {
+            this.mSmallPhotoUrl = smallPhotoUrl;
+        }
     }
 
     public User(Parcel parcel) {
@@ -199,6 +220,10 @@ public class User implements Parcelable {
         return mFriendNum;
     }
 
+    public void setFriendNum(int friendNum) {
+        this.mFriendNum = friendNum;
+    }
+
     public SexEnum getSex() {
         return mSex;
     }
@@ -249,6 +274,22 @@ public class User implements Parcelable {
 
     public void setAlias(String alias) {
         mAlias = alias;
+    }
+
+    public void setRequestMessage(String requestMessage) {
+        this.mRequestMessage = requestMessage;
+    }
+
+    public String getRequestMessage() {
+        return mRequestMessage;
+    }
+
+    public void setAddTime(String addTime) {
+        this.mAddTime = addTime;
+    }
+
+    public String getAddTime() {
+        return mAddTime;
     }
 
     public int getRoleDrawableId() {

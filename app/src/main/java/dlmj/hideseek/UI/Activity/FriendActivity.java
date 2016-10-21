@@ -21,10 +21,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import dlmj.hideseek.BusinessLogic.Cache.FriendCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
@@ -125,8 +127,15 @@ public class FriendActivity extends BaseActivity implements UIDataListener<Bean>
             }
         }
 
-//        mLetterListView.setAlphas((String[]) mAlphaIndexer.keySet().toArray());
-//        mLetterListView.invalidate();
+        Object[] objects = mAlphaIndexer.keySet().toArray();
+        String[] alphas = new String[objects.length];
+
+        for(int i = 0; i < objects.length; i++) {
+            alphas[i] = objects[i].toString();
+        }
+
+        mLetterListView.setAlphas(alphas);
+        mLetterListView.invalidate();
     }
 
     private void initData() {
@@ -177,13 +186,26 @@ public class FriendActivity extends BaseActivity implements UIDataListener<Bean>
         mFriendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                User friend = mFriendList.get(position);
+                int type = mFriendListAdapter.getItemViewType(position);
 
-                friend.setIsFriend(true);
-                Intent intent = new Intent(FriendActivity.this, ProfileActivity.class);
-                intent.putExtra(IntentExtraParam.LAST_TITLE, FriendActivity.this.getTitle().toString());
-                intent.putExtra(IntentExtraParam.PROFILE_INFO, friend);
-                startActivity(intent);
+                Intent intent;
+
+                switch(type) {
+                    case 0:
+                        intent = new Intent(FriendActivity.this, NewFriendActivity.class);
+                        intent.putExtra(IntentExtraParam.LAST_TITLE, FriendActivity.this.getTitle().toString());
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        User friend = mFriendList.get(position - 1);
+
+                        friend.setIsFriend(true);
+                        intent = new Intent(FriendActivity.this, ProfileActivity.class);
+                        intent.putExtra(IntentExtraParam.LAST_TITLE, FriendActivity.this.getTitle().toString());
+                        intent.putExtra(IntentExtraParam.PROFILE_INFO, friend);
+                        startActivity(intent);
+                        break;
+                }
             }
         });
 

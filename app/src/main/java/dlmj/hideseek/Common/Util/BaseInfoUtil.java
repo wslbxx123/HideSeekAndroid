@@ -16,6 +16,15 @@ public class BaseInfoUtil {
     private static String SD_CARD_DIR;
     public static final String APP_FOLDER_NAME = "HideAndSeek";
     public static final String APP_IMAGE_NAME = "Image";
+    private static Context APPLICATION_CONTEXT;
+
+    public static void setContext(Context context) {
+        APPLICATION_CONTEXT = context;
+    }
+
+    public static Context getContext(){
+        return APPLICATION_CONTEXT;
+    }
 
     public static boolean hasSdCard() {
         String state = Environment.getExternalStorageState();

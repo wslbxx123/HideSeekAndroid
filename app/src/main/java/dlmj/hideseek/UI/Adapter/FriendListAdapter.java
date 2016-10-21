@@ -21,6 +21,7 @@ import dlmj.hideseek.UI.View.CircleNetworkImageView;
  * Created by Two on 6/5/16.
  */
 public class FriendListAdapter extends BaseAdapter{
+    private final static int VIEW_TYPE_COUNT = 2;
     private Context mContext;
     private List<User> mFriendList;
     private ImageLoader mImageLoader;
@@ -34,14 +35,18 @@ public class FriendListAdapter extends BaseAdapter{
     @Override
     public int getCount() {
         if(mFriendList != null) {
-            return mFriendList.size();
+            return mFriendList.size() + 1;
         }
-        return 0;
+        return 1;
     }
 
     @Override
     public Object getItem(int position) {
-        return mFriendList.get(position);
+        if(position >= 1) {
+            return mFriendList.get(position - 1);
+        }
+
+        return null;
     }
 
     @Override
@@ -50,43 +55,62 @@ public class FriendListAdapter extends BaseAdapter{
     }
 
     @Override
+    public int getViewTypeCount() {
+        return VIEW_TYPE_COUNT;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position < 1 ? position : 1;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         ViewHolder viewHolder;
+        int viewType = getItemViewType(position);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
 
-        if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.friend_item, null);
-            viewHolder = new ViewHolder();
-            viewHolder.mAlphaTextView = (TextView) convertView.findViewById(R.id.alphaTextView);
-            viewHolder.mFriendImageView = (CircleNetworkImageView) convertView.findViewById(R.id.friendImageView);
-            viewHolder.mFriendNameTextView = (TextView) convertView.findViewById(R.id.friendNameTextView);
-            viewHolder.mNicknameTextView = (TextView) convertView.findViewById(R.id.nicknameTextView);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
+        switch(viewType) {
+            case 0:
+                convertView = inflater.inflate(R.layout.new_friend_menu_item, null);
+                break;
+            case 1:
+                if (convertView == null) {
+                    convertView = inflater.inflate(R.layout.friend_item, null);
+                    viewHolder = new ViewHolder();
+                    viewHolder.mAlphaTextView = (TextView) convertView.findViewById(R.id.alphaTextView);
+                    viewHolder.mFriendImageView = (CircleNetworkImageView) convertView.findViewById(R.id.friendImageView);
+                    viewHolder.mFriendNameTextView = (TextView) convertView.findViewById(R.id.friendNameTextView);
+                    viewHolder.mNicknameTextView = (TextView) convertView.findViewById(R.id.nicknameTextView);
+                    convertView.setTag(viewHolder);
+                } else {
+                    viewHolder = (ViewHolder) convertView.getTag();
+                }
 
-        User user = (User)getItem(position);
-        viewHolder.mFriendImageView.setImageUrl(user.getSmallPhotoUrl(), mImageLoader);
+                User user = (User)getItem(position);
+                viewHolder.mFriendImageView.setDefaultImageResId(R.drawable.default_photo);
+                viewHolder.mFriendImageView.setImageUrl(user.getSmallPhotoUrl(), mImageLoader);
 
-        if(user.getAlias() != null && user.getAlias().isEmpty()) {
-            viewHolder.mFriendNameTextView.setText(user.getAlias());
-            viewHolder.mNicknameTextView.setVisibility(View.VISIBLE);
-            viewHolder.mNicknameTextView.setText(String.format(mContext.getString(R.string.name),
-                    user.getNickname()));
-        } else {
-            viewHolder.mFriendNameTextView.setText(user.getNickname());
-            viewHolder.mNicknameTextView.setVisibility(View.INVISIBLE);
-        }
+                if(user.getAlias() != null && user.getAlias().isEmpty()) {
+                    viewHolder.mFriendNameTextView.setText(user.getAlias());
+                    viewHolder.mNicknameTextView.setVisibility(View.VISIBLE);
+                    viewHolder.mNicknameTextView.setText(String.format(mContext.getString(R.string.name),
+                            user.getNickname()));
+                } else {
+                    viewHolder.mFriendNameTextView.setText(user.getNickname());
+                    viewHolder.mNicknameTextView.setVisibility(View.INVISIBLE);
+                }
 
-        String currentStr = PinYinUtil.getAlpha(user.getPinyin());
-        String previewStr = (position - 1) >= 0 ? PinYinUtil.getAlpha(mFriendList
-                .get(position - 1).getPinyin()) : " ";
-        if (!previewStr.equals(currentStr)) {
-            viewHolder.mAlphaTextView.setVisibility(View.VISIBLE);
-            viewHolder.mAlphaTextView.setText(currentStr);
-        } else {
-            viewHolder.mAlphaTextView.setVisibility(View.GONE);
+                String currentStr = PinYinUtil.getAlpha(user.getPinyin());
+                String previewStr = (position - 2) >= 0 ? PinYinUtil.getAlpha(mFriendList
+                        .get(position - 2).getPinyin()) : " ";
+                if (!previewStr.equals(currentStr)) {
+                    viewHolder.mAlphaTextView.setVisibility(View.VISIBLE);
+                    viewHolder.mAlphaTextView.setText(currentStr);
+                } else {
+                    viewHolder.mAlphaTextView.setVisibility(View.GONE);
+                }
+                break;
         }
 
         return convertView;

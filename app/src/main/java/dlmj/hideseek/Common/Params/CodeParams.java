@@ -12,5 +12,6 @@ public class CodeParams {
     public static final int ERROR_LOGIN_FAILED = 10001;
     public static final int ERROR_USER_ALREADY_EXIST = 10005;
     public static final int ERROR_GOAL_DISAPPEAR = 10015;
+    public static final int ERROR_FAIL_SEND_MESSAGE = 10023;
     public static final int ERROR_SEARCH_MYSELF = 10025;
 }

@@ -82,8 +82,16 @@ public class Goal{
         return mShowTypeName;
     }
 
+    public String getIntroduction() {
+        return mIntroduction;
+    }
+
     public int getScore() {
         return mScore;
+    }
+
+    public int getUnionType() {
+        return mUnionType;
     }
 
     public String getGoalName(Context context) {

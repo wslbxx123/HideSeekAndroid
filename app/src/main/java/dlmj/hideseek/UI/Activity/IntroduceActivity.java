@@ -3,12 +3,26 @@ package dlmj.hideseek.UI.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import dlmj.hideseek.BusinessLogic.Cache.UserCache;
+import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.BusinessLogic.Network.PushManager;
+import dlmj.hideseek.Common.Interfaces.UIDataListener;
+import dlmj.hideseek.Common.Model.Bean;
+import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.IntentExtraParam;
+import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Fragment.MeFragment;
 import dlmj.hideseek.UI.Fragment.RaceGroupFragment;
@@ -16,7 +30,7 @@ import dlmj.hideseek.UI.Fragment.RecordFragment;
 import dlmj.hideseek.UI.Fragment.SearchFragment;
 
 //首页
-public class IntroduceActivity extends BaseFragmentActivity{
+public class IntroduceActivity extends BaseFragmentActivity {
     private final String TAG = "Introduce Activity";
     public final static int GO_TO_WARNING = 100;
     public final static int REGISTER_CODE = 300;
@@ -31,6 +45,7 @@ public class IntroduceActivity extends BaseFragmentActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.introduce);
+        initData();
         findView();
         setListener();
     }
@@ -71,6 +86,12 @@ public class IntroduceActivity extends BaseFragmentActivity{
         super.onPause();
     }
 
+    private void initData() {
+        if(UserCache.getInstance().ifLogin()) {
+            PushManager.getInstance(getApplicationContext()).register();
+        }
+    }
+
     private void findView() {
         mFragmentTabHost = (FragmentTabHost) findViewById(R.id.tabHost);
         mFragmentTabHost.setup(this, getSupportFragmentManager(),
@@ -104,5 +125,4 @@ public class IntroduceActivity extends BaseFragmentActivity{
     public FragmentTabHost getFragmentTabHost() {
         return mFragmentTabHost;
     }
-
 }

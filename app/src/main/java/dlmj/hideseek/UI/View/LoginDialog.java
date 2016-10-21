@@ -20,11 +20,13 @@ import java.util.Map;
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.BusinessLogic.Network.PushManager;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.OnUserLoginListener;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Params.UrlParams;
+import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 
@@ -191,6 +193,7 @@ public class LoginDialog extends Dialog implements UIDataListener<Bean> {
         GoalCache.getInstance().setIfNeedClearMap(true);
         dismiss();
 
+        PushManager.getInstance(BaseInfoUtil.getContext()).register();
         Message handlerMessage = new Message();
         handlerMessage.what = LOADING_END;
         mHandler.sendMessage(handlerMessage);

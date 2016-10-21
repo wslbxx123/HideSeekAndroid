@@ -5,11 +5,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 
 import dlmj.hideseek.Common.Interfaces.OnTouchingLetterChangedListener;
+import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 
 /**
@@ -84,16 +84,20 @@ public class CustomLetterListView extends View {
 
         int height = getHeight();
         int width = getWidth();
-        int singleHeight = height / mAlphas.length;
+        int singleHeight = height / 30;
 
-        for(int i = 0 ; i < mAlphas.length; i++) {
-            mPaint.setColor(mContext.getResources().getColor(R.color.gray_8c8c8c));
-            mPaint.setTextSize(20);
-            mPaint.setAntiAlias(true);
-            float xPos = width / 2 - mPaint.measureText(mAlphas[i]) / 2;
-            float yPos = singleHeight * i + singleHeight;
-            canvas.drawText(mAlphas[i], xPos, yPos, mPaint);
-            mPaint.reset();
+        if(mAlphas.length > 0) {
+            int startPosition = (height - singleHeight * (mAlphas.length - 1)) / 2;
+
+            for(int i = 0 ; i < mAlphas.length; i++) {
+                mPaint.setColor(mContext.getResources().getColor(R.color.gray_8c8c8c));
+                mPaint.setTextSize(20);
+                mPaint.setAntiAlias(true);
+                float xPos = width / 2 - mPaint.measureText(mAlphas[i]) / 2;
+                float yPos = singleHeight * i + startPosition;
+                canvas.drawText(mAlphas[i], xPos, yPos, mPaint);
+                mPaint.reset();
+            }
         }
     }
 
@@ -101,23 +105,41 @@ public class CustomLetterListView extends View {
     public boolean dispatchTouchEvent(MotionEvent event) {
         final int action = event.getAction();
         final float y = event.getY();
+        LogUtil.d("y:" + y);
         final OnTouchingLetterChangedListener listener = onTouchingLetterChangedListener;
-        final int choose = (int) (y / getHeight() * mAlphas.length);
 
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                mShowBkg = true;
-                motionInvalidate(choose, listener);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                motionInvalidate(choose, listener);
-                break;
-            case MotionEvent.ACTION_UP:
-                mShowBkg = false;
-                mChoose = -1;
-                invalidate();
-                break;
+        int singleHeight = getHeight() / 30;
+
+        if(mAlphas.length > 0) {
+            int alphaHeight = singleHeight * (mAlphas.length - 1);
+            int startPosition = (getHeight() - alphaHeight) / 2;
+            LogUtil.d("start:" + startPosition);
+            LogUtil.d("alpha height:" + alphaHeight);
+
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    mShowBkg = true;
+                    if(y >= startPosition && y <= startPosition + alphaHeight) {
+                        final int choose = (int) ((y - startPosition)/ alphaHeight * mAlphas.length);
+                        LogUtil.d("alpha choose:" + choose);
+                        motionInvalidate(choose, listener);
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if(y >= startPosition && y <= startPosition + alphaHeight) {
+                        final int choose = (int) ((y - startPosition)/ alphaHeight * mAlphas.length);
+                        LogUtil.d("alpha choose:" + choose);
+                        motionInvalidate(choose, listener);
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mShowBkg = false;
+                    mChoose = -1;
+                    invalidate();
+                    break;
+            }
         }
+
         return true;
     }
 
@@ -125,7 +147,7 @@ public class CustomLetterListView extends View {
         final int oldChoose = mChoose;
 
         if(oldChoose != choose && listener != null) {
-            if(choose > 0 && choose < mAlphas.length) {
+            if(choose >= 0 && choose < mAlphas.length) {
                 listener.onTouchingLetterChanged(mAlphas[choose]);
                 mChoose = choose;
                 invalidate();

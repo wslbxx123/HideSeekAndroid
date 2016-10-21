@@ -37,8 +37,7 @@
             android:paddingRight="10dp"
             android:gravity="center"
             android:textSize="16sp"
-            android:text="@string/send"
-            android:enabled="false"/>
+            android:text="@string/send" />
     </RelativeLayout>
 
     <TextView
@@ -46,7 +45,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/request_message"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"/>
 
     <LinearLayout
         style="@style/CrossBarLayout"

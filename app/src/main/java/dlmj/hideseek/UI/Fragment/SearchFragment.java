@@ -10,10 +10,13 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -56,6 +59,7 @@ import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
+import dlmj.hideseek.Common.Factory.GoalImageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.Goal;
@@ -76,6 +80,7 @@ import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
 import dlmj.hideseek.UI.View.GameView;
 import dlmj.hideseek.UI.View.LoadingDialog;
+import dlmj.hideseek.UI.View.MonsterGuideDialog;
 
 /**
  * Created by Two on 4/29/16.
@@ -135,7 +140,11 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
     private ImageButton mWarningBtn;
     private ImageButton mShareBtn;
     private LoadingDialog mLoadingDialog;
+    private MonsterGuideDialog mMonsterGuideDialog;
+    private TextView mRoleNameTextView;
+    private LinearLayout mRoleLayout;
     private boolean mIfSeeGoal = false;
+    private GoalImageFactory mGoalImageFactory;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -334,6 +343,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
                 getSystemService(Context.SENSOR_SERVICE);
 
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
+        mGoalImageFactory = new GoalImageFactory(getActivity());
 
         ShareSDK.initSDK(getActivity());
     }
@@ -361,7 +371,10 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
         mWarningBtn = (ImageButton) view.findViewById(R.id.warningBtn);
         mShareBtn = (ImageButton) view.findViewById(R.id.shareBtn);
 
-        mLoadingDialog = new LoadingDialog(getActivity(), getContext().getString(R.string.refresh_map_hint));
+        mLoadingDialog = new LoadingDialog(getActivity(), getString(R.string.refresh_map_hint));
+        mMonsterGuideDialog = new MonsterGuideDialog(getActivity());
+        mRoleNameTextView = (TextView) view.findViewById(R.id.roleNameTextView);
+        mRoleLayout = (LinearLayout) view.findViewById(R.id.roleLayout);
     }
 
     private void setSearchView() {
@@ -370,15 +383,18 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
             mMonsterGuideBtn.setVisibility(View.VISIBLE);
             mWarningBtn.setVisibility(View.VISIBLE);
             mShareBtn.setVisibility(View.VISIBLE);
+            mRoleLayout.setVisibility(View.VISIBLE);
 
             User user = UserCache.getInstance().getUser();
             mRoleImageView.setImageResource(user.getRoleImageDrawableId());
+            mRoleNameTextView.setText(user.getRoleName(getActivity()));
             mBombNum.setText(user.getBombNum() + "");
         } else {
             mSetBombLayout.setVisibility(View.GONE);
             mMonsterGuideBtn.setVisibility(View.GONE);
             mWarningBtn.setVisibility(View.GONE);
             mShareBtn.setVisibility(View.GONE);
+            mRoleLayout.setVisibility(View.GONE);
         }
     }
 
@@ -566,6 +582,40 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
                 }
             }
         });
+
+        mMonsterGuideBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMonsterGuide();
+            }
+        });
+    }
+
+    private void showMonsterGuide() {
+        if(!mIfSeeGoal) {
+            mToast.show(getString(R.string.error_guide_not_see_monster));
+            return;
+        }
+
+        if(mGameView.getVisibility() == View.VISIBLE) {
+            if(mMonsterGuideDialog.isShowing()) {
+                mMonsterGuideDialog.dismiss();
+            } else {
+                mMonsterGuideDialog.setEndGoal(mEndGoal);
+                Window dialogWindow = mMonsterGuideDialog.getWindow();
+                WindowManager.LayoutParams layoutParams = dialogWindow.getAttributes();
+                dialogWindow.setGravity(Gravity.CENTER_VERTICAL);
+                layoutParams.y = -20;
+                WindowManager windowManager = getActivity().getWindowManager();
+                Display display = windowManager.getDefaultDisplay();
+                layoutParams.width = display.getWidth() - 30;
+                mMonsterGuideDialog.show();
+            }
+        } else {
+            if(mMonsterGuideDialog.isShowing()) {
+                mMonsterGuideDialog.dismiss();
+            }
+        }
     }
 
     private String getScoreStr(int score) {

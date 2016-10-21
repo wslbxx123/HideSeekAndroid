@@ -39,7 +39,7 @@ public class FriendTableManager {
     public FriendTableManager(Context context){
         mSharedPreferences = SharedPreferenceUtil.getSharedPreferences();
         mSQLiteDatabase = DatabaseManager.getInstance(context).getDatabase();
-        mSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS friend (" +
+        mSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" +
                 "account_id bigint, " +
                 "phone varchar, " +
                 "nickname varchar, " +
@@ -74,11 +74,11 @@ public class FriendTableManager {
                 contentValues.put("pinyin", user.getPinyin());
 
                 String[] args = { String.valueOf(user.getPKId()) };
-                int count = mSQLiteDatabase.update("friend", contentValues, "account_id=?", args);
+                int count = mSQLiteDatabase.update(TABLE_NAME, contentValues, "account_id=?", args);
 
                 if(count == 0) {
                     contentValues.put("account_id", user.getPKId());
-                    mSQLiteDatabase.insert("friend", null, contentValues);
+                    mSQLiteDatabase.insert(TABLE_NAME, null, contentValues);
                 }
             }
 
@@ -91,7 +91,7 @@ public class FriendTableManager {
         List<User> friendList = new LinkedList<>();
 
         try {
-            Cursor cursor = mSQLiteDatabase.query("friend", null, null,
+            Cursor cursor = mSQLiteDatabase.query(TABLE_NAME, null, null,
                     null, null, null, null);
             while (cursor.moveToNext()) {
                 friendList.add(new User(
@@ -127,7 +127,7 @@ public class FriendTableManager {
 
         try {
             Cursor cursor = mSQLiteDatabase.rawQuery(
-                    "select * from friend where nickname like \"%" + keyword + "%\" or pinyin " +
+                    "select * from " + TABLE_NAME + " where nickname like \"%" + keyword + "%\" or pinyin " +
                             "like \"%" + keyword + "%\" order by pinyin", null);
             while (cursor.moveToNext()) {
                 friendList.add(new User(cursor.getLong(cursor.getColumnIndex("account_id")),
@@ -152,17 +152,19 @@ public class FriendTableManager {
     }
 
     public void removeFriend(long accountId) {
-        mSQLiteDatabase.beginTransaction();
-        mSQLiteDatabase.delete(TABLE_NAME, "account_id=", new String[]{accountId + ""});
-        mSQLiteDatabase.setTransactionSuccessful();
-        mSQLiteDatabase.endTransaction();
+        synchronized (FriendTableManager.class) {
+            mSQLiteDatabase.beginTransaction();
+            mSQLiteDatabase.delete(TABLE_NAME, "account_id=", new String[]{accountId + ""});
+            mSQLiteDatabase.setTransactionSuccessful();
+            mSQLiteDatabase.endTransaction();
+        }
     }
 
     public void clear() {
         synchronized (FriendTableManager.class) {
             mSQLiteDatabase.beginTransaction();
-            mSQLiteDatabase.execSQL("delete from friend; " +
-                    "update sqlite_sequence SET seq = 0 where name ='friend'");
+            mSQLiteDatabase.execSQL("delete from " + TABLE_NAME + "; " +
+                    "update sqlite_sequence SET seq = 0 where name ='" + TABLE_NAME + "'");
             mSQLiteDatabase.setTransactionSuccessful();
             mSQLiteDatabase.endTransaction();
         }

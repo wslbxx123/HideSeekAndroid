@@ -117,8 +117,8 @@ public class ModifyNickNameActivity extends BaseActivity implements UIDataListen
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                mSubmitTextView.setEnabled(!TextUtils.isEmpty(s));
+            public void afterTextChanged(Editable editable) {
+                mSubmitTextView.setEnabled(!TextUtils.isEmpty(editable));
             }
         });
         mNetworkHelper.setUiDataListener(this);

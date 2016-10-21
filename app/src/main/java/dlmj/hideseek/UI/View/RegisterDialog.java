@@ -21,10 +21,12 @@ import java.util.TimerTask;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
+import dlmj.hideseek.BusinessLogic.Network.PushManager;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.OnUserRegisterListener;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Params.UrlParams;
+import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 
@@ -355,6 +357,7 @@ public class RegisterDialog extends Dialog {
             public void onDataChanged(Object data) {
                 SMSSDK.submitVerificationCode("86", mRegisterPhone, mCode);
 
+                PushManager.getInstance(BaseInfoUtil.getContext()).register();
                 Message handlerMessage = new Message();
                 handlerMessage.what = LOADING_END;
                 mHandler.sendMessage(handlerMessage);

@@ -68,6 +68,12 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="MonsterGuideDialog" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="LoadingDialog" parent="android:Theme.Dialog">
         <item name="android:windowBackground">@drawable/loading_back</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -91,7 +97,6 @@
         <item name="android:textSize">15sp</item>
     </style>
 
-    <style name="Widget_GifView">
-
-    </style>
+    <style name="NotificationText" parent="android:TextAppearance.StatusBar.EventContent" />
+    <style name="NotificationTitle" parent="android:TextAppearance.StatusBar.EventContent.Title" />
 </resources>
