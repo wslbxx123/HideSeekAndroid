@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/black">
+              android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="44dp"
@@ -28,30 +27,19 @@
             android:paddingRight="10dp"
             android:gravity="center"
             android:textSize="16sp"
-            android:text="@string/profile"/>
+            android:text="@string/settings"/>
 
         <TextView
+            android:id="@+id/browserTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="16sp"
-            android:text="@string/photograph"/>
+            android:text="@string/browser"/>
 
-        <ImageView
-            android:id="@+id/settingsLayout"
-            android:layout_width="40dp"
-            android:layout_height="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/menu"/>
     </RelativeLayout>
-
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/photoNetworkImageView"
+    <WebView
+        android:id="@+id/browserWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 </LinearLayout>

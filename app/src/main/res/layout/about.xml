@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/black">
+              android:background="@color/gray_f1f0f0">
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="44dp"
@@ -28,30 +28,28 @@
             android:paddingRight="10dp"
             android:gravity="center"
             android:textSize="16sp"
-            android:text="@string/profile"/>
+            android:text="@string/settings"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="16sp"
-            android:text="@string/photograph"/>
+            android:text="@string/about"/>
 
-        <ImageView
-            android:id="@+id/settingsLayout"
-            android:layout_width="40dp"
-            android:layout_height="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/menu"/>
     </RelativeLayout>
-
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/photoNetworkImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="90dp"
+        android:src="@drawable/ic_launcher"/>
+    <TextView
+        android:id="@+id/appNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/black"
+        android:text="@string/app_name"/>
 </LinearLayout>

@@ -100,19 +100,6 @@
     <string name="friend_verification_title">好友验证</string>
     <string name="request_message">请求信息</string>
     <string name="send">发送</string>
-    <string name="self_introduction">我是%s</string>
-    <string name="new_friends">新朋友</string>
-    <string name="accept">接受</string>
-    <string name="added">已添加</string>
-    <string name="new_friends_title">新好友</string>
-    <string name="friend_request_message">你收到一个好友请求</string>
-    <string name="accept_friend_request">已接受你的请求</string>
-    <string name="monster_guide">怪兽图鉴</string>
-    <string name="win_score">战胜积分：</string>
-    <string name="battle_role">战斗角色：</string>
-    <string name="none">无</string>
-    <string name="league_race">%d族可胜</string>
-    <string name="league_races">%d族联盟</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>
@@ -128,7 +115,6 @@
     <string name="error_password_long">密码不能超过45位</string>
     <string name="error_verification_code">输入的验证码不正确</string>
     <string name="error_search_myself">不能加自己为好友</string>
-    <string name="error_guide_not_see_monster">你只有看到目标才能使用怪兽图鉴</string>
 
     <string name="warning_not_enabled">你没有打怪兽的权限</string>
 

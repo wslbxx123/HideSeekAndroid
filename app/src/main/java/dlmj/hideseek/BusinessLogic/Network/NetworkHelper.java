@@ -143,12 +143,11 @@ public class NetworkHelper implements Response.Listener<JSONObject>,
                 urlStr.append('=');
                 urlStr.append(URLEncoder.encode(entry.getValue(), "utf-8"));
                 urlStr.append('&');
-                return urlStr.toString();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return urlStr.toString();
     }
 
     protected void disposeResponse(JSONObject response) {

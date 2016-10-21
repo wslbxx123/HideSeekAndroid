@@ -36,11 +36,13 @@ public class CustomSuperToast {
         switch(type) {
             case success:
                 mSuperToast.setBackground(R.color.green_24c557);
+                break;
             case warning:
                 mSuperToast.setBackground(R.color.yellow_ffcc00);
+                break;
             case error:
                 mSuperToast.setBackground(R.color.red_f82a52);
-
+                break;
         }
         mSuperToast.show();
     }
@@ -52,9 +54,9 @@ public class CustomSuperToast {
     public enum MessageType {
         success(0), warning(1), error(2);
 
-        private int value = 0;
+        private int value;
 
-        private MessageType(int value) {    //    必须是private的，否则编译错误
+        MessageType(int value) {    //    必须是private的，否则编译错误
             this.value = value;
         }
 

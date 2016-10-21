@@ -16,41 +16,39 @@
             android:textSize="16sp"
             android:text="@string/settings_title"/>
     </LinearLayout>
-    
+    <!--清除缓存-->
     <LinearLayout
-        style="@style/CrossBarLayout"
-        android:layout_marginTop="12dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="18dp"
-            android:text="@string/news_notification"
-            android:textColor="@color/black"/>
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/CrossBarLayout"
-        android:layout_marginTop="12dp">
+        android:id="@+id/clearCacheLayout"
+        style="@style/CrossBarLayout">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="18dp"
             android:text="@string/clear_cache"
             android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/cacheSizeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/gray_8e8d8b"/>
     </LinearLayout>
-
+    <!--反馈-->
     <LinearLayout
+        android:id="@+id/feedbackLayout"
         style="@style/CrossBarLayout"
         android:layout_marginTop="12dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="18dp"
-            android:text="@string/help_and_feedback"
+            android:text="@string/feedback"
             android:textColor="@color/black"/>
     </LinearLayout>
-
+    <!--评价-->
     <LinearLayout
+        android:id="@+id/rateLayout"
         style="@style/CrossBarLayout"
         android:layout_marginTop="1dp">
         <TextView
@@ -60,8 +58,21 @@
             android:text="@string/rate_hideseek"
             android:textColor="@color/black"/>
     </LinearLayout>
-
+    <!--使用指南-->
     <LinearLayout
+        android:id="@+id/useGuideLayout"
+        style="@style/CrossBarLayout"
+        android:layout_marginTop="1dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:text="@string/use_guide"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+    <!--关于-->
+    <LinearLayout
+        android:id="@+id/aboutLayout"
         style="@style/CrossBarLayout"
         android:layout_marginTop="1dp">
         <TextView
@@ -71,7 +82,7 @@
             android:text="@string/about"
             android:textColor="@color/black"/>
     </LinearLayout>
-
+    <!--退出登陆-->
     <LinearLayout
         android:id="@+id/logoutLayout"
         style="@style/CrossBarLayout"
