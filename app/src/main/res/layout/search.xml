@@ -117,7 +117,7 @@
 
     <LinearLayout
         android:id="@+id/roleLayout"
-        android:layout_width="115dp"
+        android:layout_width="110dp"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -131,14 +131,15 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:scaleType="centerInside"
-            android:layout_margin="5dp"/>
+            android:layout_marginLeft="5dp"/>
 
         <TextView
             android:id="@+id/roleNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="@color/brown_8f6f40"/>
     </LinearLayout>
 
     <ImageButton
@@ -207,11 +208,11 @@
         android:background="@drawable/share_back"/>
 
     <Button
-        android:id="@+id/getButton"
+        android:id="@+id/hitButton"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
-        android:text="@string/get"
+        android:text="@string/hit"
         android:background="@drawable/get_btn_back"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="130dp"/>

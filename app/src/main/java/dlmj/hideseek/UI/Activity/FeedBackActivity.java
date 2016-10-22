@@ -143,7 +143,7 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
         params.put("type",type);
         params.put("content",mContentEditText.getText().toString());
         params.put("contact",mContactsEditText.getText().toString());
-        mNetworkHelper.sendPostRequest(UrlParams.ADDFEEDBACK_URL,params);
+        mNetworkHelper.sendPostRequest(UrlParams.ADD_FEEDBACK_URL,params);
     }
 
     @Override

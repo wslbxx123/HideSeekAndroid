@@ -113,7 +113,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
     private double mDistance;
     private SensorManager mSensorManager;
     private boolean mIfRegisteredSensor;
-    private Button mGetButton;
+    private Button mHitButton;
     private Hashtable<Long, Marker> mMarkerHashTable = new Hashtable<>();
     private LinearLayout mDistanceLayout;
     private ErrorMessageFactory mErrorMessageFactory;
@@ -302,6 +302,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
         mMapView.onPause();
         LogUtil.d(TAG, "Map View is paused");
         CameraInterface.getInstance(getActivity()).doStopCamera();
+        mRefreshMapHandler.removeCallbacks(mRunnable);
 
         if (mIfRegisteredSensor) {
             mSensorManager.unregisterListener(this);
@@ -357,7 +358,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
 
         mNavigateButton = (Button) view.findViewById(R.id.navigateButton);
         mDistanceTextView = (TextView) view.findViewById(R.id.distanceTextView);
-        mGetButton = (Button) view.findViewById(R.id.getButton);
+        mHitButton = (Button) view.findViewById(R.id.hitButton);
         mDistanceLayout = (LinearLayout) view.findViewById(R.id.distanceLayout);
         mGameView = (GameView) view.findViewById(R.id.gameView);
         mRoleImageView = (ImageView) view.findViewById(R.id.roleImageView);
@@ -559,7 +560,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
             }
         });
 
-        mGetButton.setOnClickListener(new View.OnClickListener() {
+        mHitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mGameView.getGoalDisplayed()) {

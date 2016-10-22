@@ -4,7 +4,7 @@
     <string name="app_name">HideSeek</string>
     <string name="login">Log In</string>
     <string name="register">Register</string>
-    <string name="get">Get</string>
+    <string name="hit">Hit</string>
     <string name="tip_title">Leader, a goal there!</string>
     <string name="tip_text">Believe me! Get mushroom to go travel! Now register to check points! </string>
     <string name="action_settings">Settings</string>
@@ -102,6 +102,31 @@
     <string name="friend_verification_title">Friend Verification</string>
     <string name="request_message">Request Message</string>
     <string name="send">Send</string>
+    <string name="feedback">FeedBack</string>
+    <string name="contacts">Contacts</string>
+    <string name="phone_or_email">Phone Or Email</string>
+    <string name="submit">Submit</string>
+    <string name="advice">Advice</string>
+    <string name="consultation">Consultation</string>
+    <string name="complaints">Complaints</string>
+    <string name="submit_success">Submit Success!</string>
+    <string name="use_guide">Use Guide</string>
+    <string name="clear_finish">Clear Finish!</string>
+    <string name="clear_dialog_content">Are you sure you clear the local cache?</string>
+    <string name="browser">Browser</string>
+    <string name="monster_guide">Monster Guide</string>
+    <string name="win_score">Win Score: </string>
+    <string name="battle_role">Battle Role: </string>
+    <string name="accept">Accept</string>
+    <string name="added">Added</string>
+    <string name="new_friends">New Friends</string>
+    <string name="new_friends_title">New Friends</string>
+    <string name="friend_accept_message">%s accept your friend request</string>
+    <string name="friend_request_message">You got a friend request</string>
+    <string name="self_introduction">I am %s</string>
+    <string name="none">None</string>
+    <string name="league_race">%d race is enough</string>
+    <string name="league_races">League of %d races</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
@@ -118,6 +143,7 @@
     <string name="error_password_long">The length of password cannot be greater than 45</string>
     <string name="error_verification_code">The input verification code is wrong</string>
     <string name="error_search_myself">Cannot add yourself as friend</string>
+    <string name="error_guide_not_see_monster">You can only use the monster guide when you see the monster</string>
 
     <string name="warning_not_enabled">You don\'t have the right to beat the monster</string>
     <string name="message_input_city">Input city name to search</string>
@@ -139,4 +165,6 @@
     <string name="title_activity_warning">WarningActivity</string>
     <string name="hello_world">Hello world!</string>
 
+    <!--使用指南的url-->
+    <string name="use_guide_url">"http://mp.weixin.qq.com/s?__biz=MzIzNzQ4MTU1NQ==&amp;mid=100000001&amp;idx=1&amp;sn=5545a634716ca5fce962759fe5fb18c0&amp;chksm=68c6ba3d5fb1332b6e0fb3080c6d94da4af57940068ef9ae2b579a88fd8f90c59e357e7ece1d&amp;scene=18#wechat_redirect"</string>
 </resources>

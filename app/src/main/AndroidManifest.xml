@@ -211,7 +211,7 @@
             android:exported="false" >
             <intent-filter>
                 <!-- 若使用AndroidStudio，请设置android:name="android.intent.action"-->
-                <action android:name="" />
+                <action android:name="android.intent.action" />
             </intent-filter>
         </activity>
 
