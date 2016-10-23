@@ -26,6 +26,7 @@ import dlmj.hideseek.UI.Activity.IntroduceActivity;
 import dlmj.hideseek.UI.Activity.MyOrderActivity;
 import dlmj.hideseek.UI.Activity.MyProfileActivity;
 import dlmj.hideseek.UI.Activity.SettingActivity;
+import dlmj.hideseek.UI.Activity.StoreActivity;
 import dlmj.hideseek.UI.View.CircleNetworkImageView;
 
 /**
@@ -51,7 +52,8 @@ public class MeFragment extends BaseFragment {
     private LinearLayout mScoreLayout;
     private LinearLayout mFriendLayout;
     private ImageView mRoleImageView;
-    private LinearLayout mMyOrder;
+    private LinearLayout mRewardExchangeLayout;
+    private LinearLayout mMyOrderLayout;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
@@ -102,7 +104,8 @@ public class MeFragment extends BaseFragment {
         mScoreLayout = (LinearLayout) view.findViewById(R.id.scoreLayout);
         mRoleImageView = (ImageView) view.findViewById(R.id.roleImageView);
         mFriendLayout = (LinearLayout) view.findViewById(R.id.friendLayout);
-        mMyOrder = (LinearLayout) view.findViewById(R.id.myOrder);
+        mRewardExchangeLayout = (LinearLayout) view.findViewById(R.id.rewardExchangeLayout);
+        mMyOrderLayout = (LinearLayout) view.findViewById(R.id.myOrderLayout);
 
         setUserInfo();
     }
@@ -115,7 +118,16 @@ public class MeFragment extends BaseFragment {
             }
         });
 
-        mMyOrder.setOnClickListener(new View.OnClickListener() {
+        mRewardExchangeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //订单详情页
+                Intent intent = new Intent(getActivity(), StoreActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mMyOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //订单详情页

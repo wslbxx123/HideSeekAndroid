@@ -19,34 +19,39 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import dlmj.hideseek.BusinessLogic.Cache.ExchangeOrderCache;
+import dlmj.hideseek.BusinessLogic.Cache.PurchaseOrderCache;
 import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
-import dlmj.hideseek.Common.Model.RaceGroup;
+import dlmj.hideseek.Common.Model.ExchangeOrder;
+import dlmj.hideseek.Common.Model.PurchaseOrder;
 import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
+import dlmj.hideseek.DataAccess.PurchaseOrderTableManager;
 import dlmj.hideseek.DataAccess.RaceGroupTableManager;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.BaseFragmentActivity;
-import dlmj.hideseek.UI.Adapter.RaceGroupAdapter;
+import dlmj.hideseek.UI.Adapter.ExchangeOrderAdapter;
+import dlmj.hideseek.UI.Adapter.PurchaseOrderAdapter;
 
 /**
- * Created by Two on 5/14/16.
+ * Created by Two on 23/10/2016.
  */
-public class RaceGroupFragment extends BaseFragment implements UIDataListener<Bean>, ListView.OnScrollListener {
-    private final static String TAG = "RaceGroupFragment";
+public class ExchangeOrderFragment extends BaseFragment implements UIDataListener<Bean>, ListView.OnScrollListener{
+    private final static String TAG = "ExchangeOrderFragment";
     private final static int MSG_REFRESH_LIST = 1;
     private static final int VISIBLE_REFRESH_COUNT = 3;
     private View mRootView;
-    private PullToRefreshListView mRaceGroupListView;
-    private RaceGroupAdapter mRaceGroupAdapter;
-    private List<RaceGroup> mRaceGroupList = new LinkedList<>();
+    private PullToRefreshListView mExchangeOrderListView;
+    private ExchangeOrderAdapter mExchangeOrderAdapter;
+    private List<ExchangeOrder> mExchangeOrderList = new LinkedList<>();
     private NetworkHelper mNetworkHelper;
-    private NetworkHelper mGetRaceGroupNetworkHelper;
+    private NetworkHelper mGetExchangeOrderNetworkHelper;
     private boolean mIsLoading = false;
     private View mLoadMoreView;
     private ErrorMessageFactory mErrorMessageFactory;
@@ -54,8 +59,8 @@ public class RaceGroupFragment extends BaseFragment implements UIDataListener<Be
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_REFRESH_LIST:
-                    mRaceGroupAdapter.notifyDataSetChanged();
-                    mRaceGroupListView.onRefreshComplete();
+                    mExchangeOrderAdapter.notifyDataSetChanged();
+                    mExchangeOrderListView.onRefreshComplete();
                     break;
             }
         }
@@ -64,7 +69,7 @@ public class RaceGroupFragment extends BaseFragment implements UIDataListener<Be
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(mRootView == null) {
-            mRootView = inflater.inflate(R.layout.race_group, null);
+            mRootView = inflater.inflate(R.layout.exchange_order, null);
             initData();
             findView();
             setListener();
@@ -75,31 +80,31 @@ public class RaceGroupFragment extends BaseFragment implements UIDataListener<Be
             parent.removeView(mRootView);
         }
 
-        mRaceGroupList.clear();
-        if(RaceGroupCache.getInstance(getActivity()).getList() != null) {
-            mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
+        mExchangeOrderList.clear();
+        if(ExchangeOrderCache.getInstance(getActivity()).getList() != null) {
+            mExchangeOrderList.addAll(ExchangeOrderCache.getInstance(getActivity()).getList());
         }
-        mRaceGroupAdapter.notifyDataSetChanged();
+        mExchangeOrderAdapter.notifyDataSetChanged();
 
         if(UserCache.getInstance().ifLogin()) {
-            mRaceGroupListView.setRefreshing(true);
+            mExchangeOrderListView.setRefreshing(true);
         }
         return mRootView;
     }
 
     private void initData() {
-        mRaceGroupAdapter = new RaceGroupAdapter(getActivity(), mRaceGroupList);
+        mExchangeOrderAdapter = new ExchangeOrderAdapter(getActivity(), mExchangeOrderList);
         mNetworkHelper = new NetworkHelper(getActivity());
-        mGetRaceGroupNetworkHelper = new NetworkHelper(getActivity());
+        mGetExchangeOrderNetworkHelper = new NetworkHelper(getActivity());
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
     }
 
     private void findView() {
-        mRaceGroupListView = (PullToRefreshListView) mRootView.findViewById(R.id.raceGroupListView);
-        mRaceGroupListView.setAdapter(mRaceGroupAdapter);
-        mRaceGroupListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mExchangeOrderListView = (PullToRefreshListView) mRootView.findViewById(R.id.exchangeOrderListView);
+        mExchangeOrderListView.setAdapter(mExchangeOrderAdapter);
+        mExchangeOrderListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
 
-        ILoadingLayout startLabels = mRaceGroupListView.getLoadingLayoutProxy(true, false);
+        ILoadingLayout startLabels = mExchangeOrderListView.getLoadingLayoutProxy(true, false);
         startLabels.setPullLabel("");
         startLabels.setRefreshingLabel("");
         startLabels.setReleaseLabel("");
@@ -114,24 +119,24 @@ public class RaceGroupFragment extends BaseFragment implements UIDataListener<Be
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
                 if(UserCache.getInstance().ifLogin()) {
-                    mRaceGroupListView.setRefreshing(true);
+                    mExchangeOrderListView.setRefreshing(true);
                 }
             }
         });
 
-        mGetRaceGroupNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
+        mGetExchangeOrderNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
             @Override
             public void onDataChanged(Bean data) {
                 LogUtil.d(TAG, data.getResult());
                 mResponseCode = CodeParams.SUCCESS;
                 RaceGroupCache.getInstance(getActivity()).addRaceGroup(data.getResult());
 
-                mRaceGroupList.clear();
-                mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
-                mRaceGroupAdapter.notifyDataSetChanged();
+                mExchangeOrderList.clear();
+                mExchangeOrderList.addAll(ExchangeOrderCache.getInstance(getActivity()).getList());
+                mExchangeOrderAdapter.notifyDataSetChanged();
 
                 mIsLoading = false;
-                mRaceGroupListView.getRefreshableView().removeFooterView(mLoadMoreView);
+                mExchangeOrderListView.getRefreshableView().removeFooterView(mLoadMoreView);
             }
 
             @Override
@@ -144,7 +149,7 @@ public class RaceGroupFragment extends BaseFragment implements UIDataListener<Be
             }
         });
 
-        mRaceGroupListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+        mExchangeOrderListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Map<String, String> params = new HashMap<>();
@@ -161,16 +166,16 @@ public class RaceGroupFragment extends BaseFragment implements UIDataListener<Be
             }
         });
 
-        mRaceGroupListView.setOnScrollListener(this);
+        mExchangeOrderListView.setOnScrollListener(this);
     }
 
     @Override
     public void onDataChanged(Bean data) {
         LogUtil.d(TAG, data.getResult());
         mResponseCode = CodeParams.SUCCESS;
-        RaceGroupCache.getInstance(getActivity()).setRaceGroup(data.getResult());
-        mRaceGroupList.clear();
-        mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
+        ExchangeOrderCache.getInstance(getActivity()).setOrders(data.getResult());
+        mExchangeOrderList.clear();
+        mExchangeOrderList.addAll(ExchangeOrderCache.getInstance(getActivity()).getList());
         Message.obtain(mUiHandler, MSG_REFRESH_LIST).sendToTarget();
     }
 
@@ -193,25 +198,27 @@ public class RaceGroupFragment extends BaseFragment implements UIDataListener<Be
                          int totalItemCount) {
         if(totalItemCount - visibleItemCount - firstVisibleItem <= VISIBLE_REFRESH_COUNT
                 && !mIsLoading) {
-            if(mRaceGroupList.size() >= 10) {
+            if(mExchangeOrderList.size() >= 10) {
                 mIsLoading = true;
-                mRaceGroupListView.getRefreshableView().addFooterView(mLoadMoreView);
-                boolean hasData = RaceGroupCache.getInstance(getActivity()).
-                        getMoreRaceGroup(10, false);
+                mExchangeOrderListView.getRefreshableView().addFooterView(mLoadMoreView);
+                boolean hasData = PurchaseOrderCache.getInstance(getActivity()).
+                        getMoreOrders(10, false);
 
                 if(!hasData) {
                     Map<String, String> params = new HashMap<>();
-                    params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
-                    params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                    params.put("version", PurchaseOrderTableManager.getInstance(
+                            getActivity()).getVersion() + "");
+                    params.put("record_min_id", PurchaseOrderTableManager.getInstance(
+                            getActivity()).getOrderMinId() + "");
                     mResponseCode = 0;
-                    mGetRaceGroupNetworkHelper.sendPostRequest(UrlParams.GET_RACE_GROUP_URL, params);
+                    mGetExchangeOrderNetworkHelper.sendPostRequest(UrlParams.GET_EXCHANGE_ORDERS_URL, params);
                 } else {
-                    mRaceGroupList.clear();
-                    mRaceGroupList.addAll(RaceGroupCache.getInstance(getActivity()).getList());
-                    mRaceGroupAdapter.notifyDataSetChanged();
+                    mExchangeOrderList.clear();
+                    mExchangeOrderList.addAll(ExchangeOrderCache.getInstance(getActivity()).getList());
+                    mExchangeOrderAdapter.notifyDataSetChanged();
 
                     mIsLoading = false;
-                    mRaceGroupListView.getRefreshableView().removeFooterView(mLoadMoreView);
+                    mExchangeOrderListView.getRefreshableView().removeFooterView(mLoadMoreView);
                 }
             }
         }

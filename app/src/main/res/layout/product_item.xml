@@ -6,23 +6,23 @@
               android:orientation="vertical">
 
     <TextView
-        android:id="@+id/product_name"
+        android:id="@+id/productNameTextView"
         android:layout_width="match_parent"
         android:paddingLeft="8dp"
         android:gravity="center_vertical"
-        android:layout_height="24dp"
-        android:text="定时炸弹"/>
+        android:layout_height="24dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:gravity="center"
-        android:layout_height="100dp"
-        >
+        android:layout_height="100dp">
         <com.android.volley.toolbox.NetworkImageView
-            android:id="@+id/product_image_url"
+            android:id="@+id/productImageView"
             android:layout_width="match_parent"
             android:src="@drawable/hsbomb"
             android:layout_height="match_parent"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -33,45 +33,49 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/dollar"/>
+
         <TextView
-            android:id="@+id/price"
+            android:id="@+id/priceTextView"
             android:layout_marginLeft="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#D30B06"
+            android:textColor="@color/red_d30b06"
             android:textSize="13sp"
             android:text="32"/>
+
         <ImageView
             android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/people_num"/>
+
         <TextView
-            android:id="@+id/purchase_count"
+            android:id="@+id/purchaseCountTextView"
             android:layout_marginLeft="3dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#D30B06"
+            android:textColor="@color/red_d30b06"
             android:textSize="13sp"
             android:text="15865人购买"/>
     </LinearLayout>
+
     <TextView
-        android:id="@+id/introduction"
+        android:id="@+id/introductionTextView"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:layout_marginTop="3dp"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="46dp"
-        android:textSize="13sp"
-        android:text="放在指定位置,当怪兽出现可触发爆炸,造成大范围严重伤害."/>
+        android:textSize="13sp"/>
+
     <Button
-        android:id="@+id/btn_buy"
+        android:id="@+id/buyBtn"
         android:layout_marginTop="3dp"
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:background="@color/yellow_ffcc00"
         android:textSize="13sp"
-        android:text="购买"
+        android:text="@string/purchase"
         />
 </LinearLayout>

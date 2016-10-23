@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -22,6 +21,7 @@ import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
  * Created by Two on 6/3/16.
  */
 public class RaceGroupTableManager {
+    private final static String TABLE_NAME = "race_group";
     private SQLiteDatabase mSQLiteDatabase;
     private static RaceGroupTableManager mInstance;
     private SharedPreferences mSharedPreferences;
@@ -40,7 +40,7 @@ public class RaceGroupTableManager {
     public RaceGroupTableManager(Context context){
         mSharedPreferences = SharedPreferenceUtil.getSharedPreferences();
         mSQLiteDatabase = DatabaseManager.getInstance(context).getDatabase();
-        mSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS race_group (" +
+        mSQLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
                 "record_id bigint, " +
                 "photo_url varchar, " +
                 "nickname varchar, " +
@@ -66,7 +66,7 @@ public class RaceGroupTableManager {
                 contentValues.put("score_sum", raceGroup.getRecordItem().getScoreSum());
                 contentValues.put("version", raceGroup.getRecordItem().getVersion());
                 contentValues.put("show_type_name", raceGroup.getRecordItem().getShowTypeName());
-                mSQLiteDatabase.insert("race_group", null, contentValues);
+                mSQLiteDatabase.insert(TABLE_NAME, null, contentValues);
             }
 
             mSQLiteDatabase.setTransactionSuccessful();
@@ -96,11 +96,11 @@ public class RaceGroupTableManager {
                 contentValues.put("version", raceGroup.getRecordItem().getVersion());
                 contentValues.put("show_type_name", raceGroup.getRecordItem().getShowTypeName());
                 String[] args = { String.valueOf(raceGroup.getRecordId()) };
-                int count = mSQLiteDatabase.update("race_group", contentValues, "record_id=?", args);
+                int count = mSQLiteDatabase.update(TABLE_NAME, contentValues, "record_id=?", args);
 
                 if(count == 0) {
                     contentValues.put("record_id", raceGroup.getRecordId());
-                    mSQLiteDatabase.insert("race_group", null, contentValues);
+                    mSQLiteDatabase.insert(TABLE_NAME, null, contentValues);
                 }
             }
             mSQLiteDatabase.setTransactionSuccessful();
@@ -109,8 +109,8 @@ public class RaceGroupTableManager {
     }
 
     public void clearMoreData() {
-        Cursor cursor = mSQLiteDatabase.rawQuery("select record_id from race_group " +
-                "order by record_id desc limit 20", null);
+        Cursor cursor = mSQLiteDatabase.rawQuery("select record_id from " + TABLE_NAME +
+                " order by record_id desc limit 20", null);
         cursor.moveToLast();
 
         if(cursor.getCount() > 0) {
@@ -124,7 +124,7 @@ public class RaceGroupTableManager {
             SharedPreferenceSettings minId = SharedPreferenceSettings.RACE_GROUP_RECORD_MIN_ID;
             editor.putLong(minId.getId(), recordId);
             editor.apply();
-            mSQLiteDatabase.delete("race_group", "record_id<?", new String[]{recordId + ""});
+            mSQLiteDatabase.delete(TABLE_NAME, "record_id<?", new String[]{recordId + ""});
         }
 
         cursor.close();
@@ -160,10 +160,10 @@ public class RaceGroupTableManager {
         Cursor cursor;
 
         if(limit == null) {
-            cursor = mSQLiteDatabase.query("race_group", null, queryStr,
+            cursor = mSQLiteDatabase.query(TABLE_NAME, null, queryStr,
                     selectionArgs, null, null, "record_id desc");
         } else {
-            cursor = mSQLiteDatabase.query("race_group", null, queryStr,
+            cursor = mSQLiteDatabase.query(TABLE_NAME, null, queryStr,
                     selectionArgs, null, null, "record_id desc", limit);
         }
 
@@ -193,8 +193,8 @@ public class RaceGroupTableManager {
     public void clear() {
         synchronized (RaceGroupTableManager.class) {
             mSQLiteDatabase.beginTransaction();
-            mSQLiteDatabase.execSQL("delete from race_group; " +
-                    "update sqlite_sequence SET seq = 0 where name ='race_group'");
+            mSQLiteDatabase.execSQL("delete from " + TABLE_NAME + "; " +
+                    "update sqlite_sequence SET seq = 0 where name ='" + TABLE_NAME + "'");
             mSQLiteDatabase.setTransactionSuccessful();
             mSQLiteDatabase.endTransaction();
         }
@@ -232,7 +232,7 @@ public class RaceGroupTableManager {
     }
 
     public List<RaceGroup> getMoreRaceGroup(int count, long version, boolean hasLoaded) {
-        Cursor cursor = mSQLiteDatabase.query("race_group", null, "version<=? and record_id<?",
+        Cursor cursor = mSQLiteDatabase.query(TABLE_NAME, null, "version<=? and record_id<?",
                 new String[]{version + "", mRecordMinId + ""}, null, null, "record_id desc", count + "");
         List<RaceGroup> raceGroupList = new LinkedList<>();
         if(cursor.getCount() == count || hasLoaded) {

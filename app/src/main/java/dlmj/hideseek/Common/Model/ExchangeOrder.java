@@ -34,4 +34,52 @@ public class ExchangeOrder {
         this.mIntroduction = introduction;
         this.mVersion = version;
     }
+
+    public int getStatus() {
+        return this.mStatus;
+    }
+
+    public String getCreateTime() {
+        return this.mCreateTime;
+    }
+
+    public String getUpdateTime() {
+        return this.mUpdateTime;
+    }
+
+    public int getCount() {
+        return this.mCount;
+    }
+
+    public long getRewardId() {
+        return this.mRewardId;
+    }
+
+    public String getRewardName() {
+        return this.mRewardName;
+    }
+
+    public String getImageUrl() {
+        return this.mImageUrl;
+    }
+
+    public int getRecord() {
+        return this.mRecord;
+    }
+
+    public int getExchangeCount() {
+        return this.mExchangeCount;
+    }
+
+    public String getIntroduction() {
+        return this.mIntroduction;
+    }
+
+    public long getVersion() {
+        return this.mVersion;
+    }
+
+    public long getOrderId() {
+        return this.mOrderId;
+    }
 }

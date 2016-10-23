@@ -519,10 +519,6 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
                 String message = mErrorMessageFactory.get(errorCode);
                 mToast.show(message);
 
-                if(errorCode == CodeParams.ERROR_SESSION_INVALID) {
-                    UserInfoManager.getInstance().checkIfGoToLogin(getActivity());
-                }
-
                 mIfSeeGoal = false;
             }
         };

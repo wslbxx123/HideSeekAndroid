@@ -1,20 +1,19 @@
 package dlmj.hideseek.UI.Activity;
 
 import android.os.Bundle;
-import android.widget.ListView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.TextView;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
-import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
-import dlmj.hideseek.Common.Interfaces.UIDataListener;
-import dlmj.hideseek.Common.Model.Bean;
-import dlmj.hideseek.Common.Params.CodeParams;
-import dlmj.hideseek.Common.Params.UrlParams;
-import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
-import dlmj.hideseek.UI.Adapter.MyOrderAdapter;
+import dlmj.hideseek.UI.Fragment.ExchangeOrderFragment;
+import dlmj.hideseek.UI.Fragment.PurchaseOrderFragment;
 
 /**
  * 创建者     ZPL
@@ -25,11 +24,12 @@ import dlmj.hideseek.UI.Adapter.MyOrderAdapter;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class MyOrderActivity extends BaseFragmentActivity {
-    private final static String TAG = "MyOrderActivity";
-    private ListView mListView;
-    private NetworkHelper mNetworkHelper;
-    private ErrorMessageFactory mErrorMessageFactory;
+public class MyOrderActivity extends BaseFragmentActivity implements View.OnClickListener{
+    private TextView mLeft;
+    private TextView mRight;
+    private FragmentManager mManager;
+    private ViewPager mViewPager;
+    private List<Fragment> mFragmentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,38 +37,77 @@ public class MyOrderActivity extends BaseFragmentActivity {
         setContentView(R.layout.my_order);
         initView();
         initData();
-        initListener();
+        setListener();
     }
 
-    private void initListener() {
-        mNetworkHelper.setUiDataListener(new UIDataListener<Bean>() {
+    private void setListener() {
+        mLeft.setOnClickListener(this);
+        mRight.setOnClickListener(this);
+        mLeft.setSelected(true);
+        mViewPager.setCurrentItem(0);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onDataChanged(Bean data) {
-                System.out.println(data.getResult());
-                mResponseCode = CodeParams.SUCCESS;
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
 
             @Override
-            public void onErrorHappened(int errorCode, String errorMessage) {
-                LogUtil.e(TAG, errorMessage);
-                mResponseCode = errorCode;
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        mLeft.setSelected(true);
+                        mRight.setSelected(false);
+                        break;
+                    case 1:
+                        mLeft.setSelected(false);
+                        mRight.setSelected(true);
+                        break;
+                }
+            }
 
-                String message = mErrorMessageFactory.get(errorCode);
-                mToast.show(message);
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
     }
 
     private void initData() {
-        mErrorMessageFactory = new ErrorMessageFactory(this);
-        mNetworkHelper = new NetworkHelper(MyOrderActivity.this);
-        Map<String, String> params = new HashMap<>();
-        mResponseCode = 0;
-        mNetworkHelper.sendPostRequest(UrlParams.GET_ORDERS_URL, params);
-        mListView.setAdapter(new MyOrderAdapter(MyOrderActivity.this));
+
+        mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return mFragmentList.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return mFragmentList.size();
+            }
+        });
     }
 
     private void initView() {
-        mListView = (ListView) findViewById(R.id.my_order_listView);
+        mFragmentList.add(new PurchaseOrderFragment());
+        mFragmentList.add(new ExchangeOrderFragment());
+        mLeft = (TextView) findViewById(R.id.tv_left);
+        mRight = (TextView) findViewById(R.id.tv_right);
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_left:
+                mLeft.setSelected(true);
+                mRight.setSelected(false);
+                mViewPager.setCurrentItem(0);
+                break;
+            case R.id.tv_right:
+                mLeft.setSelected(false);
+                mRight.setSelected(true);
+                mViewPager.setCurrentItem(1);
+                break;
+        }
     }
 }

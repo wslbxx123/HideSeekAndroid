@@ -36,6 +36,8 @@ public class UrlParams {
     public static String UPDATE_CHANNEL_URL = "https://www.hideseek.cn/home/user/updateChannelId";
     public static String ADD_FEEDBACK_URL = "https://www.hideseek.cn/home/setting/addFeedback";
     public static String ACCEPT_FRIEND_URL = "https://www.hideseek.cn/home/friend/acceptFriend";
+    public static String GET_PURCHASE_ORDERS_URL = "https://www.hideseek.cn/home/store/getPurchaseOrders";
+    public static String GET_EXCHANGE_ORDERS_URL = "https://www.hideseek.cn/home/store/getExchangeOrders";
 
     /**
      * Debug Mode
@@ -69,4 +71,5 @@ public class UrlParams {
 //    public static String UPDATE_CHANNEL_URL = "http://" + IP_ADDRESS + "/home/user/updateChannelId";
 //    public static String ADD_FEEDBACK_URL = "http://" + IP_ADDRESS + "/home/setting/addFeedback";
 //    public static String ACCEPT_FRIEND_URL = "http://" + IP_ADDRESS + "/home/friend/acceptFriend";
+//    public static String GET_PURCHASE_ORDER_URL = "http://" + IP_ADDRESS + "/home/store/getPurchaseOrder";
 }

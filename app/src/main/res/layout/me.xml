@@ -139,6 +139,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/rewardExchangeLayout"
         style="@style/CrossBarLayout"
         android:layout_marginTop="12dp">
         <ImageView
@@ -157,7 +158,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/myOrder"
+        android:id="@+id/myOrderLayout"
         style="@style/CrossBarLayout"
         android:layout_marginTop="12dp">
         <ImageView

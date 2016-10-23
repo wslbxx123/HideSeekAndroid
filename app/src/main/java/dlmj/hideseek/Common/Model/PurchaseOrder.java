@@ -36,4 +36,56 @@ public class PurchaseOrder {
         this.mIntroduction = introduction;
         this.mVersion = version;
     }
+
+    public int getStatus() {
+        return this.mStatus;
+    }
+
+    public String getCreateTime() {
+        return this.mCreateTime;
+    }
+
+    public String getUpdateTime() {
+        return this.mUpdateTime;
+    }
+
+    public int getCount() {
+        return this.mCount;
+    }
+
+    public String getTradeNo() {
+        return this.mTradeNo;
+    }
+
+    public long getProductId() {
+        return this.mProductId;
+    }
+
+    public String getProductName() {
+        return this.mProductName;
+    }
+
+    public String getImageUrl() {
+        return this.mImageUrl;
+    }
+
+    public double getPrice() {
+        return this.mPrice;
+    }
+
+    public int getPurchaseCount() {
+        return this.mPurchaseCount;
+    }
+
+    public String getIntroduction() {
+        return this.mIntroduction;
+    }
+
+    public long getVersion() {
+        return this.mVersion;
+    }
+
+    public long getOrderId() {
+        return this.mOrderId;
+    }
 }

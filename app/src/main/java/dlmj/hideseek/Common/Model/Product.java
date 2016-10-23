@@ -1,26 +1,24 @@
 package dlmj.hideseek.Common.Model;
 
-import java.util.List;
-
 /**
- * Created by Two on 11/10/2016.
+ * Created by Two on 22/10/2016.
  */
-public class Reward {
+public class Product {
     private long mPkId;
     private String mName;
     private String mImageUrl;
-    private int mRecord;
-    private int mExchangeCount;
+    private double mPrice;
+    private int mPurchaseCount;
     private String mIntroduction;
     private long mVersion;
 
-    public Reward(long pkId, String name, String imageUrl, int record,
-                  int exchangeCount, String introduction, long version) {
+    public Product(long pkId, String name, String imageUrl, double price,
+                   int purchaseCount, String introduction, long version) {
         this.mPkId = pkId;
         this.mName = name;
         this.mImageUrl = imageUrl;
-        this.mRecord = record;
-        this.mExchangeCount = exchangeCount;
+        this.mPrice = price;
+        this.mPurchaseCount = purchaseCount;
         this.mIntroduction = introduction;
         this.mVersion = version;
     }
@@ -33,12 +31,12 @@ public class Reward {
         return this.mImageUrl;
     }
 
-    public int getRecord() {
-        return this.mRecord;
+    public double getPrice() {
+        return this.mPrice;
     }
 
-    public int getExchangeCount() {
-        return this.mExchangeCount;
+    public int getPurchaseCount() {
+        return this.mPurchaseCount;
     }
 
     public String getIntroduction() {

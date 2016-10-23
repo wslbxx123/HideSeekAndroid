@@ -16,73 +16,67 @@ import dlmj.hideseek.Common.Model.Reward;
 import dlmj.hideseek.R;
 
 /**
- * 创建者     ZPL
- * 创建时间   2016/7/23 19:05
- * 描述	      ${TODO}
- * <p/>
- * 更新者     $Author$
- * 更新时间   $Date$
- * 更新描述   ${TODO}
+ * Created by Two on 5/31/16.
  */
 public class RewardAdapter extends BaseAdapter {
     private Context mContext;
-    private List<Reward.RewardEntity> mList;
+    private List<Reward> mRewardList;
     private ImageLoader mImageLoader;
 
-    public RewardAdapter(Context context, List<Reward.RewardEntity> list) {
+    public RewardAdapter(Context context, List<Reward> rewardList) {
         this.mContext = context;
-        this.mList = list;
+        this.mRewardList = rewardList;
         this.mImageLoader = ImageCacheManager.getInstance(context).getImageLoader();
     }
 
     @Override
     public int getCount() {
-        if (mList!=null) {
-            return mList.size();
+        if (mRewardList != null) {
+            return mRewardList.size();
         }
         return 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return mRewardList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
+        ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = View.inflate(mContext, R.layout.view_reward_content,null);
-            holder.product_name = (TextView) convertView.findViewById(R.id.product_name);
-            holder.product_image_url = (NetworkImageView) convertView.findViewById(R.id.product_image_url);
-            holder.price=(TextView) convertView.findViewById(R.id.price);
-            holder.purchase_count=(TextView) convertView.findViewById(R.id.purchase_count);
-            holder.introduction=(TextView) convertView.findViewById(R.id.introduction);
+            convertView = View.inflate(mContext, R.layout.reward_item,null);
+            holder.mProductNameTextView = (TextView) convertView.findViewById(R.id.rewardNameTextView);
+            holder.mProductImageView = (NetworkImageView) convertView.findViewById(R.id.productImageView);
+            holder.mRecordTextView = (TextView) convertView.findViewById(R.id.recordTextView);
+            holder.mExchangeCountTextView = (TextView) convertView.findViewById(R.id.exchangeCountTextView);
+            holder.mIntroductionTextView = (TextView) convertView.findViewById(R.id.introductionTextView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Reward.RewardEntity rewardEntity = mList.get(position);
-        holder.product_name.setText(rewardEntity.reward_name);
-        holder.product_image_url.setImageUrl(rewardEntity.reward_image_url,mImageLoader);
-        //holder.product_image_url.setDefaultImageResId(R.drawable.hsbomb);
-        holder.price.setText(rewardEntity.record);
-        holder.purchase_count.setText(rewardEntity.exchange_count);
-        holder.introduction.setText(rewardEntity.introduction);
+
+        Reward reward = mRewardList.get(position);
+        holder.mProductNameTextView.setText(reward.getName());
+        holder.mProductImageView.setImageUrl(reward.getImageUrl(), mImageLoader);
+        holder.mRecordTextView.setText(reward.getRecord() + "");
+        holder.mExchangeCountTextView.setText(reward.getExchangeCount() + "");
+        holder.mIntroductionTextView.setText(reward.getIntroduction());
         return convertView;
     }
 
     class ViewHolder {
-        TextView product_name;
-        NetworkImageView product_image_url;
-        TextView price;
-        TextView purchase_count;
-        TextView introduction;
+        TextView mProductNameTextView;
+        NetworkImageView mProductImageView;
+        TextView mRecordTextView;
+        TextView mExchangeCountTextView;
+        TextView mIntroductionTextView;
     }
 }

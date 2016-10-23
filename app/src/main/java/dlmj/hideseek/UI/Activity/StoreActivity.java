@@ -2,7 +2,6 @@ package dlmj.hideseek.UI.Activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,7 +13,7 @@ import java.util.List;
 
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Fragment.RewardFragment;
-import dlmj.hideseek.UI.Fragment.ShopFragment;
+import dlmj.hideseek.UI.Fragment.ProductFragment;
 
 /**
  * 创建者     ZPL
@@ -25,24 +24,23 @@ import dlmj.hideseek.UI.Fragment.ShopFragment;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class StoreActivity extends FragmentActivity implements View.OnClickListener {
+public class StoreActivity extends BaseFragmentActivity implements View.OnClickListener {
 
     private TextView mLeft;
     private TextView mRight;
-    private FragmentManager mManager;
     private ViewPager mViewPager;
     private List<Fragment> mFragmentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_store);
+        setContentView(R.layout.store);
         initView();
         initData();
-        initListener();
+        setListener();
     }
 
-    private void initListener() {
+    private void setListener() {
         mLeft.setOnClickListener(this);
         mRight.setOnClickListener(this);
         mLeft.setSelected(true);
@@ -90,7 +88,7 @@ public class StoreActivity extends FragmentActivity implements View.OnClickListe
     }
 
     private void initView() {
-        mFragmentList.add(new ShopFragment());
+        mFragmentList.add(new ProductFragment());
         mFragmentList.add(new RewardFragment());
         mLeft = (TextView) findViewById(R.id.tv_left);
         mRight = (TextView) findViewById(R.id.tv_right);

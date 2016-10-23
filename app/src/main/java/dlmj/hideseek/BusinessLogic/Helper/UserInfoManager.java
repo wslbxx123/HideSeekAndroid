@@ -85,7 +85,7 @@ public class UserInfoManager {
     public void checkIfGoToLogin(Context context) {
         final Context currentContext = context;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(context.getString(R.string.not_login));
+        builder.setMessage(context.getString(R.string.message_not_login));
         builder.setPositiveButton(context.getResources().getString(R.string.ok),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -94,7 +94,7 @@ public class UserInfoManager {
                         currentContext.startActivity(intent);
                     }
                 });
-        builder.setNegativeButton(context.getResources().getString(R.string.ok),
+        builder.setNegativeButton(context.getResources().getString(R.string.cancel),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

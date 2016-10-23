@@ -125,6 +125,9 @@
     <string name="none">无</string>
     <string name="league_race">%d族可胜</string>
     <string name="league_races">"%d族联盟</string>
+    <string name="exchange">兑换</string>
+    <string name="purchase">购买</string>
+    <string name="store">商城</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>
@@ -144,6 +147,7 @@
 
     <string name="warning_not_enabled">你没有打怪兽的权限</string>
 
+    <string name="message_not_login">你还没有登录，去登录吗？</string>
     <string name="message_input_city">输入城市名查询</string>
     <string name="message_no_city_found">抱歉,暂时没有找到相关城市</string>
     <string name="message_get_mushroom">成功丢入1枚蘑菇兽，有钱就是任性。</string>
@@ -156,7 +160,6 @@
     <string name="message_input_friend">输入盟友名查询</string>
     <string name="message_phone_or_nickname">手机或昵称</string>
     <string name="message_no_friend_found">没有找到相关盟友</string>
-    <string name="message_not_login">你还没有登录，去登录吗？</string>
 
     <string name="buy_too_more">土豪,买多啦!</string>
 </resources>
