@@ -26,7 +26,6 @@
     <string name="friends">Friends</string>
     <string name="scores">Scores</string>
     <string name="reward_exchange">Reward Exchange</string>
-    <string name="my_orders">My Orders</string>
     <string name="settings">Settings</string>
     <string name="my_nickname">My Nickname</string>
     <string name="my_phone">My Phone</string>
@@ -129,7 +128,15 @@
     <string name="league_races">League of %d races</string>
     <string name="exchange">Exchange</string>
     <string name="purchase">Purchase</string>
-    <string name="store">Store</string>
+    <string name="amount_title">Amount: %.2f yuan</string>
+    <string name="exchange_amount_title">Amount: %d score</string>
+    <string name="transaction_complete">Transaction Complete</string>store_title
+    <string name="not_pay">Not Pay</string>
+    <string name="click_to_pay">Click To Pay</string>
+    <string name="purchase_area">Purchase Area</string>
+    <string name="exchange_area">Exchange Area</string>
+    <string name="my_order_title">My Orders</string>
+    <string name="store_title">Store</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
@@ -163,6 +170,7 @@
     <string name="message_input_friend">Input friend name to search</string>
     <string name="message_phone_or_nickname">Phone or nickname</string>
     <string name="message_no_friend_found">Sorry, no friend was found</string>
+    <string name="message_has_guide">You already have a monster guide. Continue to buy?</string>
 
     <string name="add_one_score">+1</string>
     <string name="minus_one_score">-1</string>

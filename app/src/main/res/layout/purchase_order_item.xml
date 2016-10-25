@@ -1,57 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
                 android:background="@color/white"
                 android:minHeight="70dp"
-              android:layout_height="70dp">
+                android:layout_height="70dp">
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/productImageView"
         android:layout_marginLeft="10dp"
-        android:id="@+id/icon"
         android:layout_width="68dp"
-        android:layout_height="68dp"
-        android:src="@drawable/hsbomb"
-        />
+        android:layout_height="68dp"/>
+
     <LinearLayout
-        android:layout_toRightOf="@id/icon"
+        android:layout_toRightOf="@id/productImageView"
         android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:orientation="vertical"
         android:layout_height="match_parent">
         <TextView
+            android:id="@+id/productNameTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="定时炸弹"/>
+            android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/amountTextView"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="总价："/>
-            <TextView
-                android:textSize="12sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5元"/>
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/successTextView"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:textSize="12sp"
         android:visibility="gone"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:text="交易成功"/>
+        android:gravity="center"
+        android:text="@string/transaction_complete"/>
+
     <LinearLayout
+        android:id="@+id/payLayout"
         android:layout_marginTop="10dp"
         android:layout_alignParentRight="true"
         android:orientation="vertical"
@@ -63,13 +62,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:text="未付款"/>
+            android:text="@string/not_pay"/>
+
         <Button
+            android:id="@+id/payBtn"
             android:layout_marginTop="5dp"
             android:layout_width="70dp"
             android:layout_height="25dp"
             android:background="@drawable/btn_pay_selector"
             android:textSize="12sp"
-            android:text="点我付款"/>
+            android:text="@string/click_to_pay"/>
     </LinearLayout>
 </RelativeLayout>

@@ -19,7 +19,7 @@ import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
  * Created by Two on 22/10/2016.
  */
 public class PurchaseOrderTableManager {
-    private final static String TABLE_NAME = "reward";
+    private final static String TABLE_NAME = "purchase_order";
     private SQLiteDatabase mSQLiteDatabase;
     private static PurchaseOrderTableManager mInstance;
     private SharedPreferences mSharedPreferences;
@@ -69,7 +69,7 @@ public class PurchaseOrderTableManager {
                 contentValues.put("status", purchaseOrder.getStatus());
                 contentValues.put("create_time", purchaseOrder.getCreateTime());
                 contentValues.put("update_time", purchaseOrder.getUpdateTime());
-                contentValues.put("order_count", purchaseOrder.getCount());
+                contentValues.put("count", purchaseOrder.getCount());
                 contentValues.put("trade_no", purchaseOrder.getTradeNo());
                 contentValues.put("product_id", purchaseOrder.getProductId());
                 contentValues.put("product_name", purchaseOrder.getProductName());
@@ -165,7 +165,7 @@ public class PurchaseOrderTableManager {
                             cursor.getInt(cursor.getColumnIndex("status")),
                             cursor.getString(cursor.getColumnIndex("create_time")),
                             cursor.getString(cursor.getColumnIndex("update_time")),
-                            cursor.getInt(cursor.getColumnIndex("order_count")),
+                            cursor.getInt(cursor.getColumnIndex("count")),
                             cursor.getString(cursor.getColumnIndex("trade_no")),
                             cursor.getLong(cursor.getColumnIndex("product_id")),
                             cursor.getString(cursor.getColumnIndex("product_name")),
@@ -196,7 +196,7 @@ public class PurchaseOrderTableManager {
                                 cursor.getInt(cursor.getColumnIndex("status")),
                                 cursor.getString(cursor.getColumnIndex("create_time")),
                                 cursor.getString(cursor.getColumnIndex("update_time")),
-                                cursor.getInt(cursor.getColumnIndex("order_count")),
+                                cursor.getInt(cursor.getColumnIndex("count")),
                                 cursor.getString(cursor.getColumnIndex("trade_no")),
                                 cursor.getLong(cursor.getColumnIndex("product_id")),
                                 cursor.getString(cursor.getColumnIndex("product_name")),

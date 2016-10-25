@@ -24,7 +24,6 @@
     <string name="friends">好友</string>
     <string name="scores">积分</string>
     <string name="reward_exchange">战品兑换</string>
-    <string name="my_orders">我的订单</string>
     <string name="settings">设置</string>
     <string name="my_nickname">我的昵称</string>
     <string name="my_phone">我的手机号</string>
@@ -127,7 +126,15 @@
     <string name="league_races">"%d族联盟</string>
     <string name="exchange">兑换</string>
     <string name="purchase">购买</string>
-    <string name="store">商城</string>
+    <string name="amount_title">总价: %.2f 元</string>
+    <string name="exchange_amount_title">总价: %d 积分</string>
+    <string name="transaction_complete">交易完成</string>
+    <string name="not_pay">未付款</string>
+    <string name="click_to_pay">点击付款</string>
+    <string name="purchase_area">购买区</string>
+    <string name="exchange_area">兑换区</string>
+    <string name="my_order_title">我的订单</string>
+    <string name="store_title">商城</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>
@@ -160,6 +167,7 @@
     <string name="message_input_friend">输入盟友名查询</string>
     <string name="message_phone_or_nickname">手机或昵称</string>
     <string name="message_no_friend_found">没有找到相关盟友</string>
+    <string name="message_has_guide">你已经有怪兽图鉴了，继续购买吗？</string>
 
     <string name="buy_too_more">土豪,买多啦!</string>
 </resources>

@@ -39,7 +39,7 @@ public class MyOrderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = View.inflate(mContext, R.layout.my_order_item,null);
+        convertView = View.inflate(mContext, R.layout.purchase_order_item,null);
         return convertView;
     }
 }

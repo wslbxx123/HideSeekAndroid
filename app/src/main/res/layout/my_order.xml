@@ -3,18 +3,43 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/titleLayout"
         android:layout_width="fill_parent"
         android:layout_height="44dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:background="@color/yellow_ffcc00">
+        android:background="@color/yellow_ffcc00"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/resultListView"
+        android:layout_toEndOf="@+id/resultListView">
+        <LinearLayout
+            android:id="@+id/backLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/back_icon"/>
+
+            <TextView
+                android:id="@+id/lastTitleTextView"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:text="@string/my_orders"/>
-    </LinearLayout>
+            android:text="@string/my_order_title"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,8 +57,8 @@
             android:gravity="center"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="购买区"
-            />
+            android:text="@string/purchase_area"/>
+
         <TextView
             android:id="@+id/tv_right"
             android:layout_width="wrap_content"
@@ -43,15 +68,11 @@
             android:gravity="center"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="兑换区"
-            />
+            android:text="@string/exchange_area"/>
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

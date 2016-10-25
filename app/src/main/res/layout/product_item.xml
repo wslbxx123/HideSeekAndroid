@@ -19,7 +19,6 @@
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/productImageView"
             android:layout_width="match_parent"
-            android:src="@drawable/hsbomb"
             android:layout_height="match_parent"/>
     </LinearLayout>
 
@@ -55,8 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/red_d30b06"
-            android:textSize="13sp"
-            android:text="15865人购买"/>
+            android:textSize="13sp"/>
     </LinearLayout>
 
     <TextView
@@ -76,6 +74,5 @@
         android:layout_height="24dp"
         android:background="@color/yellow_ffcc00"
         android:textSize="13sp"
-        android:text="@string/purchase"
-        />
+        android:text="@string/purchase"/>
 </LinearLayout>

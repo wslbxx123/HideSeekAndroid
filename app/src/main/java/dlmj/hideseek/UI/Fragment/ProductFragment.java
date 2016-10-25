@@ -1,6 +1,8 @@
 package dlmj.hideseek.UI.Fragment;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,6 +31,7 @@ import dlmj.hideseek.BusinessLogic.Cache.ProductCache;
 import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
+import dlmj.hideseek.BusinessLogic.Network.AlipayManager;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
@@ -40,6 +43,7 @@ import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.PayResult;
 import dlmj.hideseek.DataAccess.ProductTableManager;
 import dlmj.hideseek.R;
+import dlmj.hideseek.UI.Activity.MyOrderActivity;
 import dlmj.hideseek.UI.Adapter.ProductAdapter;
 
 /**
@@ -63,10 +67,9 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
     private ProductTableManager mProductTableManager;
     private TextView mProductCountTextView;
     private TextView mTotalTextView;
-    private double mPrice;
-    private boolean mHasGuide;
     private AlertDialog mAlertDialog;
     private List<Product> mProductList = new LinkedList<>();
+    private AlipayManager mAlipayManager;
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -137,6 +140,7 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
         mGetProductNetworkHelper = new NetworkHelper(getActivity());
         mCreateOrderNetworkHelper = new NetworkHelper(getActivity());
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
+        mAlipayManager = AlipayManager.getInstance();
     }
 
     private void findView() {
@@ -275,17 +279,16 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
         mTotalTextView = (TextView) view.findViewById(R.id.totalTextView);
         Button ensurePay = (Button) view.findViewById(R.id.buy_dialog_btn);
 
-        //商品价格
-        mPrice = product.getPrice();
         mTotalTextView.setText(product.getPrice() + "");
         productNameTextView.setText(product.getName());
+        mAlertDialog = builder.create();
 
         upArrowImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int i = Integer.parseInt(mProductCountTextView.getText().toString());
                 mProductCountTextView.setText((i + 1) + "");
-                mTotalTextView.setText((i + 1) * mPrice + "");
+                mTotalTextView.setText((i + 1) * product.getPrice() + "");
             }
         });
 
@@ -295,7 +298,7 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
                 int i = Integer.parseInt(mProductCountTextView.getText().toString());
                 if (i > 1) {
                     mProductCountTextView.setText((i - 1) + "");
-                    mTotalTextView.setText((i - 1) * mPrice + "");
+                    mTotalTextView.setText((i - 1) * product.getPrice() + "");
                 }
             }
         });
@@ -317,23 +320,40 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
             }
         });
 
-        mHasGuide = UserCache.getInstance().getUser().getHasGuide();
-        if (product.getPkId() == 2 && mHasGuide) {
-            //已拥有图鉴,无需再次购买
-
+        if (product.getPkId() == 2 && UserCache.getInstance().getUser().getHasGuide()) {
+            checkIfPurchase();
         } else {
-            mAlertDialog = builder.create();
             mAlertDialog.show();
         }
     }
 
+    private void checkIfPurchase() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.message_has_guide));
+        builder.setPositiveButton(getResources().getString(R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mAlertDialog.show();
+                    }
+                });
+        builder.setNegativeButton(getResources().getString(R.string.cancel),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.show();
+    }
+
     private void pay(String sign,CreateOrder.ParamsEntity params) {
-        String orderInfo = getOrderInfo(params);
+        String orderInfo = mAlipayManager.getOrderInfo(params);
 
         /**
          * 完整的符合支付宝参数规范的订单信息
          */
-        final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + getSignType();
+        final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + mAlipayManager.getSignType();
 
         Runnable payRunnable = new Runnable() {
             @Override
@@ -352,63 +372,5 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
         // 必须异步调用
         Thread payThread = new Thread(payRunnable);
         payThread.start();
-    }
-
-    /**
-     * 创建订单信息
-     */
-    private String getOrderInfo(CreateOrder.ParamsEntity params) {
-
-        // 服务接口名称， 固定值
-        String orderInfo = "service="+params.service;
-
-        // 签约合作者身份ID
-        orderInfo += "&partner=" + params.partner;
-
-        // 参数编码， 固定值
-        orderInfo += "&_input_charset="+params._input_charset;
-
-        // 服务器异步通知页面路径
-        orderInfo += "&notify_url=" + params.notify_url;
-
-        // 商户网站唯一订单号
-        orderInfo += "&out_trade_no=" + params.out_trade_no;
-
-        // 商品名称
-        orderInfo += "&subject=" + params.subject;
-
-        // 支付类型， 固定值
-        orderInfo += "&payment_type=\"1\"";
-
-        // 签约卖家支付宝账号
-        orderInfo += "&seller_id=" + params.seller_id;
-
-        // 商品金额
-        orderInfo += "&total_fee=" + params.total_fee;
-
-        // 商品详情
-        orderInfo += "&body=" + params.body;
-
-        // 设置未付款交易的超时时间
-        // 默认30分钟，一旦超时，该笔交易就会自动被关闭。
-        // 取值范围：1m～15d。
-        // m-分钟，h-小时，d-天，1c-当天（无论交易何时创建，都在0点关闭）。
-        // 该参数数值不接受小数点，如1.5h，可转换为90m。
-        orderInfo += "&it_b_pay="+params.it_b_pay;
-        // extern_token为经过快登授权获取到的alipay_open_id,带上此参数用户将使用授权的账户进行支付
-        // orderInfo += "&extern_token=" + "\"" + extern_token + "\"";
-        // 支付宝处理完请求后，当前页面跳转到商户指定页面的路径，可空
-        orderInfo += "&show_url="+params.show_url;
-        // 调用银行卡支付，需配置此参数，参与签名， 固定值 （需要签约《无线银行卡快捷支付》才能使用）
-        // orderInfo += "&paymethod=\"expressGateway\"";
-        return orderInfo;
-    }
-
-    /**
-     * get the sign type we use. 获取签名方式
-     *
-     */
-    private String getSignType() {
-        return "sign_type=\"RSA\"";
     }
 }

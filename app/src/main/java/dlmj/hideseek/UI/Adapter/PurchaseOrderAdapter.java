@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -14,10 +15,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import java.util.List;
 
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
-import dlmj.hideseek.Common.Factory.GoalImageFactory;
-import dlmj.hideseek.Common.Factory.RaceGroupMessageFactory;
 import dlmj.hideseek.Common.Model.PurchaseOrder;
-import dlmj.hideseek.Common.Model.RaceGroup;
 import dlmj.hideseek.R;
 
 /**
@@ -27,6 +25,7 @@ public class PurchaseOrderAdapter extends BaseAdapter {
     private List<PurchaseOrder> mPurchaseOrderList;
     private Context mContext;
     private ImageLoader mImageLoader;
+    private OnPurchaseBtnClickedListener mOnPurchaseBtnClickedListener;
 
     public PurchaseOrderAdapter(Context context, List<PurchaseOrder> purchaseOrderList){
         this.mPurchaseOrderList = purchaseOrderList;
@@ -57,26 +56,61 @@ public class PurchaseOrderAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.my_order_item, null, false);
+            convertView = inflater.inflate(R.layout.purchase_order_item, null, false);
             viewHolder = new ViewHolder();
-//            viewHolder.mPhotoImageView = (NetworkImageView) convertView.findViewById(R.id.photoImageView);
-//            viewHolder.mNameTextView = (TextView) convertView.findViewById(R.id.nameTextView);
-//            viewHolder.mGoalImageView = (ImageView) convertView.findViewById(R.id.goalImageView);
-//            viewHolder.mMessageTextView = (TextView) convertView.findViewById(R.id.messageTextView);
-//            viewHolder.mScoreTextView = (TextView) convertView.findViewById(R.id.scoreTextView);
+            viewHolder.mProductImageView = (NetworkImageView) convertView.findViewById(R.id.productImageView);
+            viewHolder.mProductNameTextView = (TextView) convertView.findViewById(R.id.productNameTextView);
+            viewHolder.mAmountTextView = (TextView) convertView.findViewById(R.id.amountTextView);
+            viewHolder.mSuccessTextView = (TextView) convertView.findViewById(R.id.successTextView);
+            viewHolder.mPayLayout = (LinearLayout) convertView.findViewById(R.id.payLayout);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        PurchaseOrder purchaseOrder = (PurchaseOrder)getItem(position);
+        viewHolder.mProductImageView.setImageUrl(purchaseOrder.getImageUrl(), mImageLoader);
+        viewHolder.mProductNameTextView.setText(purchaseOrder.getProductName());
+        String price = String.format(mContext.getString(R.string.amount_title),
+                purchaseOrder.getPrice() * purchaseOrder.getCount());
+        viewHolder.mAmountTextView.setText(price);
+
+        if(purchaseOrder.getStatus() == 0) {
+            viewHolder.mSuccessTextView.setVisibility(View.GONE);
+            viewHolder.mPayLayout.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mSuccessTextView.setVisibility(View.VISIBLE);
+            viewHolder.mPayLayout.setVisibility(View.GONE);
+        }
+        initListener(convertView, purchaseOrder);
+
         return convertView;
     }
 
+    private void initListener(View convertView, final PurchaseOrder purchaseOrder) {
+        Button payBtn = (Button) convertView.findViewById(R.id.payBtn);
+        payBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //弹出对话框
+                mOnPurchaseBtnClickedListener.purchaseBtnOnClicked(purchaseOrder);
+            }
+        });
+    }
+
+    public interface OnPurchaseBtnClickedListener {
+        void purchaseBtnOnClicked(PurchaseOrder purchaseOrder);
+    }
+
+    public void setOnPurchaseBtnClickedListener(OnPurchaseBtnClickedListener onPurchaseBtnClickedListener) {
+        this.mOnPurchaseBtnClickedListener = onPurchaseBtnClickedListener;
+    }
+
     class ViewHolder {
-        NetworkImageView mPhotoImageView;
-        TextView mNameTextView;
-        ImageView mGoalImageView;
-        TextView mMessageTextView;
-        TextView mScoreTextView;
+        NetworkImageView mProductImageView;
+        TextView mProductNameTextView;
+        TextView mAmountTextView;
+        TextView mSuccessTextView;
+        LinearLayout mPayLayout;
     }
 }

@@ -19,7 +19,7 @@ import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
  * Created by Two on 22/10/2016.
  */
 public class ExchangeOrderTableManager {
-    private final static String TABLE_NAME = "reward";
+    private final static String TABLE_NAME = "exchange_order";
     private SQLiteDatabase mSQLiteDatabase;
     private static ExchangeOrderTableManager mInstance;
     private SharedPreferences mSharedPreferences;
@@ -68,7 +68,7 @@ public class ExchangeOrderTableManager {
                 contentValues.put("status", exchangeOrder.getStatus());
                 contentValues.put("create_time", exchangeOrder.getCreateTime());
                 contentValues.put("update_time", exchangeOrder.getUpdateTime());
-                contentValues.put("order_count", exchangeOrder.getCount());
+                contentValues.put("count", exchangeOrder.getCount());
                 contentValues.put("reward_id", exchangeOrder.getRewardId());
                 contentValues.put("reward_name", exchangeOrder.getRewardName());
                 contentValues.put("image_url", exchangeOrder.getImageUrl());
@@ -163,7 +163,7 @@ public class ExchangeOrderTableManager {
                             cursor.getInt(cursor.getColumnIndex("status")),
                             cursor.getString(cursor.getColumnIndex("create_time")),
                             cursor.getString(cursor.getColumnIndex("update_time")),
-                            cursor.getInt(cursor.getColumnIndex("order_count")),
+                            cursor.getInt(cursor.getColumnIndex("count")),
                             cursor.getLong(cursor.getColumnIndex("reward_id")),
                             cursor.getString(cursor.getColumnIndex("reward_name")),
                             cursor.getString(cursor.getColumnIndex("image_url")),
@@ -193,7 +193,7 @@ public class ExchangeOrderTableManager {
                                 cursor.getInt(cursor.getColumnIndex("status")),
                                 cursor.getString(cursor.getColumnIndex("create_time")),
                                 cursor.getString(cursor.getColumnIndex("update_time")),
-                                cursor.getInt(cursor.getColumnIndex("order_count")),
+                                cursor.getInt(cursor.getColumnIndex("count")),
                                 cursor.getLong(cursor.getColumnIndex("reward_id")),
                                 cursor.getString(cursor.getColumnIndex("reward_name")),
                                 cursor.getString(cursor.getColumnIndex("image_url")),
@@ -219,5 +219,13 @@ public class ExchangeOrderTableManager {
                 exchangeOrderVersion.getId(),
                 (long) exchangeOrderVersion.getDefaultValue());
         return versionValue;
+    }
+
+    public long getOrderMinId() {
+        SharedPreferenceSettings minId = SharedPreferenceSettings.EXCHANGE_ORDER_MIN_ID;
+        long orderMinId = mSharedPreferences.getLong(
+                minId.getId(),
+                (long) minId.getDefaultValue());
+        return orderMinId;
     }
 }

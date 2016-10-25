@@ -100,8 +100,8 @@ public class ProductAdapter extends BaseAdapter  {
     }
 
     private void initListener(View convertView, final Product product) {
-        Button btn_buy = (Button) convertView.findViewById(R.id.buyBtn);
-        btn_buy.setOnClickListener(new View.OnClickListener() {
+        Button buyBtn = (Button) convertView.findViewById(R.id.buyBtn);
+        buyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //弹出对话框

@@ -163,11 +163,13 @@
         </activity>
         <activity
             android:name=".UI.Activity.StoreActivity"
+            android:label="@string/store_title"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".UI.Activity.MyOrderActivity"
+            android:label="@string/my_order_title"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:screenOrientation="portrait" >
         </activity>
@@ -205,6 +207,19 @@
             android:label="@string/photograph"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".UI.Activity.FeedBackActivity"
+            android:label="@string/feedback"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".UI.Activity.AboutActivity"
+            android:label="@string/about"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".UI.Activity.BrowserActivity"
+            android:label="@string/browser"
+            android:screenOrientation="portrait">
+        </activity>
 
         <activity
             android:name="com.tencent.android.tpush.XGPushActivity"
@@ -214,6 +229,8 @@
                 <action android:name="android.intent.action" />
             </intent-filter>
         </activity>
+
+
 
         <!-- 支付宝服务 -->
         <activity

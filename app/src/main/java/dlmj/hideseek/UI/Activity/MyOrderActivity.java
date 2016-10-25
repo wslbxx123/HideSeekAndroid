@@ -6,11 +6,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Fragment.ExchangeOrderFragment;
 import dlmj.hideseek.UI.Fragment.PurchaseOrderFragment;
@@ -25,18 +27,20 @@ import dlmj.hideseek.UI.Fragment.PurchaseOrderFragment;
  * 更新描述   ${TODO}
  */
 public class MyOrderActivity extends BaseFragmentActivity implements View.OnClickListener{
+    private String mLastTitle;
     private TextView mLeft;
     private TextView mRight;
-    private FragmentManager mManager;
     private ViewPager mViewPager;
+    private TextView mLastTitleTextView;
+    private LinearLayout mBackLayout;
     private List<Fragment> mFragmentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_order);
-        initView();
         initData();
+        findView();
         setListener();
     }
 
@@ -70,10 +74,25 @@ public class MyOrderActivity extends BaseFragmentActivity implements View.OnClic
 
             }
         });
+
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     private void initData() {
+        mLastTitle = getIntent().getStringExtra(IntentExtraParam.LAST_TITLE);
+    }
 
+    private void findView() {
+        mFragmentList.add(new PurchaseOrderFragment());
+        mFragmentList.add(new ExchangeOrderFragment());
+        mLeft = (TextView) findViewById(R.id.tv_left);
+        mRight = (TextView) findViewById(R.id.tv_right);
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -85,14 +104,9 @@ public class MyOrderActivity extends BaseFragmentActivity implements View.OnClic
                 return mFragmentList.size();
             }
         });
-    }
-
-    private void initView() {
-        mFragmentList.add(new PurchaseOrderFragment());
-        mFragmentList.add(new ExchangeOrderFragment());
-        mLeft = (TextView) findViewById(R.id.tv_left);
-        mRight = (TextView) findViewById(R.id.tv_right);
-        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+        mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
+        mLastTitleTextView.setText(mLastTitle);
+        mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
     }
 
     @Override

@@ -20,24 +20,19 @@ import java.util.List;
 import java.util.Map;
 
 import dlmj.hideseek.BusinessLogic.Cache.ExchangeOrderCache;
-import dlmj.hideseek.BusinessLogic.Cache.PurchaseOrderCache;
-import dlmj.hideseek.BusinessLogic.Cache.RaceGroupCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.ExchangeOrder;
-import dlmj.hideseek.Common.Model.PurchaseOrder;
 import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.LogUtil;
-import dlmj.hideseek.DataAccess.PurchaseOrderTableManager;
-import dlmj.hideseek.DataAccess.RaceGroupTableManager;
+import dlmj.hideseek.DataAccess.ExchangeOrderTableManager;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.BaseFragmentActivity;
 import dlmj.hideseek.UI.Adapter.ExchangeOrderAdapter;
-import dlmj.hideseek.UI.Adapter.PurchaseOrderAdapter;
 
 /**
  * Created by Two on 23/10/2016.
@@ -55,6 +50,7 @@ public class ExchangeOrderFragment extends BaseFragment implements UIDataListene
     private boolean mIsLoading = false;
     private View mLoadMoreView;
     private ErrorMessageFactory mErrorMessageFactory;
+    private ExchangeOrderTableManager mExchangeOrderTableManager;
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -97,6 +93,7 @@ public class ExchangeOrderFragment extends BaseFragment implements UIDataListene
         mNetworkHelper = new NetworkHelper(getActivity());
         mGetExchangeOrderNetworkHelper = new NetworkHelper(getActivity());
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
+        mExchangeOrderTableManager = ExchangeOrderTableManager.getInstance(getActivity());
     }
 
     private void findView() {
@@ -129,7 +126,7 @@ public class ExchangeOrderFragment extends BaseFragment implements UIDataListene
             public void onDataChanged(Bean data) {
                 LogUtil.d(TAG, data.getResult());
                 mResponseCode = CodeParams.SUCCESS;
-                RaceGroupCache.getInstance(getActivity()).addRaceGroup(data.getResult());
+                ExchangeOrderCache.getInstance(getActivity()).addOrders(data.getResult());
 
                 mExchangeOrderList.clear();
                 mExchangeOrderList.addAll(ExchangeOrderCache.getInstance(getActivity()).getList());
@@ -153,11 +150,11 @@ public class ExchangeOrderFragment extends BaseFragment implements UIDataListene
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Map<String, String> params = new HashMap<>();
-                params.put("version", RaceGroupTableManager.getInstance(getActivity()).getVersion() + "");
-                params.put("record_min_id", RaceGroupTableManager.getInstance(getActivity()).getRecordMinId() + "");
+                params.put("version", mExchangeOrderTableManager.getVersion() + "");
+                params.put("order_min_id", mExchangeOrderTableManager.getOrderMinId() + "");
                 mResponseCode = 0;
-                mNetworkHelper.sendPostRequest(UrlParams.REFRESH_RACE_GROUP_URL, params);
-                RaceGroupCache.getInstance(getActivity()).clearList();
+                mNetworkHelper.sendPostRequest(UrlParams.REFRESH_EXCHANGE_ORDERS_URL, params);
+                ExchangeOrderCache.getInstance(getActivity()).clearList();
             }
 
             @Override
@@ -201,15 +198,13 @@ public class ExchangeOrderFragment extends BaseFragment implements UIDataListene
             if(mExchangeOrderList.size() >= 10) {
                 mIsLoading = true;
                 mExchangeOrderListView.getRefreshableView().addFooterView(mLoadMoreView);
-                boolean hasData = PurchaseOrderCache.getInstance(getActivity()).
+                boolean hasData = ExchangeOrderCache.getInstance(getActivity()).
                         getMoreOrders(10, false);
 
                 if(!hasData) {
                     Map<String, String> params = new HashMap<>();
-                    params.put("version", PurchaseOrderTableManager.getInstance(
-                            getActivity()).getVersion() + "");
-                    params.put("record_min_id", PurchaseOrderTableManager.getInstance(
-                            getActivity()).getOrderMinId() + "");
+                    params.put("version", mExchangeOrderTableManager.getVersion() + "");
+                    params.put("order_min_id", mExchangeOrderTableManager.getOrderMinId() + "");
                     mResponseCode = 0;
                     mGetExchangeOrderNetworkHelper.sendPostRequest(UrlParams.GET_EXCHANGE_ORDERS_URL, params);
                 } else {

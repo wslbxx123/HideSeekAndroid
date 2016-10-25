@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import dlmj.hideseek.BusinessLogic.Cache.ImageCacheManager;
 import dlmj.hideseek.Common.Model.ExchangeOrder;
-import dlmj.hideseek.Common.Model.PurchaseOrder;
 import dlmj.hideseek.R;
 
 
@@ -56,26 +54,29 @@ public class ExchangeOrderAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.my_order_item, null, false);
+            convertView = inflater.inflate(R.layout.exchange_order_item, null, false);
             viewHolder = new ViewHolder();
-//            viewHolder.mPhotoImageView = (NetworkImageView) convertView.findViewById(R.id.photoImageView);
-//            viewHolder.mNameTextView = (TextView) convertView.findViewById(R.id.nameTextView);
-//            viewHolder.mGoalImageView = (ImageView) convertView.findViewById(R.id.goalImageView);
-//            viewHolder.mMessageTextView = (TextView) convertView.findViewById(R.id.messageTextView);
-//            viewHolder.mScoreTextView = (TextView) convertView.findViewById(R.id.scoreTextView);
+            viewHolder.mProductImageView = (NetworkImageView) convertView.findViewById(R.id.productImageView);
+            viewHolder.mProductNameTextView = (TextView) convertView.findViewById(R.id.productNameTextView);
+            viewHolder.mAmountTextView = (TextView) convertView.findViewById(R.id.amountTextView);
             convertView.setTag(viewHolder);
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        ExchangeOrder exchangeOrder = (ExchangeOrder)getItem(position);
+        viewHolder.mProductImageView.setImageUrl(exchangeOrder.getImageUrl(), mImageLoader);
+        viewHolder.mProductNameTextView.setText(exchangeOrder.getRewardName());
+        String score = String.format(mContext.getString(R.string.exchange_amount_title),
+                exchangeOrder.getRecord() * exchangeOrder.getCount());
+        viewHolder.mAmountTextView.setText(score);
+
         return convertView;
     }
 
     class ViewHolder {
-        NetworkImageView mPhotoImageView;
-        TextView mNameTextView;
-        ImageView mGoalImageView;
-        TextView mMessageTextView;
-        TextView mScoreTextView;
+        NetworkImageView mProductImageView;
+        TextView mProductNameTextView;
+        TextView mAmountTextView;
     }
 }

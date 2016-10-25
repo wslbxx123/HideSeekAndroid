@@ -123,6 +123,7 @@ public class MeFragment extends BaseFragment {
             public void onClick(View v) {
                 //订单详情页
                 Intent intent = new Intent(getActivity(), StoreActivity.class);
+                intent.putExtra(IntentExtraParam.LAST_TITLE, mTitle);
                 startActivity(intent);
             }
         });
@@ -132,6 +133,7 @@ public class MeFragment extends BaseFragment {
             public void onClick(View v) {
                 //订单详情页
                 Intent intent = new Intent(getActivity(), MyOrderActivity.class);
+                intent.putExtra(IntentExtraParam.LAST_TITLE, mTitle);
                 startActivity(intent);
             }
         });

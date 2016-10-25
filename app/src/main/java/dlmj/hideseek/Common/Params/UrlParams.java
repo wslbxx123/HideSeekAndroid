@@ -36,7 +36,9 @@ public class UrlParams {
     public static String UPDATE_CHANNEL_URL = "https://www.hideseek.cn/home/user/updateChannelId";
     public static String ADD_FEEDBACK_URL = "https://www.hideseek.cn/home/setting/addFeedback";
     public static String ACCEPT_FRIEND_URL = "https://www.hideseek.cn/home/friend/acceptFriend";
+    public static String REFRESH_PURCHASE_ORDERS_URL = "https://www.hideseek.cn/home/store/refreshPurchaseOrders";
     public static String GET_PURCHASE_ORDERS_URL = "https://www.hideseek.cn/home/store/getPurchaseOrders";
+    public static String REFRESH_EXCHANGE_ORDERS_URL = "https://www.hideseek.cn/home/store/refreshExchangeOrders";
     public static String GET_EXCHANGE_ORDERS_URL = "https://www.hideseek.cn/home/store/getExchangeOrders";
 
     /**
