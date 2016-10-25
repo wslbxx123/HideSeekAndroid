@@ -16,7 +16,7 @@
     <string name="me">我的</string>
     <string name="record">战绩</string>
     <string name="call_out">呼叫机</string>
-    <string name="home">主页</string>
+    <string name="home_title">主页</string>
     <string name="score">分</string>
     <string name="me_title">我的</string>
     <string name="record_title">战绩列表</string>
@@ -83,7 +83,7 @@
     <string name="bird">飞魂兽</string>
     <string name="giraffe">长悠兽</string>
     <string name="dragon">龙冠兽</string>
-    <string name="danger_warning">危险警告</string>
+    <string name="danger_warning_title">危险警告</string>
     <string name="get_it">抓住它</string>
     <string name="share_title">进入部落时代</string>
     <string name="share_message">天啊，一只怪兽正在盯着我，快来救我。</string>
@@ -103,7 +103,7 @@
     <string name="contacts">联系人</string>
     <string name="phone_or_email">手机或邮箱</string>
     <string name="submit">提交</string>
-    <string name="advice">意见</string>
+    <string name="advice">建议</string>
     <string name="consultation">咨询</string>
     <string name="complaints">投诉</string>
     <string name="submit_success">提交成功!</string>
@@ -135,6 +135,7 @@
     <string name="exchange_area">兑换区</string>
     <string name="my_order_title">我的订单</string>
     <string name="store_title">商城</string>
+    <string name="success_purchase">购买商品成功</string>
 
     <string name="error_goal_invalid">该目标已经消失或者不在你的范围之内</string>
     <string name="error_phone_empty">请填写手机号</string>

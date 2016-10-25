@@ -1,7 +1,10 @@
-package dlmj.hideseek.UI.Activity;
+package dlmj.hideseek.UI.View;
 
-import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -26,11 +29,12 @@ import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.R;
 
 /**
- * Created by Two on 5/20/16.
+ * Created by Two on 25/10/2016.
  */
-public class MapActivity extends Activity implements LocationSource, AMapLocationListener,
-        AMap.OnMapLoadedListener, AMap.OnMarkerClickListener {
-    private final String TAG = "MapActivity";
+public class MapDialog extends Dialog implements LocationSource, AMapLocationListener,
+        AMap.OnMapLoadedListener, AMap.OnMarkerClickListener{
+    private final String TAG = "MapDialog";
+    private Context mContext;
     private MapView mMapView;
     private AMap mMap;
     private OnLocationChangedListener mLocationListener;
@@ -39,12 +43,11 @@ public class MapActivity extends Activity implements LocationSource, AMapLocatio
     private double mLatitude;
     private double mLongitude;
     private Hashtable<Long, Marker> mMarkerHashTable = new Hashtable<>();
+    private OnSelectMarkerListener mOnSelectMarkerListener;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setFinishOnTouchOutside(true);
-        setContentView(R.layout.map);
+    public MapDialog(Context context, Bundle savedInstanceState) {
+        super(context, R.style.MapDialog);
+        this.mContext = context;
         initData();
         findView();
         setListener();
@@ -55,34 +58,11 @@ public class MapActivity extends Activity implements LocationSource, AMapLocatio
     private void initData() {
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mMapView.onDestroy();
-        mLocationClient.stopLocation();
-        mLocationClient.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mMapView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mMapView.onPause();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
-    }
-
     private void findView() {
-        mMapView = (MapView) findViewById(R.id.mapView);
+        View mapView = LayoutInflater.from(mContext).inflate(R.layout.map, null);
+        setContentView(mapView);
+
+        mMapView = (MapView) mapView.findViewById(R.id.mapView);
         mMap = mMapView.getMap();
     }
 
@@ -98,6 +78,24 @@ public class MapActivity extends Activity implements LocationSource, AMapLocatio
         mMap.setLocationSource(this);
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.zoomTo(19));
+    }
+
+    public void onResume() {
+        mMapView.onResume();
+    }
+
+    public void onPause() {
+        mMapView.onPause();
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        mMapView.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onDestroy() {
+        mMapView.onDestroy();
+        mLocationClient.stopLocation();
+        mLocationClient.onDestroy();
     }
 
     @Override
@@ -158,7 +156,7 @@ public class MapActivity extends Activity implements LocationSource, AMapLocatio
         mLocationListener = onLocationChangedListener;
 
         if(mLocationClient == null) {
-            mLocationClient = new AMapLocationClient(this);
+            mLocationClient = new AMapLocationClient(mContext);
             mLocationOption = new AMapLocationClientOption();
             mLocationClient.setLocationListener(this);
             mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
@@ -186,8 +184,17 @@ public class MapActivity extends Activity implements LocationSource, AMapLocatio
             Goal goal = (Goal)marker.getObject();
             goal.setIsSelected(true);
             GoalCache.getInstance().setSelectedGoal(goal);
+            mOnSelectMarkerListener.selectMarker();
         }
 
         return false;
+    }
+
+    public void setOnSelectMarkerListener(OnSelectMarkerListener onSelectMarkerListener) {
+        this.mOnSelectMarkerListener = onSelectMarkerListener;
+    }
+
+    public interface OnSelectMarkerListener {
+        void selectMarker();
     }
 }

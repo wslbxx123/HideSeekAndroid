@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">HideSeek</string>
     <string name="login">Log In</string>
     <string name="register">Register</string>
@@ -19,7 +18,7 @@
     <string name="record">Record</string>
     <string name="record_title">Record</string>
     <string name="call_out">Call Out</string>
-    <string name="home">Home</string>
+    <string name="home_title">Home</string>
     <string name="score">Score</string>
     <string name="me_title">Me</string>
     <string name="not_login">Not Login</string>
@@ -85,7 +84,7 @@
     <string name="bird">Bird</string>
     <string name="giraffe">Giraffe</string>
     <string name="dragon">Dragon</string>
-    <string name="danger_warning">Warning</string>
+    <string name="danger_warning_title">Warning</string>
     <string name="get_it">Get It</string>
     <string name="share_title">Enter into the age of Tribes</string>
     <string name="share_message">My God! A monster is watching at me, please help me!</string>
@@ -137,6 +136,7 @@
     <string name="exchange_area">Exchange Area</string>
     <string name="my_order_title">My Orders</string>
     <string name="store_title">Store</string>
+    <string name="success_purchase">Purchase the product successfully</string>
 
     <string name="error_goal_invalid">The goal has disappeared or beyond your range</string>
     <string name="error_phone_empty">Please input your phone</string>
@@ -175,7 +175,6 @@
     <string name="add_one_score">+1</string>
     <string name="minus_one_score">-1</string>
     <string name="buy_too_more">rich,you buy more!</string>
-    <string name="title_activity_warning">WarningActivity</string>
     <string name="hello_world">Hello world!</string>
 
     <!--使用指南的url-->

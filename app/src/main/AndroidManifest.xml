@@ -149,13 +149,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".UI.Activity.MapActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/MapDialog" >
-        </activity>
-        <activity
             android:name=".UI.Activity.FriendActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:label="@string/friend_title"
@@ -175,7 +168,7 @@
         </activity>
         <activity
             android:name=".UI.Activity.WarningActivity"
-            android:label="@string/title_activity_warning"
+            android:label="@string/danger_warning_title"
             android:screenOrientation="portrait">
         </activity>
         <activity android:name=".UI.Activity.ProfileActivity"
@@ -218,6 +211,10 @@
         </activity>
         <activity android:name=".UI.Activity.BrowserActivity"
             android:label="@string/browser"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".UI.Activity.NewFriendActivity"
+            android:label="@string/new_friends_title"
             android:screenOrientation="portrait">
         </activity>
 

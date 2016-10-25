@@ -36,15 +36,14 @@
             android:layout_centerInParent="true"
             android:textSize="16sp"
             android:text="@string/feedback"/>
-
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="30dp"
         android:orientation="horizontal"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         android:paddingLeft="30dp"
         android:paddingRight="30dp">
         <Button
@@ -54,9 +53,9 @@
             android:layout_weight="1"
             android:layout_marginRight="20dp"
             android:text="@string/advice"
-            android:textSize="12sp"
-            android:background="@drawable/feedback_type_back_press"
-            />
+            android:textSize="16sp"
+            android:background="@drawable/feedback_type_back_press"/>
+
         <Button
             android:id="@+id/consultationButton"
             android:layout_width="0px"
@@ -65,8 +64,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:text="@string/consultation"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:background="@drawable/feedback_type_back"/>
+
         <Button
             android:id="@+id/complaintsButton"
             android:layout_width="0px"
@@ -74,59 +74,54 @@
             android:layout_weight="1"
             android:layout_marginLeft="20dp"
             android:text="@string/complaints"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:background="@drawable/feedback_type_back"/>
     </LinearLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <Button
-            android:id="@+id/submitButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="65dp"
-            android:layout_marginRight="65dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/submit"
-            android:textSize="12sp"
-            android:background="@drawable/introduce_btn_back"
-            android:enabled="false"/>
-        <LinearLayout
-            android:id="@+id/contactsLayout"
-            style="@style/CrossBarLayout"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:layout_above="@id/submitButton">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/contacts"
-                android:layout_marginLeft="10dp"
-                android:textColor="@color/black"
-                android:textSize="16sp"/>
 
-            <EditText
-                android:id="@+id/contactsEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/white"
-                android:lines="1"
-                android:gravity="right"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:hint="@string/phone_or_email"/>
-        </LinearLayout>
+    <EditText
+        android:id="@+id/contentEditText"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@color/white"
+        android:gravity="left|top"
+        android:padding="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/contactsLayout"
+        style="@style/CrossBarLayout"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/contacts"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"/>
 
         <EditText
-            android:id="@+id/contentEditText"
+            android:id="@+id/contactsEditText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="10dp"
             android:background="@color/white"
-            android:gravity="left|top"
-            android:layout_above="@id/contactsLayout"
-            android:padding="10dp"/>
-    </RelativeLayout>
+            android:lines="1"
+            android:gravity="right"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:hint="@string/phone_or_email"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="65dp"
+        android:layout_marginRight="65dp"
+        android:text="@string/submit"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:background="@drawable/introduce_btn_back"
+        android:enabled="false"/>
 </LinearLayout>

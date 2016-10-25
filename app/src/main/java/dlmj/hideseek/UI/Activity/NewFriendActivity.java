@@ -42,7 +42,7 @@ public class NewFriendActivity extends BaseActivity implements UIDataListener<Be
     private List<User> mNewFriendList = new LinkedList<>();
     private PullToRefreshListView mNewFriendListView;
     private TextView mLastTitleTextView;
-    private LinearLayout mTitleLayout;
+    private LinearLayout mBackLayout;
     private LoadingDialog mLoadingDialog;
     private NetworkHelper mNetworkHelper;
     private ErrorMessageFactory mErrorMessageFactory;
@@ -94,7 +94,7 @@ public class NewFriendActivity extends BaseActivity implements UIDataListener<Be
         mNewFriendListView.setAdapter(mNewFriendAdapter);
         mNewFriendListView.setMode(PullToRefreshBase.Mode.DISABLED);
         mLoadingDialog = new LoadingDialog(this, this.getString(R.string.loading));
-        mTitleLayout = (LinearLayout) findViewById(R.id.titleLayout);
+        mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
     }
 
     private void setListener() {
@@ -116,7 +116,7 @@ public class NewFriendActivity extends BaseActivity implements UIDataListener<Be
             }
         });
 
-        mTitleLayout.setOnClickListener(new View.OnClickListener() {
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();

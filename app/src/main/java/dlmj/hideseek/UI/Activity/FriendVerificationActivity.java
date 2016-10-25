@@ -49,6 +49,8 @@ public class FriendVerificationActivity extends BaseActivity implements UIDataLi
                     if (mLoadingDialog.isShowing()) {
                         mLoadingDialog.dismiss();
                     }
+                    finish();
+                break;
             }
             super.handleMessage(msg);
         }
@@ -119,6 +121,7 @@ public class FriendVerificationActivity extends BaseActivity implements UIDataLi
         mCount++;
         Map<String, String> params = new HashMap<>();
         params.put("friend_id", mFriend.getPKId() + "");
+        params.put("message", mMessageEditText.getText().toString());
 
         if (!mLoadingDialog.isShowing()) {
             mLoadingDialog.show();

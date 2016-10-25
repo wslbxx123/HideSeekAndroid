@@ -56,10 +56,8 @@ import cn.sharesdk.onekeyshare.OnekeyShare;
 import cn.sharesdk.onekeyshare.OnekeyShareTheme;
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
-import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
 import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.Common.Factory.ErrorMessageFactory;
-import dlmj.hideseek.Common.Factory.GoalImageFactory;
 import dlmj.hideseek.Common.Interfaces.UIDataListener;
 import dlmj.hideseek.Common.Model.Bean;
 import dlmj.hideseek.Common.Model.Goal;
@@ -72,7 +70,6 @@ import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Hardware.CameraInterface;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.IntroduceActivity;
-import dlmj.hideseek.UI.Activity.MapActivity;
 import dlmj.hideseek.UI.Activity.NavigationActivity;
 import dlmj.hideseek.UI.Activity.StoreActivity;
 import dlmj.hideseek.UI.Activity.WarningActivity;
@@ -80,6 +77,7 @@ import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
 import dlmj.hideseek.UI.View.GameView;
 import dlmj.hideseek.UI.View.LoadingDialog;
+import dlmj.hideseek.UI.View.MapDialog;
 import dlmj.hideseek.UI.View.MonsterGuideDialog;
 
 /**
@@ -90,6 +88,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
         UIDataListener<Bean>, SensorEventListener, AMap.OnMapLoadedListener, View.OnClickListener {
     private final static int REFRESH_MAP_INTERVAL = 5000;
     private final static String TAG = "Search Fragment";
+    private String mTitle;
     private float mPreviewRate = -1f;
     private CameraSurfaceView mSurfaceView = null;
     private MapView mMapView;
@@ -141,10 +140,10 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
     private ImageButton mShareBtn;
     private LoadingDialog mLoadingDialog;
     private MonsterGuideDialog mMonsterGuideDialog;
+    private MapDialog mMapDialog;
     private TextView mRoleNameTextView;
     private LinearLayout mRoleLayout;
     private boolean mIfSeeGoal = false;
-    private GoalImageFactory mGoalImageFactory;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -153,7 +152,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
         if(rootView == null) {
             rootView = inflater.inflate(R.layout.search, null);
             initData();
-            findView(rootView);
+            findView(rootView, savedInstanceState);
             setListener();
             mMapView.onCreate(savedInstanceState);
             setLayer("MAP_TYPE_NORMAL");
@@ -191,6 +190,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
         super.onResume();
         openCamera();
         mMapView.onResume();
+        mMapDialog.onResume();
         LogUtil.d(TAG, "Map View is resumed");
 
         if(GoalCache.getInstance().getIfNeedClearMap()) {
@@ -290,6 +290,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
     @Override
     public void onDestroy() {
         mMapView.onDestroy();
+        mMapDialog.onDestroy();
         LogUtil.d(TAG, "Map View is destroyed");
         mLocationClient.stopLocation();
         mLocationClient.onDestroy();
@@ -334,6 +335,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
     }
 
     public void initData() {
+        mTitle = getString(R.string.home_title);
         mPreviewRate = DisplayUtil.getScreenRate(getActivity());
         mNetworkHelper = new NetworkHelper(getActivity());
         mGetGoalNetworkHelper = new NetworkHelper(getActivity());
@@ -344,12 +346,11 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
                 getSystemService(Context.SENSOR_SERVICE);
 
         mErrorMessageFactory = new ErrorMessageFactory(getActivity());
-        mGoalImageFactory = new GoalImageFactory(getActivity());
 
         ShareSDK.initSDK(getActivity());
     }
 
-    private void findView(View view) {
+    private void findView(View view, Bundle savedInstanceState) {
         mSurfaceView = (CameraSurfaceView) view.findViewById(R.id.cameraSurfaceView);
         mSurfaceView.setOnCreateListener(this);
 
@@ -374,6 +375,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
 
         mLoadingDialog = new LoadingDialog(getActivity(), getString(R.string.refresh_map_hint));
         mMonsterGuideDialog = new MonsterGuideDialog(getActivity());
+        mMapDialog = new MapDialog(getActivity(), savedInstanceState);
         mRoleNameTextView = (TextView) view.findViewById(R.id.roleNameTextView);
         mRoleLayout = (LinearLayout) view.findViewById(R.id.roleLayout);
     }
@@ -413,6 +415,12 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
         mMonsterGuideBtn.setOnClickListener(this);
         mWarningBtn.setOnClickListener(this);
         mShareBtn.setOnClickListener(this);
+        mMapDialog.setOnSelectMarkerListener(new MapDialog.OnSelectMarkerListener() {
+            @Override
+            public void selectMarker() {
+                setEndGoal();
+            }
+        });
 
         mGameView.setOnBombGotListener(new GameView.OnBombGotListener() {
             @Override
@@ -544,8 +552,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
             public void onClick(View view) {
                 LogUtil.d(TAG, "Map view is clicked");
 
-                Intent intent = new Intent(getActivity(), MapActivity.class);
-                startActivity(intent);
+                mMapDialog.show();
             }
         });
 
@@ -602,10 +609,10 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
                 Window dialogWindow = mMonsterGuideDialog.getWindow();
                 WindowManager.LayoutParams layoutParams = dialogWindow.getAttributes();
                 dialogWindow.setGravity(Gravity.CENTER_VERTICAL);
-                layoutParams.y = -20;
+                layoutParams.y = -150;
                 WindowManager windowManager = getActivity().getWindowManager();
                 Display display = windowManager.getDefaultDisplay();
-                layoutParams.width = display.getWidth() - 30;
+                layoutParams.width = display.getWidth() - 60;
                 mMonsterGuideDialog.show();
             }
         } else {
@@ -711,6 +718,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
         if(holder != null) {
             CameraInterface.getInstance(getActivity()).doStartPreview(holder, mPreviewRate);
             mMapView.onResume();
+            mMapDialog.onResume();
         }
     }
 
@@ -862,6 +870,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
 
     private void goToWarning() {
         Intent intent = new Intent(getActivity(), WarningActivity.class);
+        intent.putExtra(IntentExtraParam.LAST_TITLE, mTitle);
         startActivityForResult(intent, IntroduceActivity.GO_TO_WARNING);
     }
 
@@ -878,6 +887,8 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
                 "&role=" + UserCache.getInstance().getUser().getRole().getValue();
         oneKeyStare.setTitleUrl(shareUrl);
         oneKeyStare.setText(getActivity().getString(R.string.share_message));
+        oneKeyStare.setImageUrl("https://www.hideseek.cn/Public/Image/Web/icon.jpg");
+        oneKeyStare.setUrl(shareUrl);
 
         oneKeyStare.show(getActivity());
     }

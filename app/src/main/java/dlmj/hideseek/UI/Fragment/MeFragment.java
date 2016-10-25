@@ -144,6 +144,7 @@ public class MeFragment extends BaseFragment {
                 if (UserCache.getInstance().ifLogin()) {
                     //个人信息
                     Intent intent = new Intent();
+                    intent.putExtra(IntentExtraParam.LAST_TITLE, mTitle);
                     intent.setClass(getActivity(), MyProfileActivity.class);
                     startActivity(intent);
                 } else {
@@ -157,6 +158,7 @@ public class MeFragment extends BaseFragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
+                intent.putExtra(IntentExtraParam.LAST_TITLE, mTitle);
                 intent.setClass(getActivity(), SettingActivity.class);
                 startActivity(intent);
             }

@@ -3,26 +3,14 @@ package dlmj.hideseek.UI.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTabHost;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushManager;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
-import dlmj.hideseek.BusinessLogic.Network.NetworkHelper;
 import dlmj.hideseek.BusinessLogic.Network.PushManager;
-import dlmj.hideseek.Common.Interfaces.UIDataListener;
-import dlmj.hideseek.Common.Model.Bean;
-import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.IntentExtraParam;
-import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Fragment.MeFragment;
 import dlmj.hideseek.UI.Fragment.RaceGroupFragment;
@@ -37,7 +25,7 @@ public class IntroduceActivity extends BaseFragmentActivity {
     private FragmentTabHost mFragmentTabHost;
     private int mTabImage[] = {R.drawable.home_back, R.drawable.record_back,
             R.drawable.friend_group_back, R.drawable.me_back};
-    private int mTabText[] = {R.string.home, R.string.record, R.string.race_group, R.string.me};
+    private int mTabText[] = {R.string.home_title, R.string.record, R.string.race_group, R.string.me};
     private Class mFragmentArray[] = {SearchFragment.class, RecordFragment.class,
             RaceGroupFragment.class, MeFragment.class};
 

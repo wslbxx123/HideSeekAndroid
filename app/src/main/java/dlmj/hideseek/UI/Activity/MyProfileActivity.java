@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -42,6 +43,7 @@ public class MyProfileActivity extends BaseActivity {
     private static final int REQUEST_CODE_PROFILE=3;//修改头像
     private static final int REQUEST_CODE_CHOOSE_REGION = 4;//修改地址
 
+    private String mLastTitle;
     private View mProfileLayout;
     private CircleNetworkImageView mPhotoCircleNetworkImageView;
     private View mNicknameLayout;
@@ -53,6 +55,8 @@ public class MyProfileActivity extends BaseActivity {
     private View mRegionLayout;
     private TextView mRegionTextView;
     private ImageLoader mImageLoader;
+    private TextView mLastTitleTextView;
+    private LinearLayout mBackLayout;
 
     private NetworkHelper mRegionNetworkHelper;
     private LoadingDialog mLoadingDialog;
@@ -84,11 +88,11 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void initData() {
+        mLastTitle = getIntent().getStringExtra(IntentExtraParam.LAST_TITLE);
         mRegionNetworkHelper = new NetworkHelper(this);
         mUser = UserCache.getInstance().getUser();
         mImageLoader = ImageCacheManager.getInstance(getApplicationContext()).getImageLoader();
         mErrorMessageFactory = new ErrorMessageFactory(this);
-
     }
 
     private void findView() {
@@ -109,6 +113,9 @@ public class MyProfileActivity extends BaseActivity {
         mRegionLayout = findViewById(R.id.regionLayout);
         mRegionTextView = (TextView) findViewById(R.id.regionTextView);
         mRegionTextView.setText(null==mUser.getRegion()?"":mUser.getRegion());
+        mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
+        mLastTitleTextView.setText(mLastTitle);
+        mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
 
         mLoadingDialog = new LoadingDialog(this, getString(R.string.loading));
         mToast = new CustomSuperToast(this);
@@ -169,6 +176,13 @@ public class MyProfileActivity extends BaseActivity {
                 String message = mErrorMessageFactory.get(errorCode);
                 mToast.show(message);
                 mToast.show(getString(R.string.error_connect_network_failed));
+            }
+        });
+
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }

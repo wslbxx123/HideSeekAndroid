@@ -79,16 +79,11 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
                     break;
                 case SDK_PAY_FLAG: {
                     PayResult payResult = new PayResult((String) msg.obj);
-                    /**
-                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
-                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
-                     * docType=1) 建议商户依赖异步通知
-                     */
-                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
 
                     String resultStatus = payResult.getResultStatus();
-                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
+                        mToast.show(getString(R.string.success_purchase));
+                        purchase();
                         Toast.makeText(getActivity(), "支付成功", Toast.LENGTH_SHORT).show();
                     } else {
                         // 判断resultStatus 为非"9000"则代表可能支付失败
@@ -345,6 +340,10 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
                     }
                 });
         builder.show();
+    }
+
+    private void purchase() {
+
     }
 
     private void pay(String sign,CreateOrder.ParamsEntity params) {

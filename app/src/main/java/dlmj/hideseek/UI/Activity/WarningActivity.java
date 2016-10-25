@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,6 +43,7 @@ public class WarningActivity extends BaseActivity implements UIDataListener<Bean
     private final static String TAG = "WarningActivity";
     private final static int MSG_REFRESH_LIST = 1;
 
+    private String mLastTitle;
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private PullToRefreshListView mWarningListView;
     private TextView mLeftTimeTextView;
@@ -49,6 +52,8 @@ public class WarningActivity extends BaseActivity implements UIDataListener<Bean
     private NetworkHelper mNetworkHelper;
     private CountDownTimer mCountDownTimer;
     private ErrorMessageFactory mErrorMessageFactory;
+    private TextView mLastTitleTextView;
+    private LinearLayout mBackLayout;
 
     private Handler mUiHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -95,6 +100,7 @@ public class WarningActivity extends BaseActivity implements UIDataListener<Bean
         mWarningAdapter = new WarningAdapter(this, mWarningList);
         mNetworkHelper = new NetworkHelper(this);
         mErrorMessageFactory = new ErrorMessageFactory(this);
+        mLastTitle = getIntent().getStringExtra(IntentExtraParam.LAST_TITLE);
     }
 
     private void findView() {
@@ -107,10 +113,21 @@ public class WarningActivity extends BaseActivity implements UIDataListener<Bean
         startLabels.setRefreshingLabel("");
         startLabels.setReleaseLabel("");
         mLeftTimeTextView = (TextView) findViewById(R.id.leftTimeTextView);
+
+        mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
+        mLastTitleTextView.setText(mLastTitle);
+        mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
     }
 
     private void setListener() {
         mNetworkHelper.setUiDataListener(this);
+
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         mWarningAdapter.setGetBtnOnClickedListener(new WarningAdapter.GetBtnOnClickedListener() {
             @Override

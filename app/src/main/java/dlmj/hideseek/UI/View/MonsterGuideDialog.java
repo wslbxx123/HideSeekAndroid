@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +25,7 @@ public class MonsterGuideDialog extends Dialog {
     private ImageView mFifthStarImageView;
     private TextView mBattleRoleTextView;
     private TextView mIntroductionTextView;
+    private ImageButton mCloseBtn;
     private GoalImageFactory mGoalImageFactory;
 
     public MonsterGuideDialog(Context context) {
@@ -31,6 +33,7 @@ public class MonsterGuideDialog extends Dialog {
         this.mContext = context;
         initData();
         findView();
+        setListener();
     }
 
     private void initData() {
@@ -48,6 +51,16 @@ public class MonsterGuideDialog extends Dialog {
         mFifthStarImageView = (ImageView) guideView.findViewById(R.id.fifthStarImageView);
         mBattleRoleTextView = (TextView) guideView.findViewById(R.id.battleRoleTextView);
         mIntroductionTextView = (TextView) guideView.findViewById(R.id.introductionTextView);
+        mCloseBtn = (ImageButton) guideView.findViewById(R.id.closeBtn);
+    }
+
+    public void setListener() {
+        mCloseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
     }
 
     public void setEndGoal(Goal goal) {

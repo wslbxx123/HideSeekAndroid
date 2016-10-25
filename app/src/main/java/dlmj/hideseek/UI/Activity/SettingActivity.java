@@ -9,11 +9,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import dlmj.hideseek.BusinessLogic.Cache.GoalCache;
 import dlmj.hideseek.BusinessLogic.Cache.UserCache;
 import dlmj.hideseek.BusinessLogic.Helper.UserInfoManager;
+import dlmj.hideseek.Common.Params.IntentExtraParam;
 import dlmj.hideseek.Common.Util.BaseInfoUtil;
 import dlmj.hideseek.Common.Util.MathUtil;
 import dlmj.hideseek.R;
@@ -23,16 +25,21 @@ import dlmj.hideseek.UI.View.CustomSuperToast;
  * Created by Two on 5/3/16.
  */
 public class SettingActivity extends Activity implements View.OnClickListener {
+    private String mLastTitle;
     private View mLogoutLayout;
     private TextView mCacheSizeTextView;
     private AsyncTask<Void,Void,Long> mGetFileSizeTask;
     private AsyncTask<Void,Void,Void> mDeleteFileTask;
     private CustomSuperToast mToast;
     private Dialog mDeleteDialog;
+    private TextView mLastTitleTextView;
+    private LinearLayout mBackLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+        initData();
         findView();
         setListener();
     }
@@ -53,6 +60,10 @@ public class SettingActivity extends Activity implements View.OnClickListener {
         }
     }
 
+    private void initData() {
+        mLastTitle = getIntent().getStringExtra(IntentExtraParam.LAST_TITLE);
+    }
+
     private void findView() {
         mLogoutLayout =  findViewById(R.id.logoutLayout);
         mCacheSizeTextView = (TextView) findViewById(R.id.cacheSizeTextView);
@@ -62,6 +73,10 @@ public class SettingActivity extends Activity implements View.OnClickListener {
             mLogoutLayout.setVisibility(View.GONE);
         }
         mToast = new CustomSuperToast(this);
+
+        mLastTitleTextView = (TextView) findViewById(R.id.lastTitleTextView);
+        mLastTitleTextView.setText(mLastTitle);
+        mBackLayout = (LinearLayout) findViewById(R.id.backLayout);
     }
 
     private void setListener() {
@@ -71,6 +86,13 @@ public class SettingActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.useGuideLayout).setOnClickListener(this);
         findViewById(R.id.aboutLayout).setOnClickListener(this);
         mLogoutLayout.setOnClickListener(this);
+
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override
