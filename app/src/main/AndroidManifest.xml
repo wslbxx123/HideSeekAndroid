@@ -217,6 +217,10 @@
             android:label="@string/new_friends_title"
             android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".UI.Activity.TipsGuideActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/HalfTransparent">
+        </activity>
 
         <activity
             android:name="com.tencent.android.tpush.XGPushActivity"

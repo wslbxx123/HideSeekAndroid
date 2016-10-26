@@ -27,12 +27,13 @@ public enum SharedPreferenceSettings {
     PURCHASE_ORDER_MIN_ID("purchaseOrderMinId", (long)0),
     EXCHANGE_ORDER_VERSION("exchangeOrderVersion", (long)0),
     EXCHANGE_ORDER_MIN_ID("exchangeOrderMinId", (long)0),
-    CHANNEL_ID("channelId", "");
+    CHANNEL_ID("channelId", ""),
+    IS_FIRST_LAUNCHER("isFirstLauncher",true);
 
     private final String mId;
     private final Object mDefaultValue;
 
-    private SharedPreferenceSettings(String id, Object defaultValue) {
+    SharedPreferenceSettings(String id, Object defaultValue) {
         this.mId = id;
         this.mDefaultValue = defaultValue;
     }

@@ -64,14 +64,17 @@ import dlmj.hideseek.Common.Model.Goal;
 import dlmj.hideseek.Common.Model.User;
 import dlmj.hideseek.Common.Params.CodeParams;
 import dlmj.hideseek.Common.Params.IntentExtraParam;
+import dlmj.hideseek.Common.Params.SharedPreferenceSettings;
 import dlmj.hideseek.Common.Params.UrlParams;
 import dlmj.hideseek.Common.Util.DisplayUtil;
 import dlmj.hideseek.Common.Util.LogUtil;
+import dlmj.hideseek.Common.Util.SharedPreferenceUtil;
 import dlmj.hideseek.Hardware.CameraInterface;
 import dlmj.hideseek.R;
 import dlmj.hideseek.UI.Activity.IntroduceActivity;
 import dlmj.hideseek.UI.Activity.NavigationActivity;
 import dlmj.hideseek.UI.Activity.StoreActivity;
+import dlmj.hideseek.UI.Activity.TipsGuideActivity;
 import dlmj.hideseek.UI.Activity.WarningActivity;
 import dlmj.hideseek.UI.Thread.OverlayThread;
 import dlmj.hideseek.UI.View.CameraSurfaceView;
@@ -148,7 +151,7 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initOverlay();
-
+        initTipsGuide();
         if(rootView == null) {
             rootView = inflater.inflate(R.layout.search, null);
             initData();
@@ -183,6 +186,22 @@ public class SearchFragment extends BaseFragment implements CameraInterface.CamO
                 .getSystemService(Context.WINDOW_SERVICE);
         mWindowManager.addView(mOverlayTextVew, layoutParams);
         mOverlayThread = new OverlayThread(mOverlayTextVew, mUiHandler);
+    }
+
+    /**
+     * 初始化引导页
+     */
+    private void initTipsGuide()
+    {
+        SharedPreferenceSettings IS_FIRST_LAUNCHER=SharedPreferenceSettings.IS_FIRST_LAUNCHER;
+        boolean isFrist= SharedPreferenceUtil.getSharedPreferences().getBoolean(IS_FIRST_LAUNCHER.getId(), (Boolean) IS_FIRST_LAUNCHER.getDefaultValue());
+        if (isFrist)
+        {
+            //记录
+            SharedPreferenceUtil.getSharedPreferences().edit().putBoolean(IS_FIRST_LAUNCHER.getId(),false).apply();
+            startActivity(new Intent(getActivity(), TipsGuideActivity.class));
+            getActivity().overridePendingTransition(0,0);
+        }
     }
 
     @Override

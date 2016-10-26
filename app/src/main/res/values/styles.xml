@@ -96,6 +96,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">15sp</item>
     </style>
+    <style name="HalfTransparent">
+        <item name="android:windowBackground">@color/gray_line_transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
 
     <style name="NotificationText" parent="android:TextAppearance.StatusBar.EventContent" />
     <style name="NotificationTitle" parent="android:TextAppearance.StatusBar.EventContent.Title" />
