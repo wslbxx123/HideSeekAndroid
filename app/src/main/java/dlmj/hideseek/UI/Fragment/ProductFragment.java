@@ -2,7 +2,6 @@ package dlmj.hideseek.UI.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,7 +42,6 @@ import dlmj.hideseek.Common.Util.LogUtil;
 import dlmj.hideseek.Common.Util.PayResult;
 import dlmj.hideseek.DataAccess.ProductTableManager;
 import dlmj.hideseek.R;
-import dlmj.hideseek.UI.Activity.MyOrderActivity;
 import dlmj.hideseek.UI.Adapter.ProductAdapter;
 
 /**
@@ -222,7 +220,7 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
                 CreateOrder.ParamsEntity params = order.params;
                 String sign = order.sign;
                 //调用支付宝进行支付
-                pay(sign,params);
+                pay(sign, params, Long.parseLong(order.order_id));
             }
 
             @Override
@@ -343,15 +341,13 @@ public class ProductFragment extends BaseFragment implements UIDataListener<Bean
     }
 
     private void purchase() {
-
+        Map<String, String> params = new HashMap<>();
+        params.put("order_id", mProductTableManager.getVersion() + "");
     }
 
-    private void pay(String sign,CreateOrder.ParamsEntity params) {
+    private void pay(String sign,CreateOrder.ParamsEntity params, final long orderId) {
         String orderInfo = mAlipayManager.getOrderInfo(params);
 
-        /**
-         * 完整的符合支付宝参数规范的订单信息
-         */
         final String payInfo = orderInfo + "&sign=\"" + sign + "\"&" + mAlipayManager.getSignType();
 
         Runnable payRunnable = new Runnable() {

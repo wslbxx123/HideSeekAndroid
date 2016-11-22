@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import dlmj.hideseek.Common.Factory.GoalImageFactory;
@@ -22,6 +25,8 @@ public class RecordAdapter extends BaseAdapter{
     private Context mContext;
     private List<Record> mRecords;
     private GoalImageFactory mGoalImageFactory;
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat mCustomDateFormat = new SimpleDateFormat("MM-dd");
 
     public RecordAdapter(Context context, List<Record> records) {
         this.mContext = context;
@@ -66,7 +71,13 @@ public class RecordAdapter extends BaseAdapter{
         }
 
         Record record = (Record)getItem(position);
-        viewHolder.mDateTextView.setText(record.getDate());
+        try {
+            Date date = mDateFormat.parse(record.getDate());
+            viewHolder.mDateTextView.setText(mCustomDateFormat.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         viewHolder.mTimeTextView.setText(record.getTime());
         viewHolder.mScoreTextView.setText(record.getScore() > 0 ?
             " " + record.getScore() : record.getScore() + "");

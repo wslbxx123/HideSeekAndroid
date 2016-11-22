@@ -69,9 +69,6 @@ public class CreateOrder {
                     '}';
         }
     }
-    //    public String order_id;
-//    public String sign;
-//    public String trade_no;
 
     @Override
     public String toString() {

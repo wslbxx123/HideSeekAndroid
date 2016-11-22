@@ -86,7 +86,7 @@ public class RecordCache extends BaseCache<Record>{
                         record.getInt("score"),
                         record.getInt("score_sum"),
                         record.getLong("version"),
-                        DateFormat.getDateInstance(DateFormat.DEFAULT).format(date),
+                        record.getString("time"),
                         record.getString("show_type_name")));
             }
 
